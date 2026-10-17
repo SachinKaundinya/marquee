@@ -17,10 +17,17 @@ export function MirarLogo({ size = 'md', showText = true, className = '' }: Mira
   };
 
   const textSizes = {
-    sm: 'text-lg',
-    md: 'text-2xl sm:text-[26px]',
-    lg: 'text-3xl sm:text-4xl',
-    xl: 'text-5xl sm:text-6xl',
+    sm: 'text-xl sm:text-2xl',
+    md: 'text-3xl sm:text-[34px]',
+    lg: 'text-4xl sm:text-5xl',
+    xl: 'text-6xl sm:text-7xl',
+  };
+
+  const dotSizes = {
+    sm: 'w-2 h-2',
+    md: 'w-2.5 h-2.5',
+    lg: 'w-3 h-3',
+    xl: 'w-4 h-4',
   };
 
   return (
@@ -139,33 +146,28 @@ export function MirarLogo({ size = 'md', showText = true, className = '' }: Mira
       </div>
 
       {showText && (
-        <div className="flex items-baseline leading-none">
-          <span className={`font-black font-sans ${textSizes[size]} text-white tracking-[-0.03em] lowercase flex items-baseline leading-none`}>
-            <span>m</span>
-            {/* The letter 'i': stem is naturally on baseline, glowing dot sits right on top */}
-            <span className="relative inline-block leading-none mx-[0.015em]">
-              <span>ı</span>
-              <span
-                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[1.5px] flex items-center justify-center pointer-events-none select-none"
-                aria-hidden="true"
-              >
-                {/* Ethereal Ambient Radial Glow Aura (Vibrant Neon Glow) */}
-                <span
-                  className="absolute -inset-2.5 rounded-full pointer-events-none opacity-90 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(0,242,254,0.85) 0%, rgba(255,42,84,0.85) 50%, rgba(0,0,0,0) 80%)',
-                    filter: 'blur(5px)',
-                  }}
-                />
-                {/* Left Cyan Circle */}
-                <span className="w-[0.34em] h-[0.34em] rounded-full bg-[#00F2FE] -mr-[0.11em] shadow-[0_0_10px_#00F2FE,0_0_20px_rgba(0,242,254,0.9),0_0_30px_rgba(0,242,254,0.6)]" />
-                {/* Right Magenta Circle */}
-                <span className="w-[0.34em] h-[0.34em] rounded-full bg-[#FF2A54] -ml-[0.11em] shadow-[0_0_10px_#FF2A54,0_0_20px_rgba(255,42,84,0.9),0_0_30px_rgba(255,42,84,0.6)]" />
-                {/* Glowing White Intersection Core */}
-                <span className="absolute w-[0.20em] h-[0.20em] rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_16px_#ffffff]" />
-              </span>
-            </span>
-            <span>rar</span>
+        <div className="flex items-center leading-none">
+          {/* Regular lowercase mirar with font size matching icon height */}
+          <span className={`font-black font-sans ${textSizes[size]} text-white tracking-[-0.03em] lowercase leading-none flex items-center`}>
+            mirar
+          </span>
+
+          {/* Glowing Chromatic Dot moved back to trailing position after mirar */}
+          <span className="relative flex items-center justify-center ml-2 shrink-0 pointer-events-none select-none">
+            {/* Ethereal Ambient Radial Glow Aura (Vibrant Neon Glow) */}
+            <span
+              className="absolute -inset-2.5 rounded-full pointer-events-none opacity-90 animate-pulse"
+              style={{
+                background: 'radial-gradient(circle, rgba(0,242,254,0.85) 0%, rgba(255,42,84,0.85) 50%, rgba(0,0,0,0) 80%)',
+                filter: 'blur(5px)',
+              }}
+            />
+            {/* Left Cyan Circle */}
+            <span className={`${dotSizes[size]} rounded-full bg-[#00F2FE] -mr-1 shadow-[0_0_8px_#00F2FE,0_0_16px_rgba(0,242,254,0.9),0_0_24px_rgba(0,242,254,0.6)]`} />
+            {/* Right Magenta Circle */}
+            <span className={`${dotSizes[size]} rounded-full bg-[#FF2A54] -ml-1 shadow-[0_0_8px_#FF2A54,0_0_16px_rgba(255,42,84,0.9),0_0_24px_rgba(255,42,84,0.6)]`} />
+            {/* Glowing White Intersection Core */}
+            <span className="absolute w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_6px_#ffffff,0_0_12px_#ffffff]" />
           </span>
         </div>
       )}
