@@ -38,7 +38,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.4,
     genres: ['Action', 'Adventure', 'Drama', 'Sci-Fi'],
     overview: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.',
-    streaming_sources: ['Prime Video (Rent)', 'Max', 'Prime Video'],
+    streaming_sources: ['Prime (Rent)', 'Max', 'Prime Video'],
     primary_source: 'Max',
   },
   {
@@ -91,7 +91,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.2,
     genres: ['Biography', 'Drama', 'History'],
     overview: 'The story of J. Robert Oppenheimer’s role in the development of the atomic bomb during World War II.',
-    streaming_sources: ['Prime Video (Rent)', 'Peacock'],
+    streaming_sources: ['Prime (Rent)', 'Peacock'],
     primary_source: 'Peacock',
   },
   {
@@ -118,7 +118,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 9.1,
     genres: ['Action', 'Crime', 'Drama'],
     overview: 'When a menace known as the Joker wreaks havoc and chaos on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
-    streaming_sources: ['Prime Video (Rent)', 'Max'],
+    streaming_sources: ['Prime (Rent)', 'Max'],
     primary_source: 'Max',
   },
   {
@@ -132,7 +132,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.7,
     genres: ['Adventure', 'Drama', 'Sci-Fi'],
     overview: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
-    streaming_sources: ['Prime Video (Rent)', 'Paramount+', 'Prime Video'],
+    streaming_sources: ['Prime (Rent)', 'Paramount+', 'Prime Video'],
     primary_source: 'Paramount+',
   },
   {
@@ -146,7 +146,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.8,
     genres: ['Action', 'Adventure', 'Sci-Fi'],
     overview: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
-    streaming_sources: ['Prime Video (Rent)', 'Max'],
+    streaming_sources: ['Prime (Rent)', 'Max'],
     primary_source: 'Max',
   },
   {
@@ -160,7 +160,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 7.8,
     genres: ['Drama', 'Romance'],
     overview: 'Nora and Hae Sung, two deeply connected childhood friends, are wrested apart after Nora\'s family emigrates from South Korea.',
-    streaming_sources: ['Prime Video (Rent)', 'Netflix'],
+    streaming_sources: ['Prime (Rent)', 'Netflix'],
     primary_source: 'Netflix',
   },
   {
@@ -174,7 +174,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.5,
     genres: ['Drama', 'Thriller'],
     overview: 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.',
-    streaming_sources: ['Prime Video (Rent)', 'Max', 'Hulu'],
+    streaming_sources: ['Prime (Rent)', 'Max', 'Hulu'],
     primary_source: 'Max',
   },
   {
@@ -188,7 +188,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.5,
     genres: ['Drama', 'Music'],
     overview: 'A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing.',
-    streaming_sources: ['Prime Video (Rent)', 'Netflix'],
+    streaming_sources: ['Prime (Rent)', 'Netflix'],
     primary_source: 'Netflix',
   },
   {
@@ -202,7 +202,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.8,
     genres: ['Drama'],
     overview: 'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.',
-    streaming_sources: ['Prime Video (Rent)', 'Hulu'],
+    streaming_sources: ['Prime (Rent)', 'Hulu'],
     primary_source: 'Hulu',
   },
   {
@@ -216,7 +216,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.8,
     genres: ['Crime', 'Drama'],
     overview: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.',
-    streaming_sources: ['Prime Video (Rent)', 'Max', 'Paramount+'],
+    streaming_sources: ['Prime (Rent)', 'Max', 'Paramount+'],
     primary_source: 'Max',
   },
   {
@@ -230,7 +230,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.7,
     genres: ['Action', 'Sci-Fi'],
     overview: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
-    streaming_sources: ['Prime Video (Rent)', 'Max'],
+    streaming_sources: ['Prime (Rent)', 'Max'],
     primary_source: 'Max',
   },
   {
@@ -244,7 +244,7 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 9.2,
     genres: ['Crime', 'Drama'],
     overview: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
-    streaming_sources: ['Prime Video (Rent)', 'Paramount+'],
+    streaming_sources: ['Prime (Rent)', 'Paramount+'],
     primary_source: 'Paramount+',
   },
   {

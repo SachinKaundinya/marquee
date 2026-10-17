@@ -262,18 +262,18 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                   <ChevronDown className={`w-3 h-3 ${selectedDecades.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
                 </button>
 
-                {/* Available on My Services Toggle */}
+                {/* My Subscriptions Toggle */}
                 <button
                   type="button"
                   onClick={() => setFilter(filter === 'available' ? 'all' : 'available')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap shrink-0 ${
                     filter === 'available'
                       ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold shadow-sm'
                       : 'bg-[#14161B] text-[#8E93A0] border-white/[0.1] hover:bg-white/[0.05] hover:text-emerald-400'
                   }`}
                 >
                   <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Available on My Services</span>
+                  <span>My Subscriptions</span>
                 </button>
 
                 {(selectedGenres.length > 0 || selectedDecades.length > 0 || filter === 'available') && (
@@ -548,7 +548,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               const isWatched = userTitle?.status === 'watched';
               const sources = item.streaming_sources || (item.primary_source ? [item.primary_source] : []);
               const matchingSubscribedSource =
-                sources.find((s) => s !== 'Prime Video (Rent)' && isServiceSubscribed(s)) ||
+                sources.find((s) => s !== 'Prime (Rent)' && s !== 'Prime Video (Rent)' && isServiceSubscribed(s)) ||
                 sources.find((s) => isServiceSubscribed(s));
               const source = matchingSubscribedSource || item.primary_source || sources[0];
               const isSubscribed = matchingSubscribedSource ? true : (source ? isServiceSubscribed(source) : false);

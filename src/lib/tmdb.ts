@@ -29,7 +29,7 @@ export function getTmdbCredentials() {
 
 export function cleanProviderName(name: string): string {
   const n = name.toLowerCase();
-  if (n.includes('amazon video') || (n.includes('prime') && n.includes('rent'))) return 'Prime Video (Rent)';
+  if (n.includes('amazon video') || (n.includes('prime') && n.includes('rent'))) return 'Prime (Rent)';
   if (n.includes('netflix')) return 'Netflix';
   if (n.includes('apple')) return 'Apple TV+';
   if (n.includes('max') || n.includes('hbo')) return 'Max';
@@ -66,7 +66,7 @@ export async function fetchWatchProviders(mediaType: MediaType, id: number): Pro
         us.rent.forEach((p: any) => {
           const n = (p.provider_name || '').toLowerCase();
           if (n.includes('amazon') || n.includes('prime')) {
-            providers.push('Prime Video (Rent)');
+            providers.push('Prime (Rent)');
           }
         });
       }
@@ -963,7 +963,7 @@ function formatTmdbItem(item: any): MediaItem {
   // 1. If explicit network original (e.g. Stranger Things, Severance, etc.)
   if (matchedNetwork) {
     defaultProvider = matchedNetwork;
-    sources = isMovie ? [matchedNetwork, 'Prime Video (Rent)'] : [matchedNetwork];
+    sources = isMovie ? [matchedNetwork, 'Prime (Rent)'] : [matchedNetwork];
   } else if (isTheatricalActive) {
     // Current or upcoming theatrical release: strictly In Theaters or Coming Soon
     defaultProvider = isFuture ? 'Coming Soon' : 'In Theaters';
@@ -971,8 +971,8 @@ function formatTmdbItem(item: any): MediaItem {
   } else if (isMovie) {
     // Older or catalog movie without a verified streaming network:
     // It is available on digital rental / VOD, NOT randomly on Netflix or Max
-    defaultProvider = 'Prime Video (Rent)';
-    sources = ['Prime Video (Rent)'];
+    defaultProvider = 'Prime (Rent)';
+    sources = ['Prime (Rent)'];
   } else {
     // TV Series not explicitly mapped in lookup
     const providerIndex = Math.abs(item.id) % POPULAR_NETWORKS.length;

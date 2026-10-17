@@ -15,7 +15,7 @@ export const ALL_SERVICES = [
   'Netflix',
   'Hulu',
   'Prime Video',
-  'Prime Video (Rent)',
+  'Prime (Rent)',
   'Disney+',
   'Peacock',
   'Paramount+',
@@ -152,9 +152,13 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
                 t.media.backdrop_path = `https://image.tmdb.org/t/p/w1280${t.media.backdrop_path}`;
               }
               if (t.media_type === 'movie' && t.media) {
-                const s = t.media.streaming_sources || [];
-                if (!s.includes('Prime Video (Rent)')) {
-                  t.media.streaming_sources = [...s, 'Prime Video (Rent)'];
+                const s = (t.media.streaming_sources || []).map((src: string) =>
+                  src === 'Prime Video (Rent)' ? 'Prime (Rent)' : src
+                );
+                if (!s.includes('Prime (Rent)')) {
+                  t.media.streaming_sources = [...s, 'Prime (Rent)'];
+                } else {
+                  t.media.streaming_sources = s;
                 }
               }
 
@@ -207,7 +211,10 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       if (storedSubs) {
         const parsed = JSON.parse(storedSubs);
         if (Array.isArray(parsed)) {
-          setSubscribedServicesState(parsed);
+          const normalized = parsed.map((s: string) =>
+            s === 'Prime Video (Rent)' ? 'Prime (Rent)' : s
+          );
+          setSubscribedServicesState(normalized);
         }
       }
     } catch {
@@ -330,9 +337,14 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   };
 
   const toggleSubscribedService = (serviceName: string) => {
-    const updated = subscribedServices.includes(serviceName)
-      ? subscribedServices.filter((s) => s !== serviceName)
-      : [...subscribedServices, serviceName];
+    const isRental = serviceName === 'Prime (Rent)' || serviceName === 'Prime Video (Rent)';
+    const alreadySubscribed = isRental
+      ? (subscribedServices.includes('Prime (Rent)') || subscribedServices.includes('Prime Video (Rent)'))
+      : subscribedServices.includes(serviceName);
+
+    const updated = alreadySubscribed
+      ? subscribedServices.filter((s) => isRental ? (s !== 'Prime (Rent)' && s !== 'Prime Video (Rent)') : s !== serviceName)
+      : [...subscribedServices.filter((s) => isRental ? (s !== 'Prime (Rent)' && s !== 'Prime Video (Rent)') : true), serviceName];
 
     setSubscribedServices(updated);
     toast.success(
@@ -343,16 +355,20 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   };
 
   const isServiceSubscribed = (serviceName: string): boolean => {
+    if (serviceName === 'Prime (Rent)' || serviceName === 'Prime Video (Rent)') {
+      return subscribedServices.includes('Prime (Rent)') || subscribedServices.includes('Prime Video (Rent)');
+    }
     return subscribedServices.includes(serviceName);
   };
 
   const isItemOnMyServices = (item: MediaItem): boolean => {
     if (!item) return false;
     const sources = item.streaming_sources || (item.primary_source ? [item.primary_source] : []);
-    if (item.media_type === 'movie' && subscribedServices.includes('Prime Video (Rent)')) {
+    const hasRentalSub = subscribedServices.includes('Prime (Rent)') || subscribedServices.includes('Prime Video (Rent)');
+    if (item.media_type === 'movie' && hasRentalSub) {
       return true;
     }
-    return sources.some((source) => subscribedServices.includes(source));
+    return sources.some((source) => isServiceSubscribed(source));
   };
 
   const openQuickLog = (item: MediaItem, initialStatus?: TrackingStatus) => {

@@ -29,7 +29,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "When Jess sets sail on a yacht with a group of friends, she cannot shake the feeling that there is something wrong.",
       "streaming_sources": [
         "Peacock",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Peacock"
     }
@@ -64,7 +64,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "On a post-apocalyptic Earth, a robot, built to protect the life of his dying creator's beloved dog, learns about life, love, friendship, and what it means to be human.",
       "streaming_sources": [
         "Apple TV+",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Apple TV+"
     }
@@ -98,7 +98,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "A man accidentally gets into a time machine and travels back in time nearly an hour. Finding himself will be the first of a series of disasters of unforeseeable consequences.",
       "streaming_sources": [
         "Max",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Max"
     }
@@ -132,7 +132,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A group of fledgling inventors discover a complex method to manipulate reality. At first, they successfully game the stock market with it, but the consequences of the invention start to catch up with them.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -167,7 +167,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Three friends discover a mysterious machine that takes pictures 24 hours into the future and conspire to use it for personal gain, until disturbing and dangerous images begin to develop.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -201,7 +201,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "The near future, a time when both hope and hardships drive humanity to look to the stars and beyond. While a mysterious phenomenon menaces to destroy life on planet Earth, astronaut Roy McBride undertakes a mission across the immensity of space and its many perils to uncover the truth about a lost expedition that decades before boldly faced emptiness and silence in search of the unknown.",
       "streaming_sources": [
         "Disney+",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Disney+"
     }
@@ -235,7 +235,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Joel Barish, heartbroken that his girlfriend underwent a procedure to erase him from her memory, decides to do the same. However, as he watches his memories of her fade away, he realises that he still loves her, and may be too late to correct his mistake.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -268,7 +268,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Jack Torrance accepts a caretaker job at the Overlook Hotel, where he, along with his wife Wendy and their son Danny, must live isolated from the rest of the world for the winter. But they aren't prepared for the madness that lurks within.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -301,7 +301,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In a near-future Britain, young Alexander DeLarge and his pals get their kicks beating and raping anyone they please. When not destroying the lives of others, Alex swoons to the music of Beethoven. The state, eager to crack down on juvenile crime, gives an incarcerated Alex the option to undergo an invasive procedure that'll rob him of all personal agency. In a time when conscience is a commodity, can Alex change his tune?",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -335,7 +335,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In Los Angeles, a wealthy man, known as Mr. Fuller, discovers a shocking secret about the world he lives in. Fearing for his life, he leaves a desperate message for a friend of his in the most unexpected place.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -368,7 +368,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A man struggles with memories of his past, including a wife he cannot remember, in a nightmarish world with no sun and run by beings with telekinetic powers who seek the souls of humans.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -401,7 +401,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In 2035, where robots are commonplace and abide by the three laws of robotics, a technophobic cop investigates an apparent suicide. Suspecting that a robot may be responsible for the death, his investigation leads him to believe that humanity may be in danger.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -435,7 +435,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Set in a futuristic world where humans live in isolation and interact through surrogate robots, a cop is forced to leave his home for the first time in years in order to investigate the murders of others' surrogates.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -469,7 +469,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the last days of 1999, ex-cop turned street hustler Lenny Nero receives a disc which contains the memories of the murder of a prostitute. With the help of bodyguard Mace, he starts to investigate and is pulled deeper and deeper in a whirl of murder, blackmail and intrigue.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -503,7 +503,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Construction worker Douglas Quaid's obsession with the planet Mars leads him to visit Rekall, a virtual vacation company that manufactures memories. When something goes wrong during Quaid's memory implant procedure, his life turns upside down, leading him to question what is reality and what isn't.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -535,7 +535,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A teenage girl and her father travel to a remote alien moon, aiming to strike it rich. They've secured a contract to harvest a large deposit of the elusive gems hidden in the depths of the moon's toxic forest. But there are others roving the wilderness and the job quickly devolves into a fight to survive.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -569,7 +569,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When an old acquaintance is murdered, Wolff is compelled to solve the case. Realizing more extreme measures are necessary, Wolff recruits his estranged and highly lethal brother, Brax, to help. In partnership with Marybeth Medina, they uncover a deadly conspiracy, becoming targets of a ruthless network of killers who will stop at nothing to keep their secrets buried.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -602,7 +602,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Trevor, an insomniac lathe operator, experiences unusual occurrences at work and home. A strange man follows him everywhere, but no one else seems to notice him.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -636,7 +636,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Armed with only one word - Tenet - and fighting for the survival of the entire world, the Protagonist journeys through a twilight world of international espionage on a mission that will unfold in something beyond real time.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -670,7 +670,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the year 2035, convict James Cole reluctantly volunteers to be sent back in time to discover the origin of a deadly virus that wiped out nearly all of the earth's population and forced the survivors into underground communities. But when Cole is mistakenly sent to 1990 instead of 1996, he's arrested and locked up in a mental hospital. There he meets psychiatrist Dr. Kathryn Railly and the son of a famous virus expert who may hold the key to the Army of the 12 Monkeys; thought to be responsible for unleashing the killer disease.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -704,7 +704,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In 2257, a taxi driver is unintentionally given the task of saving a young girl who is part of the key that will ensure the survival of humanity.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -739,7 +739,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "A brutal mugging leaves Grey Trace paralyzed in the hospital and his beloved wife dead. A billionaire inventor soon offers Trace a cure \u2014 an artificial intelligence implant called STEM that will enhance his body. Now able to walk, Grey finds that he also has superhuman strength and agility \u2014 skills he uses to seek revenge against the thugs who destroyed his life.",
       "streaming_sources": [
         "Netflix",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Netflix"
     }
@@ -772,7 +772,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Caleb, a coder at the world's largest internet company, wins a competition to spend a week at a private mountain retreat belonging to Nathan, the reclusive CEO of the company. But when Caleb arrives at the remote location he finds that he will have to participate in a strange and fascinating experiment in which he must interact with the world's first true artificial intelligence, housed in the body of a beautiful robot girl.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -805,7 +805,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Vincent is an all-too-human man who dares to defy a system obsessed with genetic perfection. He is an \"In-Valid\" who assumes the identity of a member of the genetic elite to pursue his goal of traveling into space with the Gattaca Aerospace Corporation.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -837,7 +837,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Thirty years ago, aliens arrive on Earth. Not to conquer or give aid, but to find refuge from their dying planet. Separated from humans in a South African area called District 9, the aliens are managed by Multi-National United, which is unconcerned with the aliens' welfare but will do anything to master their advanced technology. When a company field agent contracts a mysterious virus that begins to alter his DNA, there is only one place he can hide: District 9.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -870,7 +870,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A celebrity model couple are invited on a luxury cruise for the uber-rich, helmed by an unhinged, alcoholic captain. What first appears Instagrammable ends catastrophically, leaving the survivors stranded on a desert island in a struggle of hierarchy.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -904,7 +904,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When decorated soldier Captain Colter Stevens wakes up in the body of an unknown man, he discovers he's part of a mission to find the bomber of a Chicago commuter train.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -939,7 +939,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In a dystopian society where the Capitol forces each district to send two young tributes to fight to the death in a televised spectacle, a girl volunteers to take her sister\u2019s place, setting the stage for a struggle of survival and defiance.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -973,7 +973,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Set more than a decade after the events of the first film, learn the story of the Sully family (Jake, Neytiri, and their kids), the trouble that follows them, the lengths they go to keep each other safe, the battles they fight to stay alive, and the tragedies they endure.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1006,7 +1006,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "With only three weeks left in his three-year contract, Sam Bell is eager to return to Earth. Stationed alone at a Moon-based facility with his computer assistant GERTY, an unexpected accident sets off a series of unsettling events that shake his isolation.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1038,7 +1038,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When an innovative modern architect flees post-war Europe, he is given the opportunity to rebuild his legacy. Set during the dawn of the modern United States (in Pennsylvania), his wife joins him, and their lives are forever changed by a demanding, wealthy patron.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1071,7 +1071,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Mismatched cousins David and Benji reunite for a tour through Poland to honor their beloved grandmother. The adventure takes a turn when the pair's old tensions resurface against the backdrop of their family history.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1105,7 +1105,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Dr Ryan Stone, an engineer on her first space mission, and Matt Kowalski, an astronaut on his final expedition, have to survive in space after they are hit by debris while spacewalking.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1138,7 +1138,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the future, America is a dystopian wasteland. The latest scourge is Ma-Ma, a prostitute-turned-drug pusher with a dangerous new drug and aims to take over the city. The only possibility of stopping her is an elite group of urban police called Judges, who combine the duties of judge, jury and executioner to deliver a brutal brand of swift justice. But even the top-ranking Judge, Dredd, discovers that taking down Ma-Ma isn\u2019t as easy as it seems in this explosive adaptation of the hugely popular comic series.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1171,7 +1171,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Major Bill Cage is an officer who has never seen a day of combat when he is unceremoniously demoted and dropped into combat. Cage is killed within minutes, managing to take an alpha alien down with him. He awakens back at the beginning of the same day and is forced to fight and die again... and again - as physical contact with the alien has thrown him into a time loop.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1204,7 +1204,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Predestination chronicles the life of a Temporal Agent sent on an intricate series of time-travel journeys designed to prevent future killers from committing their crimes. Now, on his final assignment, the Agent must stop the one criminal that has eluded him throughout time and prevent a devastating attack in which thousands of lives will be lost.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1239,7 +1239,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "Taking place after alien crafts land around the world, an expert linguist is recruited by the military to determine whether they come in peace or are a threat.",
       "streaming_sources": [
         "Prime Video",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Prime Video"
     }
@@ -1273,7 +1273,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the not so distant future, Theodore, a lonely writer, purchases a newly developed operating system designed to meet the user's every need. To Theodore's surprise, a romantic relationship develops between him and his operating system. This unconventional love story blends science fiction and romance in a sweet tale that explores the nature of love and the ways that technology isolates and connects us all.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1307,7 +1307,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora on a unique mission, but becomes torn between following orders and protecting an alien civilization.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1342,7 +1342,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "In the not-too-distant future, the aging gene has been switched off. To avoid overpopulation, time has become the currency and the way people pay for luxuries and necessities. The rich can live forever, while the rest struggle to negotiate for their immortality. A poor young man who suddenly comes into a fortune of time finds himself on the run from a corrupt police force known as the \"time keepers\".",
       "streaming_sources": [
         "Hulu",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Hulu"
     }
@@ -1374,7 +1374,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When cocky military lawyer Lt. Daniel Kaffee and his co-counsel, Lt. Cmdr. JoAnne Galloway, are assigned to a murder case, they uncover a hazing ritual that could implicate high-ranking officials such as shady Col. Nathan Jessep.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1410,7 +1410,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "overview": "A young British soldier must find his way back to safety after his unit accidentally abandons him during a riot in the streets of Belfast.",
       "streaming_sources": [
         "Netflix",
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": "Netflix"
     }
@@ -1444,7 +1444,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Warwick Wilson is the consummate host. He carefully prepares for a dinner party, the table impeccably set and the duck perfectly timed for 8:30 p.m. John Taylor is a career criminal. He\u2019s just robbed a bank and needs to get off the streets. He finds himself on Warwick\u2019s doorstep posing as a friend of a friend, new to Los Angeles, who\u2019s been mugged and lost his luggage.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1476,7 +1476,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A husband is on trial for the attempted murder of his wife, in what is seemingly an open/shut case for the ambitious district attorney trying to put him away. However, there are surprises for both around every corner, and, as a suspenseful game of cat-and-mouse is played out, each must manipulate and outwit the other.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1510,7 +1510,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A mysterious man arrives at the offices of an FBI agent and recounts his childhood: how his religious fanatic father received visions telling him to kill people who were in fact \"demons.\"",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1544,7 +1544,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "After David Kim's 16-year-old daughter goes missing, a local investigation is opened and a detective is assigned to the case. But 37 hours later and without a single lead, David decides to search the one place no one has looked yet, where all secrets are kept today: his daughter's laptop.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1578,7 +1578,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "An exploration of the United States of America's war on drugs from multiple perspectives. For the new head of the Office of National Drug Control Policy, the war becomes personal when he discovers his well-educated daughter is abusing cocaine within their comfortable suburban home. In Mexico, a flawed, but noble policeman agrees to testify against a powerful general in league with a cartel, and in San Diego, a drug kingpin's sheltered trophy wife must learn her husband's ruthless business after he is arrested, endangering her luxurious lifestyle.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1612,7 +1612,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "On his first day on the job as a narcotics officer, a rookie cop works with a rogue detective who isn't what he appears.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1646,7 +1646,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A man imprisons his estranged junkie friend in an isolated cabin in the boonies of San Diego to force him through a week of sobriety, but the events of that week are being mysteriously manipulated.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1680,7 +1680,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Two brothers return to the cult they fled from years ago to discover that the group's beliefs may be more sane than they once thought.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1714,7 +1714,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Blonde Betty Elms has only just arrived in Hollywood to become a movie star when she meets an enigmatic brunette with amnesia. Meanwhile, as the two set off to solve the second woman's identity, filmmaker Adam Kesher runs into ominous trouble while casting his latest project.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1748,7 +1748,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Earl Stone, a man in his eighties, is broke, alone, and facing foreclosure of his business when he is offered a job that simply requires him to drive. Easy enough, but, unbeknownst to Earl, he's just signed on as a drug courier for a Mexican cartel. He does so well that his cargo increases exponentially, and Earl hit the radar of hard-charging DEA agent Colin Bates.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1782,7 +1782,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1816,7 +1816,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Jerry Lundegaard is a small-town Minnesota car salesman deeply in debt and willing to do almost anything to get out. Police chief Marge Gunderson discovers a string of violent crimes as Jerry's schemes spiral out of control.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1849,7 +1849,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A down and out young punk gets a job working with a seasoned repo man, but what awaits him in his new career is a series of outlandish adventures revolving around aliens, the CIA, and a most wanted '64 Chevy.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1884,7 +1884,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "The lives of three men who were childhood friends are shattered when one of them suffers a family tragedy.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1918,7 +1918,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When an armed, masked gang enter a Manhattan bank, lock the doors and take hostages, the detective assigned to effect their release enters negotiations preoccupied with corruption charges he is facing.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1951,7 +1951,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In 1989, prostitute Aileen Wuornos befriends and enters a relationship with a young woman named Selby. Determined to straighten out her life, Aileen's limited education lands her back on the corner. She's raped by a trick, who she kills. A string of murder and robbery follows that ultimately leads Aileen to becoming America's first female serial killer.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -1984,7 +1984,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Complete strangers stranded at a remote desert motel during a raging storm soon find themselves the target of a deranged murderer. As their numbers thin out, the travelers begin to turn on each other, as each tries to figure out who the killer is.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2018,7 +2018,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A charismatic New York City jeweler always on the lookout for the next big score makes a series of high-stakes bets that could lead to the windfall of a lifetime. Howard must perform a precarious high-wire act, balancing business, family, and encroaching adversaries on all sides in his relentless pursuit of the ultimate win.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2052,7 +2052,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When Lou Bloom, desperate for work, muscles into the world of L.A. crime journalism, he blurs the line between observer and participant to become the star of his own story. Aiding him in his effort is Nina, a TV-news veteran.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2085,7 +2085,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Austin's hottest DJ, Jungle Julia, sets out into the night to unwind with her two friends Shanna and Arlene. Covertly tracking their moves is Stuntman Mike, a scarred rebel leering from behind the wheel of his muscle car, revving just feet away.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2119,7 +2119,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In early 1860s New York, Irish immigrant Amsterdam Vallon is released from prison and returns to the Five Points, seeking revenge against his father's killer, William Cutting, a powerful anti-immigrant gang leader. He knows that revenge can only be attained by infiltrating Cutting's inner circle. Vallon's journey becomes a fight for personal survival and to find a place for the Irish people.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2152,7 +2152,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In Las Vegas, two best friends-a casino executive and a Mafia enforcer--compete for a gambling empire and a fast-living, fast-loving socialite.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2187,7 +2187,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Joe Moore has a job he loves. He's a thief. His job goes sour when he gets caught on security camera tape. His fence, Bergman, reneges on the money he's owed, and his wife may be betraying him with the fence's young lieutenant. Moore and his partner, Bobby Blane, and their utility man, Pinky Pincus, find themselves broke, betrayed, and blackmailed. Moore is forced to commit his crew to do one last big job.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2219,7 +2219,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A successful lawyer returns to his hometown for his mother's funeral only to discover that his estranged father, the town's judge, is suspected of murder.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2253,7 +2253,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Llewelyn Moss stumbles upon dead bodies, $2 million and a hoard of heroin in a Texas desert, but methodical killer Anton Chigurh comes looking for it, with local sheriff Ed Tom Bell hot on his trail. The roles of prey and predator blur as the violent pursuit of money and justice collide.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2286,7 +2286,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Hutch Mansell, a suburban dad, overlooked husband, nothing neighbor \u2014 a \"nobody.\" When two thieves break into his home one night, Hutch's unknown long-simmering rage is ignited and propels him on a brutal path that will uncover dark secrets he fought to leave behind.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2320,7 +2320,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In late 1970s Ohio, a group of friends filming a homemade zombie movie witness a devastating train derailment. Soon after, their quiet town is gripped by unexplained disappearances, strange phenomena, and a growing sense of fear, as they uncover that something terrifying has been set loose.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2354,7 +2354,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "During a weekend getaway at a secluded lakeside estate, a group of friends finds themselves entangled in a web of secrets, deception, and advanced technology. As tensions rise and loyalties are tested, they uncover unsettling truths about themselves and the world around them.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2387,7 +2387,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2421,7 +2421,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Two homicide detectives are on a desperate hunt for a serial killer whose crimes are based on the \"seven deadly sins\" in this dark and haunting film that takes viewers from the tortured remains of one victim to the next. The seasoned Det. Somerset researches each sin in an effort to get inside the killer's mind, while his novice partner, Mills, scoffs at his efforts to unravel the case.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2455,7 +2455,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Several friends travel to Sweden to study as anthropologists a summer festival that is held every ninety years in the remote hometown of one of them. What begins as a dream vacation in a place where the sun never sets, gradually turns into a dark nightmare as the mysterious inhabitants invite them to participate in their disturbing festive activities.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2489,7 +2489,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the year 2044, time travel has not yet been invented but in 30 years it will have been. When the mob wants to get rid of someone, they will send their target into the past where a looper, a hired gun, like Joe is waiting to mop up. Joe is getting rich and life is good until the day the mob decides to close the loop, sending back Joe's future self for assassination.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2523,7 +2523,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Two lighthouse keepers try to maintain their sanity while living on a remote and mysterious New England island in the 1890s.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2557,7 +2557,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Dr. Steven Murphy is a renowned cardiovascular surgeon who presides over a spotless household with his wife and two children. Lurking at the margins of his idyllic suburban existence is Martin, a fatherless teen who insinuates himself into the doctor's life in gradually unsettling ways.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2591,7 +2591,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Lexington, Kentucky, 2004. Four young men attempt to execute one of the most audacious art heists in the history of the United States.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2624,7 +2624,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Trying to reverse a family curse, brothers Jimmy and Clyde Logan set out to execute an elaborate robbery during the legendary Coca-Cola 600 race at the Charlotte Motor Speedway.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2658,7 +2658,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When a seemingly straight-forward drug deal goes awry, XXXX has to break his die-hard rules and turn up the heat, not only to outwit the old regime and come out on top, but to save his own skin...",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2693,7 +2693,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A phobic con artist and his protege are on the verge of pulling off a lucrative swindle when the con artist's teenage daughter arrives unexpectedly.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2727,7 +2727,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A female executive and a night janitor conspire to commit a daring diamond heist from their mutual employer, The London Diamond Corporation.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2760,7 +2760,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A conman and his seductive partner are forced to work for a wild FBI agent, who pushes them into a world of Jersey power-brokers and the Mafia.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2794,7 +2794,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A proficient group of thieves rob a bank and hold the manager hostage. Things begin to get complicated when one of the crew members falls in love with her.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2827,7 +2827,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Outlaw Jesse James is rumored to be the 'fastest gun in the West'. An eager recruit into James' notorious gang, Robert Ford eventually grows jealous of the famed outlaw and, when Robert and his brother sense an opportunity to kill James, their murderous action elevates their target to near mythical status.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2860,7 +2860,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In 1859, families discover the lure of the Old West as they settle in territories from Wyoming to Kansas. Meanwhile, a gruff cowboy finds himself on the run with a prostitute and a young boy after killing a fellow gunman.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2894,7 +2894,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Looking to mine for gold, greedy industrialist Bartholomew Bogue seizes control of the Old West town of Rose Creek. With their lives in jeopardy, Emma Cullen and other desperate residents turn to bounty hunter Sam Chisolm for help. Chisolm recruits an eclectic group of gunslingers to take on Bogue and his ruthless henchmen. With a deadly showdown on the horizon, the seven mercenaries soon find themselves fighting for more than just money once the bullets start to fly.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2927,7 +2927,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A widowed farmer and his son warily take in a mysterious, injured man with a satchel of cash. When a posse of men claiming to be the law come for the money, the farmer must decide who to trust. Defending a siege of his homestead, the farmer reveals a talent for gun-slinging that surprises everyone calling his true identity into question.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2961,7 +2961,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A Texan traveling across the wild West bringing the news of the world to local townspeople, agrees to help rescue a young girl who was kidnapped.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -2995,7 +2995,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Following the murder of her father by a hired hand, a 14-year-old farm girl sets out to capture the killer. To aid her, she hires the toughest U.S. Marshal she can find\u2014a man with 'true grit'\u2014Reuben J. 'Rooster' Cogburn.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3029,7 +3029,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Oregon, 1851. Hermann Kermit Warm, a chemist and aspiring gold prospector, keeps a profitable secret that the Commodore wants to know, so he sends the Sisters brothers, two notorious assassins, to capture him on his way to California.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3063,7 +3063,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the 1820s, a frontiersman, Hugh Glass, sets out on a path of vengeance against those who left him for dead after a bear mauling.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3098,7 +3098,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In 1863, Mississippi farmer Newt Knight serves as a medic for the Confederate Army. Opposed to slavery, Knight would rather help the wounded than fight the Union. After his nephew dies in battle, Newt returns home to Jones County to safeguard his family but is soon branded an outlaw deserter. Forced to flee, he finds refuge with a group of runaway slaves hiding out in the swamps. Forging an alliance with the slaves and other farmers, Knight leads a rebellion that would forever change history.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3131,7 +3131,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In the 1820s, a taciturn loner and skilled cook travels west to Oregon Territory, where he meets a Chinese immigrant also seeking his fortune. Soon the two team up on a dangerous scheme to steal milk from the wealthy landowner\u2019s prized Jersey cow\u2014the first, and only, in the territory.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3165,7 +3165,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "During a shootout in a saloon, Sheriff Hunt injures a suspicious stranger. The doctor's assistant, wife of the local foreman, tends to him in prison. That night, the town is attacked and they both disappear\u2014only the arrow of a cannibal tribe is found. Hunt and a few of his men go in search of the prisoner and the foreman's wife.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3200,7 +3200,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A legendary Native American-hating Army captain nearing retirement in 1892 is given one last assignment: to escort a Cheyenne chief and his family through dangerous territory back to his Montana reservation.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3233,7 +3233,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In 1880s Australia, a lawman offers renegade Charlie Burns a difficult choice. In order to save his younger brother from the gallows, Charlie must hunt down and kill his older brother, who is wanted for rape and murder. Venturing into one of the Outback's most inhospitable regions, Charlie faces a terrible moral dilemma that can end only in violence.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3265,7 +3265,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A woman in her sixties embarks on a journey through the western United States after losing everything in the Great Recession, living as a van-dwelling modern-day nomad.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3299,7 +3299,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A divorced dad and his ex-con brother resort to a desperate scheme in order to save their family's farm in West Texas.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3333,7 +3333,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "An FBI agent teams with the town's veteran game tracker to investigate a murder that occurred on a Native American reservation.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3367,7 +3367,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Vignettes weaving together the stories of six individuals in the old West at the end of the Civil War. Following the tales of a sharp-shooting songster, a wannabe bank robber, two weary traveling performers, a lone gold prospector, a woman traveling the West to an uncertain future, and a motley crew of strangers undertaking a carriage ride.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3399,7 +3399,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "When a group of friends discover how to conjure spirits using an embalmed hand, they become hooked on the new thrill, until one of them goes too far and unleashes terrifying supernatural forces.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3433,7 +3433,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Following the death of the Leigh family matriarch, Annie and her children uncover disturbing secrets about their heritage. Their daily lives are not only impacted, but they also become entangled in a chilling fate from which they cannot escape, driving them to the brink of madness.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3467,7 +3467,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "In 1630, a farmer relocates his family to a remote plot of land on the edge of a forest where strange, unsettling things happen. With suspicion and paranoia mounting, each family member's faith, loyalty and love are tested in shocking ways.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3500,7 +3500,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Paranormal investigators Ed and Lorraine Warren work to help a family terrorized by a dark presence in their farmhouse. Forced to confront a powerful entity, the Warrens find themselves caught in the most terrifying case of their lives.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3532,7 +3532,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Following the death of their father, a brother and sister are sent to live with a foster mother, only to learn that she is hiding a terrifying secret.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3564,7 +3564,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "The defense and the prosecution have rested and the jury is filing into the jury room to decide if a young Spanish-American is guilty or innocent of murdering his father. What begins as an open and shut case soon becomes a mini-drama of each of the jurors' prejudices and preconceptions about the trial, the accused, and each other.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3598,7 +3598,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Humanity finds a mysterious object buried beneath the lunar surface and sets off to find its origins with the help of HAL 9000, the world's most advanced super computer.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3632,7 +3632,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "During the Iraq War, a Sergeant recently assigned to an army bomb squad is put at odds with his squad mates due to his maverick way of handling his work.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3666,7 +3666,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Cab driver Max picks up a man who offers him $600 to drive him around. But the promise of easy money sours when Max realizes his fare is an assassin.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3698,7 +3698,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "On one random day in the San Fernando Valley, a dying father, a young wife, a male caretaker, a famous lost son, a police officer in love, a boy genius, an ex-boy genius, a game show host and an estranged daughter will each become part of a dazzling multiplicity of plots, but one story.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3731,7 +3731,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Set in the high-stakes world of the financial industry, involving the key players at an investment firm during one perilous 24-hour period in the early stages of the 2008 financial crisis. An entry-level analyst unlocks information that could prove to be the downfall of the firm.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3764,7 +3764,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Finding himself in a new era, and approaching retirement, Indy wrestles with fitting into a world that seems to have outgrown him. But as the tentacles of an all-too-familiar evil return in the form of an old rival, Indy must don his hat and pick up his whip once more to make sure an ancient and powerful artifact doesn't fall into the wrong hands.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3797,7 +3797,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "The true story of pianist W\u0142adys\u0142aw Szpilman's experiences in Warsaw during the Nazi occupation. When the Jews of the city find themselves forced into a ghetto, Szpilman finds work playing in a caf\u00e9; and when his family is deported in 1942, he stays behind, works for a while as a laborer, and eventually goes into hiding in the ruins of the war-torn city.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3830,7 +3830,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "Two sisters find their already strained relationship challenged as a mysterious new planet threatens to collide with Earth.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3864,7 +3864,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "WWII American Army Medic Desmond T. Doss, who served during the Battle of Okinawa, refuses to kill people and becomes the first Conscientious Objector in American history to receive the Congressional Medal of Honor.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3897,7 +3897,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "We follow 24 hours in the life of a being moving from life to life like a cold and solitary assassin moving from hit to hit. In each of these interwoven lives, the being possesses an entirely distinct identity: sometimes a man, sometimes a woman, sometimes youthful, sometimes old. By turns murderer, beggar, company chairman, monstrous creature, worker, family man.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -3930,7 +3930,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A set of six nested stories spanning time between the 19th century and a distant post-apocalyptic future. Cloud Atlas explores how the actions and consequences of individual lives impact one another throughout the past, the present and the future. Action, mystery and romance weave through the story as one soul is shaped from a killer into a hero and a single act of kindness ripples across centuries to inspire a revolution in the distant future.  Based on the award winning novel by David Mitchell. Directed by Tom Tykwer and the Wachowskis.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
@@ -4027,7 +4027,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       ],
       "overview": "A filmmaker sets out to discover the life of Joyce Vincent, who died in her bedsit in North London in 2003. Her body wasn't discovered for three years, and newspaper reports offered few details of her life - not even a photograph.",
       "streaming_sources": [
-        "Prime Video (Rent)"
+        "Prime (Rent)"
       ],
       "primary_source": null
     }
