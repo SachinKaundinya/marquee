@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2, Clapperboard } from 'lucide-react';
+import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2, Clapperboard, Calendar } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
 import { TmdbCategory, isAnimeItem } from '@/lib/tmdb';
 import { springTransition } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 import { GenreFilterModal } from '@/components/GenreFilterModal';
+import { DecadeFilterModal, DECADE_OPTIONS, matchesDecades } from '@/components/DecadeFilterModal';
 import { toast } from 'sonner';
 
 type FilterType = 'all' | 'available' | 'movies' | 'tv' | 'short';
@@ -67,6 +68,8 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
   const [filter, setFilter] = useState<FilterType>('all');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
+  const [selectedDecades, setSelectedDecades] = useState<string[]>([]);
+  const [isDecadeModalOpen, setIsDecadeModalOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
   const isWatchlistMode = mode === 'watchlist';
 
@@ -137,7 +140,8 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
       if (filter === 'short') return Boolean(item.runtime && item.runtime < 100);
       return true;
     })
-    .filter((item) => matchesGenres(item.genres, selectedGenres, item.overview || ''));
+    .filter((item) => matchesGenres(item.genres, selectedGenres, item.overview || ''))
+    .filter((item) => matchesDecades(item.release_year, selectedDecades));
 
   // Auto-replenish: when a user logs a title and it is removed from the feed,
   // load more recommendations automatically if the visible list gets low
@@ -243,12 +247,31 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                   <ChevronDown className={`w-3 h-3 ${selectedGenres.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
                 </button>
 
-                {selectedGenres.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setIsDecadeModalOpen(true)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
+                    selectedDecades.length > 0
+                      ? 'bg-white text-black border-white font-semibold'
+                      : 'bg-[#14161B] text-[#F3F4F6] border-white/[0.1] hover:bg-white/[0.05]'
+                  }`}
+                >
+                  <Calendar className={`w-3.5 h-3.5 ${selectedDecades.length > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
+                  <span>
+                    {selectedDecades.length === 0 ? 'Decades' : `Decades (${selectedDecades.length})`}
+                  </span>
+                  <ChevronDown className={`w-3 h-3 ${selectedDecades.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
+                </button>
+
+                {(selectedGenres.length > 0 || selectedDecades.length > 0) && (
                   <button
                     type="button"
-                    onClick={() => setSelectedGenres([])}
+                    onClick={() => {
+                      setSelectedGenres([]);
+                      setSelectedDecades([]);
+                    }}
                     className="px-2 py-1 rounded text-[11px] text-[#8E93A0] hover:text-white transition-colors cursor-pointer flex items-center gap-1"
-                    title="Clear genre filters"
+                    title="Clear filters"
                   >
                     <X className="w-3 h-3" />
                     <span>Clear</span>
@@ -351,6 +374,25 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                   )}
                 </div>
 
+                {/* Decades Filter in Watchlist Mode */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsDecadeModalOpen(true)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
+                      selectedDecades.length > 0
+                        ? 'bg-white text-black border-white font-semibold'
+                        : 'bg-[#14161B] text-[#F3F4F6] border-white/[0.1] hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    <Calendar className={`w-3.5 h-3.5 ${selectedDecades.length > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
+                    <span>
+                      {selectedDecades.length === 0 ? 'Decades' : `Decades (${selectedDecades.length})`}
+                    </span>
+                    <ChevronDown className={`w-3 h-3 ${selectedDecades.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
+                  </button>
+                </div>
+
                 {/* Available on My Services Filter */}
                 <button
                   type="button"
@@ -443,11 +485,11 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
           </div>
         </div>
 
-        {/* Active Genre Filter Chips (if selected) */}
-        {selectedGenres.length > 0 && (
+        {/* Active Filter Chips (Genres & Decades) */}
+        {(selectedGenres.length > 0 || selectedDecades.length > 0) && (
           <div className="flex items-center gap-1.5 mb-3 overflow-x-auto pb-1 scrollbar-none">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#636875] mr-1 shrink-0">
-              Genres:
+              Filters:
             </span>
             {selectedGenres.map((genre) => (
               <span
@@ -465,9 +507,31 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                 </button>
               </span>
             ))}
+            {selectedDecades.map((decId) => {
+              const label = DECADE_OPTIONS.find((d) => d.id === decId)?.label || decId;
+              return (
+                <span
+                  key={decId}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-medium shrink-0 shadow-sm"
+                >
+                  <span>{label}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDecades((prev) => prev.filter((d) => d !== decId))}
+                    className="hover:text-rose-400 cursor-pointer p-0.5 rounded-full"
+                    title={`Remove ${label}`}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              );
+            })}
             <button
               type="button"
-              onClick={() => setSelectedGenres([])}
+              onClick={() => {
+                setSelectedGenres([]);
+                setSelectedDecades([]);
+              }}
               className="text-xs text-[#8E93A0] hover:text-white transition-colors ml-1 cursor-pointer shrink-0"
             >
               Clear all
@@ -545,7 +609,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                   onClick={onSwitchToPopular}
                   className="px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer"
                 >
-                  Explore Popular Titles
+                  Explore Recs
                 </button>
               )}
             </div>
@@ -609,9 +673,9 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                     )}
 
                     {/* Status Indicator Chip (Top Right) */}
-                    {userTitle && (
+                    {userTitle && (isWatching || isWatched) && (
                       <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-white text-black text-[9px] font-bold uppercase tracking-wider shadow-sm z-20">
-                        {isWatching ? 'Watching' : isWatched ? 'Watched' : 'Queue'}
+                        {isWatching ? 'Watching' : 'Watched'}
                       </div>
                     )}
 
@@ -682,6 +746,21 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
           );
         }}
         onClearGenres={() => setSelectedGenres([])}
+      />
+
+      {/* Decade Filter Modal */}
+      <DecadeFilterModal
+        isOpen={isDecadeModalOpen}
+        onClose={() => setIsDecadeModalOpen(false)}
+        selectedDecades={selectedDecades}
+        onToggleDecade={(decId) => {
+          setSelectedDecades((prev) =>
+            prev.includes(decId)
+              ? prev.filter((d) => d !== decId)
+              : [...prev, decId]
+          );
+        }}
+        onClearDecades={() => setSelectedDecades([])}
       />
     </section>
   );

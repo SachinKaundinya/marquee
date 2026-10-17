@@ -86,7 +86,7 @@ export function Navbar({
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
-              Popular
+              Recs
             </button>
             <button
               onClick={() => setActiveTab('watchlist')}

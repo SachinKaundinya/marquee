@@ -15,7 +15,7 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
   const navItems = [
     {
       id: 'popular' as const,
-      label: 'Popular',
+      label: 'Recs',
       icon: Flame,
     },
     {
