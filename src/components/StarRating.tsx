@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import { Star } from 'lucide-react';
 
 interface StarRatingProps {
-  value: number; // 0 to 5
+  value: number; // 0 to 10
   onChange?: (val: number) => void;
   readOnly?: boolean;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
+  maxStars?: number;
 }
 
 export function StarRating({
@@ -17,15 +18,16 @@ export function StarRating({
   readOnly = false,
   size = 'md',
   showLabel = true,
+  maxStars = 10,
 }: StarRatingProps) {
   const [hoverValue, setHoverValue] = useState<number | null>(null);
 
   const displayValue = hoverValue !== null ? hoverValue : value;
 
   const starSizes = {
-    sm: 'w-3.5 h-3.5',
-    md: 'w-5 h-5',
-    lg: 'w-6 h-6',
+    sm: 'w-3 h-3',
+    md: 'w-4 h-4 sm:w-5 sm:h-5',
+    lg: 'w-5 h-5 sm:w-6 sm:h-6',
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, starIndex: number) => {
@@ -46,13 +48,15 @@ export function StarRating({
     onChange(computedVal);
   };
 
+  const starIndices = Array.from({ length: maxStars }, (_, i) => i + 1);
+
   return (
-    <div className="inline-flex items-center gap-2 select-none">
+    <div className="inline-flex flex-wrap items-center gap-2 select-none">
       <div
-        className={`flex items-center gap-1 ${readOnly ? '' : 'cursor-pointer'}`}
+        className={`flex items-center gap-0.5 sm:gap-1 flex-wrap ${readOnly ? '' : 'cursor-pointer'}`}
         onMouseLeave={() => !readOnly && setHoverValue(null)}
       >
-        {[1, 2, 3, 4, 5].map((starIndex) => {
+        {starIndices.map((starIndex) => {
           const filled = displayValue >= starIndex;
           const half = !filled && displayValue >= starIndex - 0.5;
 
@@ -92,7 +96,7 @@ export function StarRating({
 
       {showLabel && (
         <span className="text-xs text-[#8E93A0] tabular-nums font-medium tracking-tight">
-          {displayValue > 0 ? `(${displayValue.toFixed(1)} / 5.0)` : '(Unrated)'}
+          {displayValue > 0 ? `(${displayValue.toFixed(1)} / ${maxStars}.0)` : '(Unrated)'}
         </span>
       )}
     </div>

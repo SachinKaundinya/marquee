@@ -140,11 +140,11 @@ export function WatchlistGrid() {
         </div>
       </div>
 
-      {/* TMDb Live Feed Selector (When Exploring) */}
+      {/* For You Live Feed Selector (When Exploring) */}
       {viewMode === 'explore' && (
         <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[11px] font-medium uppercase tracking-wider text-[#636875] mr-1 shrink-0">
-            TMDb Feed:
+            For You:
           </span>
           {categories.map((cat) => {
             const Icon = cat.icon;
@@ -255,7 +255,7 @@ export function WatchlistGrid() {
                     {/* Quick-action overlay button on hover */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 z-20">
                       <span className="px-2.5 py-1 rounded bg-[#F4F4F6] text-[#0A0B0D] text-[11px] font-medium shadow-md">
-                        Log Title
+                        Details
                       </span>
                     </div>
                   </div>

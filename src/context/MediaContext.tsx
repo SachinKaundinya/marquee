@@ -38,6 +38,8 @@ interface MediaContextType {
   importTitles: (titles: UserTitle[]) => void;
   getUserTitle: (tmdbId: number, mediaType: MediaType) => UserTitle | undefined;
   
+  markNotInterested: (tmdbId: number, mediaType: MediaType) => void;
+
   // Catalog Category & Pagination
   selectedCategory: TmdbCategory;
   changeCategory: (category: TmdbCategory) => void;
@@ -59,11 +61,13 @@ const MediaContext = createContext<MediaContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'marquee_user_titles_v3';
 const SUBS_STORAGE_KEY = 'marquee_user_subscriptions_v3';
+const HIDDEN_STORAGE_KEY = 'marquee_hidden_titles_v1';
 
 export function MediaProvider({ children }: { children: React.ReactNode }) {
   // Start completely clean: no random hardcoded titles
   const [userTitles, setUserTitles] = useState<UserTitle[]>([]);
   const [catalog, setCatalog] = useState<MediaItem[]>([]);
+  const [hiddenTitleKeys, setHiddenTitleKeys] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [quickLogItem, setQuickLogItem] = useState<{ item: MediaItem; initialStatus?: TrackingStatus } | null>(null);
@@ -84,6 +88,20 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
 
   // Hydrate from localStorage and fetch deep live catalog
   useEffect(() => {
+    let localHidden: string[] = [];
+    try {
+      const storedHidden = localStorage.getItem(HIDDEN_STORAGE_KEY);
+      if (storedHidden) {
+        const parsed = JSON.parse(storedHidden);
+        if (Array.isArray(parsed)) {
+          localHidden = parsed;
+          setHiddenTitleKeys(parsed);
+        }
+      }
+    } catch {
+      //
+    }
+
     try {
       // Clear legacy mock titles from previous version
       localStorage.removeItem('marquee_user_titles_v2');
@@ -93,9 +111,11 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          // Strictly reject any mock IDs
+          // Strictly reject any mock IDs or hidden IDs
           const genuineUserTitles = parsed.filter(
-            (t: any) => !t.id?.startsWith('user-title-')
+            (t: any) =>
+              !t.id?.startsWith('user-title-') &&
+              !localHidden.includes(`${t.media_type}-${t.tmdb_id}`)
           );
           setUserTitles(genuineUserTitles);
         }
@@ -121,13 +141,44 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     getInitialDeepCatalog()
       .then((deepTitles) => {
         if (deepTitles && deepTitles.length > 0) {
-          setCatalog(deepTitles);
+          const visible = deepTitles.filter(
+            (t) => !localHidden.includes(`${t.media_type}-${t.tmdb_id}`)
+          );
+          setCatalog(visible);
         }
       })
       .finally(() => {
         setIsCatalogLoading(false);
       });
   }, []);
+
+  const markNotInterested = (tmdbId: number, mediaType: MediaType) => {
+    const key = `${mediaType}-${tmdbId}`;
+    const updatedHidden = [...hiddenTitleKeys, key];
+    setHiddenTitleKeys(updatedHidden);
+    try {
+      localStorage.setItem(HIDDEN_STORAGE_KEY, JSON.stringify(updatedHidden));
+    } catch {
+      //
+    }
+
+    // Remove from active catalog
+    setCatalog((prev) =>
+      prev.filter((c) => !(c.tmdb_id === tmdbId && c.media_type === mediaType))
+    );
+
+    // Remove from user watchlist/shelf if present
+    const updatedUserTitles = userTitles.filter(
+      (t) => !(t.tmdb_id === tmdbId && t.media_type === mediaType)
+    );
+    persistTitles(updatedUserTitles);
+
+    closeQuickLog();
+
+    toast.info('Removed from Feed', {
+      description: 'Marked as Not Interested',
+    });
+  };
 
   const changeCategory = async (category: TmdbCategory) => {
     setSelectedCategory(category);
@@ -136,7 +187,10 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       const titles = await fetchTmdbCategory(category, 1);
       setCategoryPages((prev) => ({ ...prev, [category]: 1 }));
       if (titles && titles.length > 0) {
-        setCatalog(titles);
+        const visible = titles.filter(
+          (t) => !hiddenTitleKeys.includes(`${t.media_type}-${t.tmdb_id}`)
+        );
+        setCatalog(visible);
       }
     } finally {
       setIsCatalogLoading(false);
@@ -156,7 +210,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
           const map = new Map<number, MediaItem>();
           prev.forEach((item) => map.set(item.tmdb_id, item));
           moreTitles.forEach((item) => {
-            if (!map.has(item.tmdb_id)) {
+            const key = `${item.media_type}-${item.tmdb_id}`;
+            if (!map.has(item.tmdb_id) && !hiddenTitleKeys.includes(key)) {
               map.set(item.tmdb_id, item);
             }
           });
@@ -383,6 +438,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         diaryTitles,
         importTitles,
         getUserTitle,
+        markNotInterested,
         selectedCategory,
         changeCategory,
         loadMoreCatalog,

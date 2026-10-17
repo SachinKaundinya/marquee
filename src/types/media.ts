@@ -1,6 +1,11 @@
 export type MediaType = 'movie' | 'tv';
 
-export type TrackingStatus = 'want_to_watch' | 'watching' | 'watched' | 'dropped';
+export type TrackingStatus =
+  | 'want_to_watch'
+  | 'watching'
+  | 'watched'
+  | 'dropped'
+  | 'not_interested';
 
 export type WatchlistPriorityTag = 'stream_ready' | 'theater' | 'backlog';
 

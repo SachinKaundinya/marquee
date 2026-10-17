@@ -2,28 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Bookmark, Play } from 'lucide-react';
+import { X, Check, Bookmark, Play, EyeOff } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { StarRating } from '@/components/StarRating';
 import { TrackingStatus } from '@/types/media';
 import { drawerTransition, tapScale } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 
-const PLATFORMS = [
-  'Cinema / Theater',
-  'Home Theater / TV',
-  'Apple TV+',
-  'Max',
-  'Netflix',
-  'Hulu',
-  'Criterion Channel',
-  'Prime Video',
-  '4K Blu-ray / Disc',
-  'Airplane / Other',
-];
-
 export function QuickLogModal() {
-  const { quickLogItem, closeQuickLog, saveLog, getUserTitle } = useMedia();
+  const { quickLogItem, closeQuickLog, saveLog, getUserTitle, markNotInterested } = useMedia();
 
   const item = quickLogItem?.item;
   const initialStatus = quickLogItem?.initialStatus;
@@ -31,12 +18,11 @@ export function QuickLogModal() {
   const existingTitle = item ? getUserTitle(item.tmdb_id, item.media_type) : undefined;
 
   const [status, setStatus] = useState<TrackingStatus>('watched');
-  const [rating, setRating] = useState<number>(existingTitle?.rating ?? 4.0);
+  const [rating, setRating] = useState<number>(
+    existingTitle?.rating ? (existingTitle.rating <= 5 ? existingTitle.rating * 2 : existingTitle.rating) : 8.0
+  );
   const [notes, setNotes] = useState<string>(existingTitle?.notes ?? '');
   const [isRewatch, setIsRewatch] = useState<boolean>(existingTitle?.is_rewatch ?? false);
-  const [platform, setPlatform] = useState<string>(
-    existingTitle?.platform_name || (item?.media_type === 'movie' ? 'Cinema / Theater' : 'Home Theater / TV')
-  );
 
   // Date seen
   const todayStr = new Date().toISOString().split('T')[0];
@@ -48,13 +34,13 @@ export function QuickLogModal() {
     if (quickLogItem?.item) {
       const existing = getUserTitle(quickLogItem.item.tmdb_id, quickLogItem.item.media_type);
       setStatus(initialStatus || existing?.status || 'watched');
-      setRating(existing?.rating ?? 4.0);
+      setRating(
+        existing?.rating
+          ? (existing.rating <= 5 ? existing.rating * 2 : existing.rating)
+          : 8.0
+      );
       setNotes(existing?.notes ?? '');
       setIsRewatch(existing?.is_rewatch ?? false);
-      setPlatform(
-        existing?.platform_name ||
-        (quickLogItem.item.media_type === 'movie' ? 'Cinema / Theater' : 'Home Theater / TV')
-      );
       setWatchedDate(existing?.watched_on || todayStr);
       setDateSelection(
         existing?.watched_on === yesterdayStr
@@ -84,7 +70,6 @@ export function QuickLogModal() {
       notes: notes.trim() || null,
       is_rewatch: isRewatch,
       watched_on: status === 'watched' ? watchedDate : null,
-      platform_name: platform,
       media: item,
     });
     closeQuickLog();
@@ -113,7 +98,7 @@ export function QuickLogModal() {
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#101216]">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 shrink-0">
+              <div className="w-10 shrink-0">
                 <MediaPoster
                   src={item.poster_path}
                   title={item.title}
@@ -122,16 +107,21 @@ export function QuickLogModal() {
                 />
               </div>
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-[10px] font-semibold tracking-wider uppercase px-1.5 py-0.5 rounded bg-white/[0.06] text-[#8E93A0]">
                     {item.media_type === 'movie' ? 'Film' : 'TV Series'}
                   </span>
                   <span className="text-xs text-[#8E93A0] tabular-nums">
                     {item.release_year}
                   </span>
+                  {item.genres && item.genres.length > 0 && (
+                    <span className="text-xs text-[#636875] truncate hidden sm:inline">
+                      • {item.genres.slice(0, 2).join(', ')}
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-base font-medium text-[#F3F4F6] truncate tracking-tight">
-                  Log &quot;{item.title}&quot;
+                <h3 className="text-base font-semibold text-[#F3F4F6] truncate tracking-tight">
+                  {item.title}
                 </h3>
               </div>
             </div>
@@ -146,30 +136,45 @@ export function QuickLogModal() {
 
           {/* Form Content */}
           <div className="p-5 space-y-5 overflow-y-auto">
+            {/* Synopsis / Blurb */}
+            {item.overview && (
+              <div>
+                <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-1.5 block">
+                  Synopsis
+                </label>
+                <p className="text-xs text-[#C5C8D0] leading-relaxed line-clamp-4 bg-white/[0.02] border border-white/[0.06] p-3 rounded-lg">
+                  {item.overview}
+                </p>
+              </div>
+            )}
+
             {/* Status Selector */}
             <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-2 block">
-                Status
-              </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] block">
+                  Status
+                </label>
+                <span className="text-[10px] text-[#636875]">Update tracking or dismiss</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button
                   type="button"
                   onClick={() => setStatus('want_to_watch')}
-                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                     status === 'want_to_watch'
                       ? 'bg-white/10 text-white border-white/30 shadow-sm'
                       : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
                   }`}
                 >
                   <Bookmark className="w-3.5 h-3.5" />
-                  Want to Watch
+                  Watchlist
                 </button>
 
-                {item.media_type === 'tv' && (
+                {item.media_type === 'tv' ? (
                   <button
                     type="button"
                     onClick={() => setStatus('watching')}
-                    className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                       status === 'watching'
                         ? 'bg-white/10 text-white border-white/30 shadow-sm'
                         : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
@@ -178,21 +183,29 @@ export function QuickLogModal() {
                     <Play className="w-3.5 h-3.5" />
                     Watching
                   </button>
-                )}
+                ) : null}
 
                 <button
                   type="button"
                   onClick={() => setStatus('watched')}
-                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
-                    item.media_type === 'movie' ? 'col-span-2' : ''
-                  } ${
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                     status === 'watched'
                       ? 'bg-white/10 text-white border-white/30 shadow-sm'
                       : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
                   }`}
                 >
                   <Check className="w-3.5 h-3.5" />
-                  {item.media_type === 'tv' ? 'Finished Series' : 'Watched'}
+                  {item.media_type === 'tv' ? 'Finished' : 'Watched'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => markNotInterested(item.tmdb_id, item.media_type)}
+                  title="Remove this title from Feed"
+                  className="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border border-rose-500/20 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                >
+                  <EyeOff className="w-3.5 h-3.5" />
+                  Not Interested
                 </button>
               </div>
             </div>
@@ -241,45 +254,28 @@ export function QuickLogModal() {
               </div>
             )}
 
-            {/* Rating */}
+            {/* 10-Star Rating */}
             {status === 'watched' && (
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0]">
-                    Rating
+                    Rating (10-Star Scale)
                   </label>
                   <span className="text-xs text-[#E5A93C] font-semibold tabular-nums">
-                    {rating > 0 ? `${rating.toFixed(1)} / 5.0` : 'Tap to rate'}
+                    {rating > 0 ? `${rating.toFixed(1)} / 10.0` : 'Tap to rate'}
                   </span>
                 </div>
-                <div className="py-1">
+                <div className="py-1 overflow-x-auto">
                   <StarRating
                     value={rating}
                     onChange={(val) => setRating(val)}
-                    size="lg"
+                    maxStars={10}
+                    size="md"
                     showLabel={false}
                   />
                 </div>
               </div>
             )}
-
-            {/* Platform / Location */}
-            <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-2 block">
-                Viewing Venue / Medium
-              </label>
-              <select
-                value={platform}
-                onChange={(e) => setPlatform(e.target.value)}
-                className="w-full bg-[#0D0E11] border border-white/[0.08] text-sm text-[#F3F4F6] rounded-lg px-3 py-2 focus:outline-none focus:border-white/30 transition-colors"
-              >
-                {PLATFORMS.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </div>
 
             {/* Notes & Reflections */}
             <div>
@@ -319,7 +315,11 @@ export function QuickLogModal() {
               className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
             >
               <Check className="w-4 h-4 stroke-[2.5]" />
-              Save to Diary
+              {status === 'want_to_watch'
+                ? 'Save to Watchlist'
+                : status === 'watching'
+                ? 'Move to Now Watching'
+                : 'Save to Diary'}
             </motion.button>
           </div>
         </motion.div>

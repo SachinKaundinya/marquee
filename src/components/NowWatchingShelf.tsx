@@ -46,14 +46,6 @@ export function NowWatchingShelf() {
             {nowWatchingTitles.length} Active
           </span>
         </div>
-
-        <div className="text-xs text-[#8E93A0]">
-          {nowWatchingTitles.length >= 5 ? (
-            <span className="text-[#E5A93C]">Shelf full (limit 5 for focus)</span>
-          ) : (
-            <span>Intentional shelf</span>
-          )}
-        </div>
       </div>
 
       {/* Empty State */}
