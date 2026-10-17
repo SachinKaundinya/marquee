@@ -1,47 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <defs>
-    <linearGradient id="favBezel" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#4E5568"/>
-      <stop offset="50%" stop-color="#242833"/>
-      <stop offset="100%" stop-color="#14171F"/>
-    </linearGradient>
-    <linearGradient id="favGlass" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#161820"/>
-      <stop offset="100%" stop-color="#0B0C10"/>
-    </linearGradient>
-    <linearGradient id="favCyan" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3BF8FF"/>
-      <stop offset="100%" stop-color="#00AEEF"/>
-    </linearGradient>
-    <linearGradient id="favMagenta" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF3366"/>
-      <stop offset="100%" stop-color="#E80040"/>
-    </linearGradient>
-    <filter id="favGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="1.5" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <!-- Dark base background -->
-  <rect width="64" height="64" rx="16" fill="#08090C"/>
-
-  <!-- Oval VR Goggle Visor Frame -->
-  <rect x="5" y="14" width="54" height="36" rx="18" fill="#1A1D26" stroke="url(#favBezel)" stroke-width="1.8"/>
-  <rect x="7" y="16" width="50" height="32" rx="16" fill="url(#favGlass)" stroke="#050608" stroke-width="1.2"/>
-
-  <!-- Left Lens: Cyan -->
-  <circle cx="23" cy="32" r="11" stroke="url(#favCyan)" stroke-width="3" fill="#00E5FF" fill-opacity="0.08" filter="url(#favGlow)"/>
-  <circle cx="23" cy="32" r="2" fill="#3BF8FF"/>
-
-  <!-- Right Lens: Magenta -->
-  <circle cx="41" cy="32" r="11" stroke="url(#favMagenta)" stroke-width="3" fill="#FF2A55" fill-opacity="0.08" filter="url(#favGlow)"/>
-  <circle cx="41" cy="32" r="2" fill="#FF3366"/>
-
-  <!-- Nexus Overlap Core -->
-  <circle cx="32" cy="32" r="3.5" fill="#FFFFFF" filter="url(#favGlow)"/>
-  <circle cx="32" cy="32" r="1.8" fill="#FFFFFF"/>
+  <!-- Dark modern background -->
+  <rect width="64" height="64" rx="18" fill="#0A0B0D"/>
+  
+  <!-- Outer Quirky Glasses Frame -->
+  <rect x="6" y="16" width="52" height="32" rx="16" fill="#14161B" stroke="rgba(255, 255, 255, 0.15)" stroke-width="2.5"/>
+  
+  <!-- Left Eye: Cyan 3D Lens -->
+  <circle cx="21" cy="32" r="11" fill="#082F49" stroke="#06B6D4" stroke-width="3"/>
+  <circle cx="23" cy="30" r="5.5" fill="#FFFFFF"/>
+  <circle cx="25" cy="28.5" r="2.2" fill="#06B6D4"/>
+  <circle cx="20.5" cy="27.5" r="1.5" fill="#FFFFFF"/>
+  
+  <!-- Quirky Bridge -->
+  <path d="M30 31C31 29 33 29 34 31" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Right Eye: Pink/Coral 3D Lens -->
+  <circle cx="43" cy="32" r="11" fill="#4C0519" stroke="#F43F5E" stroke-width="3"/>
+  <circle cx="41" cy="30" r="5.5" fill="#FFFFFF"/>
+  <circle cx="39" cy="28.5" r="2.2" fill="#F43F5E"/>
+  <circle cx="43.5" cy="27.5" r="1.5" fill="#FFFFFF"/>
+  
+  <!-- Playful Smile -->
+  <path d="M26 42C29.5 44.5 34.5 44.5 38 42" stroke="rgba(255, 255, 255, 0.5)" stroke-width="2.2" stroke-linecap="round"/>
 </svg>

@@ -10,165 +10,82 @@ interface MirarLogoProps {
 
 export function MirarLogo({ size = 'md', showText = true, className = '' }: MirarLogoProps) {
   const iconSizes = {
-    sm: 'h-6 w-9',
-    md: 'h-8 w-12',
-    lg: 'h-10 w-[58px]',
-    xl: 'h-14 w-[82px]',
+    sm: 'w-6 h-6',
+    md: 'w-8 h-8',
+    lg: 'w-10 h-10',
+    xl: 'w-14 h-14',
   };
 
   const textSizes = {
-    sm: 'text-xl sm:text-2xl',
-    md: 'text-3xl sm:text-[34px]',
-    lg: 'text-4xl sm:text-5xl',
-    xl: 'text-6xl sm:text-7xl',
-  };
-
-  const dotSizes = {
-    sm: 'w-2 h-2',
-    md: 'w-2.5 h-2.5',
-    lg: 'w-3 h-3',
-    xl: 'w-4 h-4',
+    sm: 'text-sm tracking-tight',
+    md: 'text-base tracking-tight',
+    lg: 'text-xl tracking-tight',
+    xl: 'text-3xl tracking-tight',
   };
 
   return (
-    <div className={`flex items-center gap-3 select-none ${className}`}>
-      {/* Precision Oval VR Goggle Visor Logomark */}
+    <div className={`flex items-center gap-2.5 select-none ${className}`}>
+      {/* Quirky & Fun Mirar Mascot / Eyewear Icon */}
       <div className={`relative ${iconSizes[size]} shrink-0 flex items-center justify-center`}>
         <svg
-          viewBox="0 0 206 140"
+          viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full drop-shadow-[0_2px_14px_rgba(0,242,254,0.3)]"
+          className="w-full h-full drop-shadow-[0_2px_10px_rgba(239,68,68,0.25)]"
         >
-          <defs>
-            {/* Bezel Metallic Rim Gradient (Precision Machined Titanium) */}
-            <linearGradient id="bezelRim" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#4E5568" />
-              <stop offset="50%" stopColor="#242833" />
-              <stop offset="100%" stopColor="#14171F" />
-            </linearGradient>
-
-            {/* Visor Faceplate Dark Glass Gradient */}
-            <linearGradient id="visorGlass" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#161820" />
-              <stop offset="100%" stopColor="#0B0C10" />
-            </linearGradient>
-
-            {/* Cyan Lens Gradient */}
-            <linearGradient id="cyanLens" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3BF8FF" />
-              <stop offset="100%" stopColor="#00AEEF" />
-            </linearGradient>
-
-            {/* Magenta Lens Gradient */}
-            <linearGradient id="magentaLens" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FF3366" />
-              <stop offset="100%" stopColor="#E80040" />
-            </linearGradient>
-
-            {/* Ring Specular Glare */}
-            <linearGradient id="ringShine" x1="20%" y1="0%" x2="80%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.35" />
-              <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0.0" />
-            </linearGradient>
-
-            <filter id="visorGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Outer Bezel / Goggle Frame (Elliptical / Stadium shape) */}
+          {/* Quirky Outer Cinema Frame with bridge */}
           <rect
-            x="1"
-            y="1"
-            width="204"
-            height="138"
-            rx="69"
-            fill="#1A1D26"
-            stroke="url(#bezelRim)"
-            strokeWidth="2.5"
-          />
-
-          {/* Inner Recessed Visor Chamfer */}
-          <rect
-            x="5"
-            y="5"
-            width="196"
-            height="130"
-            rx="65"
-            fill="url(#visorGlass)"
-            stroke="#050608"
+            x="3"
+            y="11"
+            width="42"
+            height="26"
+            rx="13"
+            fill="#121318"
+            stroke="rgba(255, 255, 255, 0.15)"
             strokeWidth="2"
           />
 
-          {/* Dual Internal Optical Lenses */}
-          <g>
-            {/* LEFT LENS: CYAN */}
-            <g transform="translate(62, 70)">
-              <circle cx="0" cy="0" r="43" stroke="url(#cyanLens)" strokeWidth="12" fill="#00E5FF" fillOpacity="0.04" />
-              <circle cx="0" cy="0" r="25" stroke="#3BF8FF" strokeWidth="1.2" strokeOpacity="0.3" strokeDasharray="2 3" />
-              <circle cx="0" cy="0" r="3.5" fill="#3BF8FF" fillOpacity="0.85" />
-              <circle cx="0" cy="0" r="42" stroke="url(#ringShine)" strokeWidth="10" fill="none" />
-            </g>
+          {/* Left Eye (Cyan Cinema Lens) */}
+          <circle cx="16" cy="24" r="9" fill="#0E2A38" stroke="#06B6D4" strokeWidth="2.5" />
+          {/* Left Pupil (Playfully looking slightly upward/forward) */}
+          <circle cx="17.5" cy="22.5" r="4.5" fill="#F8FAFC" />
+          <circle cx="19" cy="21" r="1.8" fill="#06B6D4" />
+          {/* Cute highlight sparkle */}
+          <circle cx="15.5" cy="20.5" r="1.2" fill="#FFFFFF" />
 
-            {/* RIGHT LENS: MAGENTA */}
-            <g transform="translate(144, 70)">
-              <circle cx="0" cy="0" r="43" stroke="url(#magentaLens)" strokeWidth="12" fill="#FF2A55" fillOpacity="0.04" />
-              <circle cx="0" cy="0" r="25" stroke="#FF3366" strokeWidth="1.2" strokeOpacity="0.3" strokeDasharray="2 3" />
-              <circle cx="0" cy="0" r="3.5" fill="#FF3366" fillOpacity="0.85" />
-              <circle cx="0" cy="0" r="42" stroke="url(#ringShine)" strokeWidth="10" fill="none" />
-            </g>
+          {/* Quirky Bridge Line */}
+          <path
+            d="M23 23C24 21.5 24 21.5 25 23"
+            stroke="#F59E0B"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
 
-            {/* ADDITIVE OVERLAP NEXUS */}
-            <g style={{ mixBlendMode: 'screen' }}>
-              <path
-                d="M 103,40.5 A 43,43 0 0,1 127,70 A 43,43 0 0,1 103,99.5 A 43,43 0 0,1 79,70 A 43,43 0 0,1 103,40.5 Z"
-                fill="#B44DFF"
-                fillOpacity="0.35"
-              />
-              <path
-                d="M 103,40.5 A 43,43 0 0,1 127,70 A 43,43 0 0,1 103,99.5 A 43,43 0 0,1 79,70 A 43,43 0 0,1 103,40.5 Z"
-                stroke="#FFFFFF"
-                strokeWidth="1.6"
-                strokeOpacity="0.5"
-              />
-            </g>
+          {/* Right Eye (Playful Coral / Magenta Cinema Lens - Slightly tilted/quirky) */}
+          <circle cx="32" cy="24" r="9" fill="#38101E" stroke="#F43F5E" strokeWidth="2.5" />
+          {/* Right Pupil (Wide & curious) */}
+          <circle cx="30.5" cy="22.5" r="4.5" fill="#F8FAFC" />
+          <circle cx="29" cy="21" r="1.8" fill="#F43F5E" />
+          {/* Cute highlight sparkle */}
+          <circle cx="32.5" cy="20.5" r="1.2" fill="#FFFFFF" />
 
-            {/* Luminous Glowing Core */}
-            <circle cx="103" cy="70" r="6" fill="#FFFFFF" filter="url(#visorGlow)" />
-            <circle cx="103" cy="70" r="2.5" fill="#FFFFFF" />
-          </g>
+          {/* Cheeky little popcorn grin or wink arc underneath */}
+          <path
+            d="M20 31.5C22.5 33.5 25.5 33.5 28 31.5"
+            stroke="rgba(255, 255, 255, 0.4)"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
 
       {showText && (
-        <div className="flex items-center leading-none">
-          {/* Regular lowercase mirar with font size matching icon height */}
-          <span className={`font-black font-sans ${textSizes[size]} text-white tracking-[-0.03em] lowercase leading-none flex items-center`}>
+        <div className="flex items-baseline">
+          <span className={`font-black font-sans ${textSizes[size]} text-white tracking-wider lowercase`}>
             mirar
           </span>
-
-          {/* Glowing Chromatic Dot moved back to trailing position after mirar */}
-          <span className="relative flex items-center justify-center ml-2 shrink-0 pointer-events-none select-none">
-            {/* Ethereal Ambient Radial Glow Aura (Vibrant Neon Glow) */}
-            <span
-              className="absolute -inset-2.5 rounded-full pointer-events-none opacity-90 animate-pulse"
-              style={{
-                background: 'radial-gradient(circle, rgba(0,242,254,0.85) 0%, rgba(255,42,84,0.85) 50%, rgba(0,0,0,0) 80%)',
-                filter: 'blur(5px)',
-              }}
-            />
-            {/* Left Cyan Circle */}
-            <span className={`${dotSizes[size]} rounded-full bg-[#00F2FE] -mr-1 shadow-[0_0_8px_#00F2FE,0_0_16px_rgba(0,242,254,0.9),0_0_24px_rgba(0,242,254,0.6)]`} />
-            {/* Right Magenta Circle */}
-            <span className={`${dotSizes[size]} rounded-full bg-[#FF2A54] -ml-1 shadow-[0_0_8px_#FF2A54,0_0_16px_rgba(255,42,84,0.9),0_0_24px_rgba(255,42,84,0.6)]`} />
-            {/* Glowing White Intersection Core */}
-            <span className="absolute w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_6px_#ffffff,0_0_12px_#ffffff]" />
-          </span>
+          {/* Playful dot on the 'r' or badge */}
+          <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#06B6D4] to-[#F43F5E] ml-0.5 inline-block animate-pulse" />
         </div>
       )}
     </div>
