@@ -103,6 +103,15 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     .map((ut) => ut.media)
     .filter((m): m is MediaItem => Boolean(m));
 
+  const watchlistMovieCount = React.useMemo(
+    () => watchlistItems.filter((i) => i.media_type === 'movie').length,
+    [watchlistItems]
+  );
+  const watchlistTvCount = React.useMemo(
+    () => watchlistItems.filter((i) => i.media_type === 'tv').length,
+    [watchlistItems]
+  );
+
   // In Popular mode, immediately exclude any title added to Watchlist or Diary, and exclude Anime
   const baseItems = isWatchlistMode
     ? watchlistItems
@@ -251,94 +260,186 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
 
           {/* Filter Pills & Services Trigger */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            {/* Genre Filter in Watchlist Mode (Next to All) */}
-            {isWatchlistMode && (
-              <div className="flex items-center gap-1 shrink-0">
+            {isWatchlistMode ? (
+              <>
+                {/* Replicated All, Movies, TV Shows Filter with Counts from Diary */}
                 <button
                   type="button"
-                  onClick={() => setIsGenreModalOpen(true)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
-                    selectedGenres.length > 0
-                      ? 'bg-white text-black border-white font-semibold'
-                      : 'bg-[#14161B] text-[#F3F4F6] border-white/[0.1] hover:bg-white/[0.05]'
+                  onClick={() => setFilter('all')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                    filter === 'all'
+                      ? 'bg-white text-black font-semibold border-white shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
                   }`}
                 >
-                  <Filter className={`w-3.5 h-3.5 ${selectedGenres.length > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
-                  <span>
-                    {selectedGenres.length === 0 ? 'Genre' : `Genres (${selectedGenres.length})`}
+                  <span>All</span>
+                  <span
+                    className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+                      filter === 'all' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
+                    }`}
+                  >
+                    {watchlistItems.length}
                   </span>
-                  <ChevronDown className={`w-3 h-3 ${selectedGenres.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
                 </button>
 
-                {selectedGenres.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFilter(filter === 'movies' ? 'all' : 'movies')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                    filter === 'movies'
+                      ? 'bg-white text-black font-semibold border-white shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  }`}
+                >
+                  <span>Movies</span>
+                  <span
+                    className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+                      filter === 'movies' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
+                    }`}
+                  >
+                    {watchlistMovieCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFilter(filter === 'tv' ? 'all' : 'tv')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                    filter === 'tv'
+                      ? 'bg-white text-black font-semibold border-white shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  }`}
+                >
+                  <span>TV Shows</span>
+                  <span
+                    className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+                      filter === 'tv' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
+                    }`}
+                  >
+                    {watchlistTvCount}
+                  </span>
+                </button>
+
+                {/* Genre Filter in Watchlist Mode */}
+                <div className="flex items-center gap-1 shrink-0">
                   <button
                     type="button"
-                    onClick={() => setSelectedGenres([])}
-                    className="px-2 py-1 rounded text-[11px] text-[#8E93A0] hover:text-white transition-colors cursor-pointer flex items-center gap-1"
-                    title="Clear genre filters"
+                    onClick={() => setIsGenreModalOpen(true)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
+                      selectedGenres.length > 0
+                        ? 'bg-white text-black border-white font-semibold'
+                        : 'bg-[#14161B] text-[#F3F4F6] border-white/[0.1] hover:bg-white/[0.05]'
+                    }`}
                   >
-                    <X className="w-3 h-3" />
-                    <span>Clear</span>
+                    <Filter className={`w-3.5 h-3.5 ${selectedGenres.length > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
+                    <span>
+                      {selectedGenres.length === 0 ? 'Genre' : `Genres (${selectedGenres.length})`}
+                    </span>
+                    <ChevronDown className={`w-3 h-3 ${selectedGenres.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
                   </button>
-                )}
-              </div>
+
+                  {selectedGenres.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedGenres([])}
+                      className="px-2 py-1 rounded text-[11px] text-[#8E93A0] hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                      title="Clear genre filters"
+                    >
+                      <X className="w-3 h-3" />
+                      <span>Clear</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Available on My Services Filter */}
+                <button
+                  type="button"
+                  onClick={() => setFilter(filter === 'available' ? 'all' : 'available')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                    filter === 'available'
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04] hover:text-emerald-400'
+                  }`}
+                >
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Available on My Services</span>
+                </button>
+
+                {/* Manage Services Button */}
+                <button
+                  type="button"
+                  onClick={openServicesModal}
+                  title="Configure My Subscriptions"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.12] bg-white/[0.04] text-[#F3F4F6] hover:bg-white/[0.08] transition-colors shrink-0 cursor-pointer flex items-center gap-1.5"
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#8E93A0]" />
+                  <span>My Services ({subscribedServices.length})</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setFilter('all')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all shrink-0 cursor-pointer ${
+                    filter === 'all'
+                      ? 'bg-white text-black font-semibold border-white shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  }`}
+                >
+                  All
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFilter(filter === 'movies' ? 'all' : 'movies')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all shrink-0 cursor-pointer ${
+                    filter === 'movies'
+                      ? 'bg-white text-black font-semibold border-white shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  }`}
+                >
+                  Movies
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFilter(filter === 'tv' ? 'all' : 'tv')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all shrink-0 cursor-pointer ${
+                    filter === 'tv'
+                      ? 'bg-white text-black font-semibold border-white shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  }`}
+                >
+                  TV Shows
+                </button>
+
+                {/* Available on My Services Filter */}
+                <button
+                  type="button"
+                  onClick={() => setFilter(filter === 'available' ? 'all' : 'available')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                    filter === 'available'
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold shadow-sm'
+                      : 'bg-[#14161B] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04] hover:text-emerald-400'
+                  }`}
+                >
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Available on My Services</span>
+                </button>
+
+                {/* Manage Services Button */}
+                <button
+                  type="button"
+                  onClick={openServicesModal}
+                  title="Configure My Subscriptions"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.12] bg-white/[0.04] text-[#F3F4F6] hover:bg-white/[0.08] transition-colors shrink-0 cursor-pointer flex items-center gap-1.5"
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#8E93A0]" />
+                  <span>My Services ({subscribedServices.length})</span>
+                </button>
+              </>
             )}
-
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${
-                filter === 'all'
-                  ? 'bg-white/10 text-white border-white/20'
-                  : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
-              }`}
-            >
-              All
-            </button>
-
-            {/* Available on My Services Filter */}
-            <button
-              onClick={() => setFilter('available')}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                filter === 'available'
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold shadow-sm'
-                  : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04] hover:text-emerald-400'
-              }`}
-            >
-              <Check className="w-3 h-3 stroke-[2.5]" />
-              Available on My Services
-            </button>
-
-            <button
-              onClick={() => setFilter('movies')}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${
-                filter === 'movies'
-                  ? 'bg-white/10 text-white border-white/20'
-                  : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
-              }`}
-            >
-              Films
-            </button>
-
-            <button
-              onClick={() => setFilter('tv')}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${
-                filter === 'tv'
-                  ? 'bg-white/10 text-white border-white/20'
-                  : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
-              }`}
-            >
-              TV Series
-            </button>
-
-            {/* Manage Services Button */}
-            <button
-              onClick={openServicesModal}
-              title="Configure My Subscriptions"
-              className="ml-1 px-2.5 py-1 rounded-full text-xs font-medium border border-white/[0.12] bg-white/[0.04] text-[#F3F4F6] hover:bg-white/[0.08] transition-colors shrink-0 cursor-pointer flex items-center gap-1.5"
-            >
-              <SlidersHorizontal className="w-3 h-3 text-[#8E93A0]" />
-              <span>My Services ({subscribedServices.length})</span>
-            </button>
           </div>
         </div>
 
@@ -487,12 +588,22 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                     {source && (
                       <div
                         className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-semibold tracking-tight z-20 backdrop-blur-md flex items-center gap-1 shadow-md ${
-                          isSubscribed
+                          source === 'In Theaters'
+                            ? 'bg-amber-950/90 text-amber-300 border border-amber-500/50'
+                            : source === 'Coming Soon'
+                            ? 'bg-purple-950/90 text-purple-300 border border-purple-500/50'
+                            : isSubscribed
                             ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/40'
                             : 'bg-black/85 text-[#F3F4F6] border border-white/10'
                         }`}
                       >
-                        {isSubscribed && <Check className="w-2.5 h-2.5 stroke-[3] text-emerald-400" />}
+                        {source === 'In Theaters' ? (
+                          <Clapperboard className="w-2.5 h-2.5 stroke-[2.5] text-amber-400" />
+                        ) : source === 'Coming Soon' ? (
+                          <Sparkles className="w-2.5 h-2.5 stroke-[2.5] text-purple-400" />
+                        ) : isSubscribed ? (
+                          <Check className="w-2.5 h-2.5 stroke-[3] text-emerald-400" />
+                        ) : null}
                         <span>{source}</span>
                       </div>
                     )}

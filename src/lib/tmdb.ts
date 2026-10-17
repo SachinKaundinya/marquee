@@ -330,6 +330,80 @@ export async function fetchTasteMatchRecommendations(
   );
 }
 
+export async function fetchInTheatersTitles(page = 1): Promise<MediaItem[]> {
+  const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  const nowUrl = `${TMDB_BASE_URL}/movie/now_playing?region=US&page=${page}`;
+  const upUrl = `${TMDB_BASE_URL}/movie/upcoming?region=US&page=${page}`;
+
+  try {
+    const [nowRes, upRes] = await Promise.all([
+      fetch(token ? nowUrl : `${nowUrl}&api_key=${key}`, { headers }),
+      fetch(token ? upUrl : `${upUrl}&api_key=${key}`, { headers }),
+    ]);
+
+    const items: MediaItem[] = [];
+    const seen = new Set<number>();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Exclusive theatrical window: released within the past 75 days or future release
+    const minTheatricalDate = new Date();
+    minTheatricalDate.setDate(minTheatricalDate.getDate() - 75);
+
+    const processMovie = (raw: any, isUpcoming = false) => {
+      if (!raw || !raw.id || seen.has(raw.id) || !raw.poster_path) return;
+      if (isAnimeItem(raw)) return;
+
+      const releaseDateStr = raw.release_date;
+      const releaseDate = releaseDateStr ? new Date(releaseDateStr) : null;
+      const isFuture = releaseDate ? releaseDate > today : isUpcoming;
+
+      // Exclude if released more than 75 days ago (already on TV/home streaming)
+      if (!isFuture && releaseDate && releaseDate < minTheatricalDate) {
+        return;
+      }
+
+      // Exclude streaming network originals
+      const titleLower = (raw.title || '').toLowerCase().trim();
+      if (SHOW_NETWORK_MAP[titleLower]) {
+        return;
+      }
+
+      seen.add(raw.id);
+      raw.media_type = 'movie';
+
+      const formatted = formatTmdbItem(raw);
+      const tag = isFuture ? 'Coming Soon' : 'In Theaters';
+
+      // Exclusive theatrical release: no TV services or networks
+      formatted.primary_source = tag;
+      formatted.streaming_sources = [tag];
+
+      items.push(formatted);
+    };
+
+    if (nowRes.ok) {
+      const data = await nowRes.json();
+      (data.results || []).forEach((m: any) => processMovie(m, false));
+    }
+
+    if (upRes.ok) {
+      const data = await upRes.json();
+      (data.results || []).forEach((m: any) => processMovie(m, true));
+    }
+
+    return items;
+  } catch (err) {
+    console.error('Failed to fetch in-theater titles', err);
+    return [];
+  }
+}
+
 export async function fetchTmdbCategory(
   category: TmdbCategory,
   page = 1,
@@ -337,6 +411,10 @@ export async function fetchTmdbCategory(
 ): Promise<MediaItem[]> {
   if (category === 'taste_match') {
     return fetchTasteMatchRecommendations(userTitles || [], page);
+  }
+
+  if (category === 'now_playing') {
+    return fetchInTheatersTitles(page);
   }
 
   const { token, key } = getTmdbCredentials();
@@ -359,10 +437,6 @@ export async function fetchTmdbCategory(
       endpoint = '/movie/top_rated';
       defaultType = 'movie';
       break;
-    case 'now_playing':
-      endpoint = '/movie/now_playing';
-      defaultType = 'movie';
-      break;
   }
 
   try {
@@ -372,6 +446,38 @@ export async function fetchTmdbCategory(
       ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
       : {};
     const finalUrl = token ? url : `${url}&api_key=${key}`;
+
+    if (category === 'trending') {
+      const [res, theaterTitles] = await Promise.all([
+        fetch(finalUrl, { headers }),
+        fetchInTheatersTitles(page),
+      ]);
+
+      const items: MediaItem[] = [];
+      const seen = new Set<number>();
+
+      if (res.ok) {
+        const data = await res.json();
+        (data.results || [])
+          .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item))
+          .forEach((item: any) => {
+            if (!item.media_type) item.media_type = 'movie';
+            const formatted = formatTmdbItem(item);
+            seen.add(formatted.tmdb_id);
+            items.push(formatted);
+          });
+      }
+
+      // Add exclusive in-theater and upcoming movies to Trending
+      theaterTitles.forEach((thItem) => {
+        if (!seen.has(thItem.tmdb_id)) {
+          seen.add(thItem.tmdb_id);
+          items.push(thItem);
+        }
+      });
+
+      return items;
+    }
     const res = await fetch(finalUrl, { headers });
 
     if (res.ok) {
@@ -422,9 +528,9 @@ export async function getTrendingTitles(): Promise<MediaItem[]> {
 }
 
 export async function getInitialDeepCatalog(): Promise<MediaItem[]> {
-  // Fetch multiple diverse categories in parallel including True Crime
+  // Fetch multiple diverse categories in parallel including True Crime & In Theaters
   try {
-    const [t1, t2, popM, popTv, topM1, topM2, tc1, tc2] = await Promise.all([
+    const [t1, t2, popM, popTv, topM1, topM2, tc1, tc2, th1] = await Promise.all([
       fetchTmdbCategory('trending', 1),
       fetchTmdbCategory('trending', 2),
       fetchTmdbCategory('popular_movies', 1),
@@ -433,10 +539,11 @@ export async function getInitialDeepCatalog(): Promise<MediaItem[]> {
       fetchTmdbCategory('top_rated', 2),
       fetchTrueCrimeTitles(1),
       fetchTrueCrimeTitles(2),
+      fetchInTheatersTitles(1),
     ]);
 
     const map = new Map<number, MediaItem>();
-    [...t1, ...t2, ...popM, ...popTv, ...topM1, ...topM2, ...tc1, ...tc2].forEach((item) => {
+    [...t1, ...t2, ...popM, ...popTv, ...topM1, ...topM2, ...tc1, ...tc2, ...th1].forEach((item) => {
       if (!isAnimeItem(item)) {
         map.set(item.tmdb_id, item);
       }
