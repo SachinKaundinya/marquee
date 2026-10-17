@@ -196,7 +196,7 @@ export function Navbar({
             </div>
           ) : (
             <button
-              onClick={signInWithGoogle}
+              onClick={() => signInWithGoogle()}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-[#F3F4F6] text-[#0A0B0D] text-xs font-medium transition-all shadow-sm cursor-pointer shrink-0"
             >
               {/* Google SVG Logo */}

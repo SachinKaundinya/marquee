@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
+import { AuthGate } from '@/components/AuthGate';
 import { MediaProvider } from '@/context/MediaContext';
 import { Navbar } from '@/components/Navbar';
 import { NowWatchingShelf } from '@/components/NowWatchingShelf';
@@ -19,8 +20,9 @@ export default function Home() {
 
   return (
     <AuthProvider>
-      <MediaProvider>
-        <div className="min-h-screen bg-[#0A0B0D] text-[#F3F4F6] flex flex-col font-sans selection:bg-white/20 selection:text-white">
+      <AuthGate>
+        <MediaProvider>
+          <div className="min-h-screen bg-[#0A0B0D] text-[#F3F4F6] flex flex-col font-sans selection:bg-white/20 selection:text-white">
           {/* Top Navigation with Google Sign In & TMDb API Settings */}
           <Navbar
             activeTab={activeTab}
@@ -75,6 +77,7 @@ export default function Home() {
           </footer>
         </div>
       </MediaProvider>
-    </AuthProvider>
+    </AuthGate>
+  </AuthProvider>
   );
 }
