@@ -74,21 +74,7 @@ export default function Home() {
           />
           <ServicesModal />
 
-          {/* Micro-Craft Footer */}
-          <footer className="border-t border-white/[0.06] pt-6 pb-20 sm:pb-6 text-center text-xs text-[#8E93A0]">
-            <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold uppercase tracking-wider text-[#F3F4F6]">
-                  Mirar
-                </span>
-                <span>•</span>
-                <span>Title-Level Entertainment Tracker</span>
-              </div>
-              <div className="tabular-nums text-[11px] text-[#636875]">
-                Built with Next.js 15, Tailwind CSS & Framer Motion
-              </div>
-            </div>
-          </footer>
+
         </div>
       </MediaProvider>
     </AuthGate>

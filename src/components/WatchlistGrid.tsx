@@ -152,6 +152,27 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     }
   }, [filteredItems.length, isWatchlistMode, isCatalogLoading, loadMoreCatalog]);
 
+  const sentinelRef = React.useRef<HTMLDivElement | null>(null);
+
+  // Background infinite pagination using IntersectionObserver: silent, seamless pre-fetching
+  React.useEffect(() => {
+    if (isWatchlistMode) return;
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !isCatalogLoading) {
+          loadMoreCatalog();
+        }
+      },
+      { rootMargin: '600px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [isWatchlistMode, isCatalogLoading, loadMoreCatalog]);
+
   function getRatingTier(voteAverage: number): number {
     if (voteAverage >= 8.0) return 3; // 8.0+
     if (voteAverage >= 7.0) return 2; // 7.0 - 7.9
@@ -629,30 +650,9 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             })}
           </div>
 
-          {/* Load More Button for Popular Feed */}
+          {/* Silent background pagination sentinel */}
           {!isWatchlistMode && (
-            <div className="mt-10 flex flex-col items-center justify-center gap-2">
-              <button
-                type="button"
-                onClick={loadMoreCatalog}
-                disabled={isCatalogLoading}
-                className="px-6 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.1] text-xs font-medium text-[#F3F4F6] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 active:scale-[0.98]"
-              >
-                {isCatalogLoading ? (
-                  <>
-                    <span className="w-3.5 h-3.5 rounded-full border-2 border-white/20 border-t-white animate-spin" />
-                    <span>Fetching titles from TMDb...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Load More Titles ({catalog.length} Loaded)</span>
-                  </>
-                )}
-              </button>
-              <span className="text-[11px] text-[#636875] tabular-nums">
-                Connected to TMDb live catalog • Infinite pagination enabled
-              </span>
-            </div>
+            <div ref={sentinelRef} className="h-10 w-full pointer-events-none opacity-0" />
           )}
         </>
       )}
