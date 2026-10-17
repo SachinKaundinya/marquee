@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserTitle, MediaItem, QuickLogInput, TrackingStatus, MediaType } from '@/types/media';
 import { INITIAL_USER_TITLES, MOCK_CATALOG } from '@/data/mockCatalog';
 import { toast } from 'sonner';
+import { getTrendingTitles } from '@/lib/tmdb';
 
 interface MediaContextType {
   userTitles: UserTitle[];
@@ -36,7 +37,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [quickLogItem, setQuickLogItem] = useState<{ item: MediaItem; initialStatus?: TrackingStatus } | null>(null);
 
-  // Hydrate from localStorage on client mount
+  // Hydrate from localStorage and fetch live trending titles
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -49,6 +50,27 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // Ignore parse errors on first load
     }
+
+    // Fetch live trending titles from TMDb
+    getTrendingTitles()
+      .then((trending) => {
+        if (trending && trending.length > 0) {
+          setCatalog((prev) => {
+            // Merge trending with existing to ensure curated titles remain accessible
+            const map = new Map<number, MediaItem>();
+            trending.forEach((item) => map.set(item.tmdb_id, item));
+            prev.forEach((item) => {
+              if (!map.has(item.tmdb_id)) {
+                map.set(item.tmdb_id, item);
+              }
+            });
+            return Array.from(map.values());
+          });
+        }
+      })
+      .catch(() => {
+        // Retain mock catalog fallback
+      });
   }, []);
 
   // Sync to localStorage
