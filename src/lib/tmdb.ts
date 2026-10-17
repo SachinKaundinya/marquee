@@ -703,7 +703,7 @@ export async function getInitialDeepCatalog(): Promise<MediaItem[]> {
 
     const map = new Map<number, MediaItem>();
     [...t1, ...t2, ...popM, ...popTv, ...topM1, ...topM2, ...tc1, ...tc2, ...th1].forEach((item) => {
-      if (!isAnimeItem(item)) {
+      if (!isAnimeItem(item) && !isNonEnglishItem(item)) {
         map.set(item.tmdb_id, item);
       }
     });

@@ -215,11 +215,19 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     }
 
     setIsCatalogLoading(true);
-    getInitialDeepCatalog()
-      .then((deepTitles) => {
-        if (deepTitles && deepTitles.length > 0) {
-          setCatalog(deepTitles);
+    fetchTmdbCategory('trending', 1)
+      .then((trendingTitles) => {
+        if (trendingTitles && trendingTitles.length > 0) {
+          const visible = trendingTitles.filter(
+            (t) => !hiddenTitleKeys.includes(`${t.media_type}-${t.tmdb_id}`)
+          );
+          setCatalog(visible);
+        } else {
+          setCatalog(MOCK_CATALOG);
         }
+      })
+      .catch(() => {
+        setCatalog(MOCK_CATALOG);
       })
       .finally(() => {
         setIsCatalogLoading(false);
