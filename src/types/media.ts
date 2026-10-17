@@ -33,6 +33,8 @@ export interface MediaItem {
   streaming_sources?: string[];
   primary_source?: string | null;
   stars?: string[];
+  original_language?: string;
+  is_international?: boolean;
 }
 
 export interface UserTitle {

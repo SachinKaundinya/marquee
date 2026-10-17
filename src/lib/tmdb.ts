@@ -187,13 +187,29 @@ export function isAnimeItem(item: any): boolean {
   return false;
 }
 
+export function isNonEnglishItem(item: any): boolean {
+  if (!item) return false;
+  const lang = (item.original_language || '').toLowerCase().trim();
+  if (lang && lang !== 'en') return true;
+
+  const countries: string[] = Array.isArray(item.origin_country)
+    ? item.origin_country
+    : [];
+  const englishCountries = ['US', 'GB', 'CA', 'AU', 'NZ', 'IE'];
+  if (countries.length > 0 && !countries.some((c) => englishCountries.includes(c)) && lang !== 'en') {
+    return true;
+  }
+  return false;
+}
+
 export type TmdbCategory =
   | 'taste_match'
   | 'trending'
   | 'popular_movies'
   | 'popular_tv'
   | 'top_rated'
-  | 'now_playing';
+  | 'now_playing'
+  | 'international';
 
 export async function fetchTrueCrimeTitles(page = 1): Promise<MediaItem[]> {
   const { token, key } = getTmdbCredentials();
@@ -242,6 +258,60 @@ export async function fetchTrueCrimeTitles(page = 1): Promise<MediaItem[]> {
   }
 }
 
+export async function fetchInternationalTitles(page = 1): Promise<MediaItem[]> {
+  const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  const langs = 'ko|ja|hi|es|fr|de|it|zh|te|ta|pt|sv|da|no|tr|pl|nl|ru';
+  const movieUrl = `${TMDB_BASE_URL}/discover/movie?with_original_language=${langs}&sort_by=vote_count.desc&vote_average.gte=6.5&page=${page}`;
+  const tvUrl = `${TMDB_BASE_URL}/discover/tv?with_original_language=${langs}&without_genres=10763,10764,10767,10766&sort_by=vote_count.desc&vote_count.gte=50&page=${page}`;
+
+  try {
+    const [mRes, tvRes] = await Promise.all([
+      fetch(token ? movieUrl : `${movieUrl}&api_key=${key}`, { headers }),
+      fetch(token ? tvUrl : `${tvUrl}&api_key=${key}`, { headers }),
+    ]);
+
+    const items: MediaItem[] = [];
+    const seen = new Set<number>();
+
+    if (mRes.ok) {
+      const data = await mRes.json();
+      (data.results || [])
+        .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && isNonEnglishItem(item))
+        .forEach((raw: any) => {
+          raw.media_type = 'movie';
+          const formatted = formatTmdbItem(raw);
+          if (!seen.has(formatted.tmdb_id)) {
+            seen.add(formatted.tmdb_id);
+            items.push(formatted);
+          }
+        });
+    }
+
+    if (tvRes.ok) {
+      const data = await tvRes.json();
+      (data.results || [])
+        .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && isNonEnglishItem(item))
+        .forEach((raw: any) => {
+          raw.media_type = 'tv';
+          const formatted = formatTmdbItem(raw);
+          if (!seen.has(formatted.tmdb_id)) {
+            seen.add(formatted.tmdb_id);
+            items.push(formatted);
+          }
+        });
+    }
+
+    return items;
+  } catch (err) {
+    console.error('Failed to fetch international titles', err);
+    return [];
+  }
+}
+
 export async function fetchTasteMatchRecommendations(
   userTitles: UserTitle[],
   page = 1
@@ -251,11 +321,11 @@ export async function fetchTasteMatchRecommendations(
     ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     : {};
 
-  // If user has no logged titles yet, fallback to top-rated without documentaries
+  // If user has no logged titles yet, fallback to top-rated without documentaries or foreign titles
   if (!userTitles || userTitles.length === 0) {
     const fallback = await fetchTmdbCategory('top_rated', page);
     return fallback.filter(
-      (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary')
+      (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary') && !isNonEnglishItem(item)
     );
   }
 
@@ -291,6 +361,7 @@ export async function fetchTasteMatchRecommendations(
       return (data.results || [])
         .filter((item: any) => Boolean(item.poster_path))
         .filter((item: any) => !isAnimeItem(item))
+        .filter((item: any) => !isNonEnglishItem(item))
         .filter((item: any) => {
           const genreIds: number[] = Array.isArray(item.genre_ids) ? item.genre_ids : [];
           if (genreIds.includes(99)) return false;
@@ -303,7 +374,7 @@ export async function fetchTasteMatchRecommendations(
           return formatTmdbItem(item);
         })
         .filter((item: MediaItem) => {
-          return !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary');
+          return !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary') && !item.is_international;
         });
     });
 
@@ -327,7 +398,7 @@ export async function fetchTasteMatchRecommendations(
 
   const fallback = await fetchTmdbCategory('top_rated', page);
   return fallback.filter(
-    (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary')
+    (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary') && !isNonEnglishItem(item)
   );
 }
 
@@ -364,7 +435,7 @@ export async function fetchInTheatersTitles(page = 1): Promise<MediaItem[]> {
 
     const processMovie = (raw: any, isUpcoming = false) => {
       if (!raw || !raw.id || seen.has(raw.id) || !raw.poster_path) return;
-      if (isAnimeItem(raw)) return;
+      if (isAnimeItem(raw) || isNonEnglishItem(raw)) return;
 
       const releaseDateStr = raw.release_date;
       const releaseDate = releaseDateStr ? new Date(releaseDateStr) : null;
@@ -459,6 +530,10 @@ export async function fetchTmdbCategory(
     return fetchInTheatersTitles(page);
   }
 
+  if (category === 'international') {
+    return fetchInternationalTitles(page);
+  }
+
   const { token, key } = getTmdbCredentials();
   let endpoint = '/trending/all/week';
   let defaultType: MediaType = 'movie';
@@ -501,7 +576,7 @@ export async function fetchTmdbCategory(
       if (res.ok) {
         const data = await res.json();
         (data.results || [])
-          .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item))
+          .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && !isNonEnglishItem(item))
           .forEach((item: any) => {
             if (!item.media_type) item.media_type = 'movie';
             const formatted = formatTmdbItem(item);
@@ -510,9 +585,9 @@ export async function fetchTmdbCategory(
           });
       }
 
-      // Add exclusive in-theater and upcoming movies to Trending
+      // Add exclusive in-theater and upcoming movies to Trending (excluding foreign titles)
       theaterTitles.forEach((thItem) => {
-        if (!seen.has(thItem.tmdb_id)) {
+        if (!isNonEnglishItem(thItem) && !seen.has(thItem.tmdb_id)) {
           seen.add(thItem.tmdb_id);
           items.push(thItem);
         }
@@ -526,7 +601,7 @@ export async function fetchTmdbCategory(
       const data = await res.json();
       return (data.results || [])
         .filter((item: any) => Boolean(item.poster_path))
-        .filter((item: any) => !isAnimeItem(item))
+        .filter((item: any) => !isAnimeItem(item) && !isNonEnglishItem(item))
         .filter((item: any) => {
           if (category === 'popular_tv') {
             const genreIds: number[] = item.genre_ids || [];
@@ -864,5 +939,7 @@ function formatTmdbItem(item: any): MediaItem {
     overview: item.overview,
     streaming_sources: sources,
     primary_source: defaultProvider,
+    original_language: item.original_language,
+    is_international: isNonEnglishItem(item),
   };
 }

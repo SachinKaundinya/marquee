@@ -72,7 +72,7 @@ export function QuickLogModal() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-x-hidden">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -88,7 +88,7 @@ export function QuickLogModal() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: '100%', opacity: 0 }}
           transition={drawerTransition}
-          className="relative w-full max-w-lg bg-[#14161B] border border-white/[0.08] shadow-[0_24px_64px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-lg mx-auto bg-[#14161B] border border-white/[0.08] shadow-[0_24px_64px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[90vh] left-0 right-0"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#101216]">
@@ -272,7 +272,7 @@ export function QuickLogModal() {
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
                 placeholder="Reflections, memorable performances, craft details..."
-                className="w-full bg-[#0D0E11] border border-white/[0.08] text-sm text-[#F3F4F6] rounded-lg p-3 placeholder-[#636875] focus:outline-none focus:border-white/30 leading-relaxed max-w-[65ch] transition-colors resize-none"
+                className="w-full bg-[#0D0E11] border border-white/[0.08] text-base sm:text-sm text-[#F3F4F6] rounded-lg p-3 placeholder-[#636875] focus:outline-none focus:border-white/30 leading-relaxed max-w-[65ch] transition-colors resize-none"
               />
             </div>
 

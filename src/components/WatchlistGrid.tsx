@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2, Clapperboard, Calendar } from 'lucide-react';
+import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2, Clapperboard, Calendar, Globe } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
 import { TmdbCategory, isAnimeItem } from '@/lib/tmdb';
@@ -188,6 +188,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     { id: 'popular_tv', label: 'Popular TV', icon: Tv },
     { id: 'top_rated', label: 'Top Rated', icon: Trophy },
     { id: 'now_playing', label: 'In Theaters', icon: Clapperboard },
+    { id: 'international', label: 'International', icon: Globe },
   ];
 
   return (
@@ -205,15 +206,12 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                   <h2 className="text-sm font-semibold tracking-wide text-white">
                     My Watchlist
                   </h2>
-                  <span className="text-xs text-[#8E93A0] tabular-nums font-mono px-2 py-0.5 rounded bg-white/[0.04]">
-                    {watchlistItems.length} Titles
-                  </span>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleShareList}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-black hover:bg-[#F3F4F6] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer ml-auto sm:ml-0"
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-black hover:bg-[#F3F4F6] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer ml-auto sm:ml-0 whitespace-nowrap shrink-0"
                   title="Create a unique shareable link for this Watchlist"
                 >
                   {copiedShare ? (
@@ -392,31 +390,6 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                     <ChevronDown className={`w-3 h-3 ${selectedDecades.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
                   </button>
                 </div>
-
-                {/* Available on My Services Filter */}
-                <button
-                  type="button"
-                  onClick={() => setFilter(filter === 'available' ? 'all' : 'available')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                    filter === 'available'
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold shadow-sm'
-                      : 'bg-[#14161B] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04] hover:text-emerald-400'
-                  }`}
-                >
-                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Available on My Services</span>
-                </button>
-
-                {/* Manage Services Button */}
-                <button
-                  type="button"
-                  onClick={openServicesModal}
-                  title="Configure My Subscriptions"
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.12] bg-white/[0.04] text-[#F3F4F6] hover:bg-white/[0.08] transition-colors shrink-0 cursor-pointer flex items-center gap-1.5"
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#8E93A0]" />
-                  <span>My Services ({subscribedServices.length})</span>
-                </button>
               </>
             ) : (
               <>

@@ -59,6 +59,7 @@ export function Navbar({
   };
 
   const handleSelectResult = (item: MediaItem) => {
+    searchInputRef.current?.blur();
     openQuickLog(item);
     setSearchQuery('');
     setSearchResults([]);
@@ -144,7 +145,7 @@ export function Navbar({
                     ? 'Search to add to Diary...'
                     : 'Search film or TV...'
                 }
-                className="w-full bg-[#14161B] text-xs text-[#F3F4F6] pl-8 pr-7 py-1.5 rounded-lg focus:outline-none focus:border-white/25 placeholder-[#636875] transition-colors"
+                className="w-full bg-[#14161B] text-base sm:text-xs text-[#F3F4F6] pl-8 pr-7 py-1.5 rounded-lg focus:outline-none focus:border-white/25 placeholder-[#636875] transition-colors"
               />
               {searchQuery && (
                 <button
@@ -159,9 +160,9 @@ export function Navbar({
               )}
             </div>
 
-            {/* Search Dropdown Results */}
+            {/* Search Dropdown Results - Centered and Responsive on Mobile */}
             {searchQuery && searchResults.length > 0 && (
-              <div className="absolute top-full right-0 sm:left-0 sm:right-auto mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-sm rounded-xl bg-[#14161B] border border-white/[0.1] shadow-[0_20px_50px_rgba(0,0,0,0.85)] py-1 max-h-96 overflow-y-auto z-50 divide-y divide-white/[0.04]">
+              <div className="fixed sm:absolute top-16 sm:top-full left-3 right-3 sm:left-0 sm:right-auto sm:mt-2 w-auto sm:w-96 max-w-[calc(100vw-1.5rem)] sm:max-w-sm mx-auto rounded-xl bg-[#14161B] border border-white/[0.1] shadow-[0_20px_50px_rgba(0,0,0,0.85)] py-1 max-h-[65vh] sm:max-h-96 overflow-y-auto z-50 divide-y divide-white/[0.04]">
                 {searchResults.map((item) => (
                   <div
                     key={`${item.media_type}-${item.tmdb_id}`}
