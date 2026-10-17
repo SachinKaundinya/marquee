@@ -142,9 +142,13 @@ export function MirarLogo({ size = 'md', showText = true, className = '' }: Mira
         <div className="flex items-baseline leading-none">
           <span className={`font-black font-sans ${textSizes[size]} text-white tracking-[-0.03em] lowercase flex items-baseline leading-none`}>
             <span>m</span>
-            {/* The letter 'i' with natural dot position & radiant glowing aura */}
-            <span className="inline-flex flex-col items-center justify-end mx-[0.02em] leading-none self-baseline">
-              <span className="relative flex items-center justify-center mb-[0.08em] pointer-events-none select-none">
+            {/* The letter 'i': stem is naturally on baseline, glowing dot sits right on top */}
+            <span className="relative inline-block leading-none mx-[0.015em]">
+              <span>ı</span>
+              <span
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[1.5px] flex items-center justify-center pointer-events-none select-none"
+                aria-hidden="true"
+              >
                 {/* Ethereal Ambient Radial Glow Aura (Vibrant Neon Glow) */}
                 <span
                   className="absolute -inset-2.5 rounded-full pointer-events-none opacity-90 animate-pulse"
@@ -160,7 +164,6 @@ export function MirarLogo({ size = 'md', showText = true, className = '' }: Mira
                 {/* Glowing White Intersection Core */}
                 <span className="absolute w-[0.20em] h-[0.20em] rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_16px_#ffffff]" />
               </span>
-              <span className="leading-none">ı</span>
             </span>
             <span>rar</span>
           </span>
