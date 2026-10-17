@@ -28,6 +28,7 @@ export function getTmdbCredentials() {
 
 export function cleanProviderName(name: string): string {
   const n = name.toLowerCase();
+  if (n.includes('amazon video') || (n.includes('prime') && n.includes('rent'))) return 'Prime Video (Rent)';
   if (n.includes('netflix')) return 'Netflix';
   if (n.includes('apple')) return 'Apple TV+';
   if (n.includes('max') || n.includes('hbo')) return 'Max';
@@ -53,12 +54,22 @@ export async function fetchWatchProviders(mediaType: MediaType, id: number): Pro
     if (res.ok) {
       const data = await res.json();
       const us = data.results?.US;
+      const providers: string[] = [];
       if (us?.flatrate && Array.isArray(us.flatrate)) {
-        const cleaned = us.flatrate
-          .map((p: any) => cleanProviderName(p.provider_name))
-          .filter(Boolean);
-        return Array.from(new Set(cleaned));
+        us.flatrate.forEach((p: any) => {
+          const cleaned = cleanProviderName(p.provider_name);
+          if (cleaned) providers.push(cleaned);
+        });
       }
+      if (us?.rent && Array.isArray(us.rent)) {
+        us.rent.forEach((p: any) => {
+          const n = (p.provider_name || '').toLowerCase();
+          if (n.includes('amazon') || n.includes('prime')) {
+            providers.push('Prime Video (Rent)');
+          }
+        });
+      }
+      return Array.from(new Set(providers));
     }
   } catch {
     //
@@ -239,9 +250,12 @@ export async function fetchTasteMatchRecommendations(
     ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     : {};
 
-  // If user has no logged titles yet, fallback to top-rated
+  // If user has no logged titles yet, fallback to top-rated without documentaries
   if (!userTitles || userTitles.length === 0) {
-    return fetchTmdbCategory('top_rated', page);
+    const fallback = await fetchTmdbCategory('top_rated', page);
+    return fallback.filter(
+      (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary')
+    );
   }
 
   const validUserTitles = userTitles.filter(
@@ -276,11 +290,19 @@ export async function fetchTasteMatchRecommendations(
       return (data.results || [])
         .filter((item: any) => Boolean(item.poster_path))
         .filter((item: any) => !isAnimeItem(item))
+        .filter((item: any) => {
+          const genreIds: number[] = Array.isArray(item.genre_ids) ? item.genre_ids : [];
+          if (genreIds.includes(99)) return false;
+          return true;
+        })
         .map((item: any) => {
           if (!item.media_type) {
             item.media_type = seed.media_type;
           }
           return formatTmdbItem(item);
+        })
+        .filter((item: MediaItem) => {
+          return !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary');
         });
     });
 
@@ -302,7 +324,10 @@ export async function fetchTasteMatchRecommendations(
     console.error('Failed to fetch Taste Match recommendations', err);
   }
 
-  return fetchTmdbCategory('top_rated', page);
+  const fallback = await fetchTmdbCategory('top_rated', page);
+  return fallback.filter(
+    (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary')
+  );
 }
 
 export async function fetchTmdbCategory(
@@ -635,6 +660,12 @@ function formatTmdbItem(item: any): MediaItem {
   const providerIndex = Math.abs(item.id) % POPULAR_NETWORKS.length;
   const defaultProvider = matchedNetwork || POPULAR_NETWORKS[providerIndex];
 
+  const existingSources = Array.isArray(item.streaming_sources) ? item.streaming_sources : [defaultProvider];
+  const sources: string[] = [...existingSources];
+  if (isMovie && !sources.includes('Prime Video (Rent)')) {
+    sources.push('Prime Video (Rent)');
+  }
+
   return {
     id: item.id,
     tmdb_id: item.id,
@@ -650,7 +681,7 @@ function formatTmdbItem(item: any): MediaItem {
     vote_average: Number((item.vote_average || 0).toFixed(1)),
     genres: genres.length > 0 ? genres : ['Drama'],
     overview: item.overview,
-    streaming_sources: [defaultProvider],
+    streaming_sources: sources,
     primary_source: defaultProvider,
   };
 }

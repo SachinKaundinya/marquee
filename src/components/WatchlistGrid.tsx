@@ -110,6 +110,12 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
         const key = `${item.media_type}-${item.tmdb_id}`;
         if (userTrackedKeys.has(key)) return false;
         if (isAnimeItem(item)) return false;
+        if (selectedCategory === 'taste_match') {
+          const isDoc = (item.genres || []).some(
+            (g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary'
+          );
+          if (isDoc) return false;
+        }
         return true;
       });
 
@@ -451,8 +457,12 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               const userTitle = getUserTitle(item.tmdb_id, item.media_type);
               const isWatching = userTitle?.status === 'watching';
               const isWatched = userTitle?.status === 'watched';
-              const source = item.primary_source || item.streaming_sources?.[0];
-              const isSubscribed = source ? isServiceSubscribed(source) : false;
+              const sources = item.streaming_sources || (item.primary_source ? [item.primary_source] : []);
+              const matchingSubscribedSource =
+                sources.find((s) => s !== 'Prime Video (Rent)' && isServiceSubscribed(s)) ||
+                sources.find((s) => isServiceSubscribed(s));
+              const source = matchingSubscribedSource || item.primary_source || sources[0];
+              const isSubscribed = matchingSubscribedSource ? true : (source ? isServiceSubscribed(source) : false);
 
               return (
                 <motion.div

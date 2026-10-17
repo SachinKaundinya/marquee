@@ -14,6 +14,7 @@ export const ALL_SERVICES = [
   'Netflix',
   'Hulu',
   'Prime Video',
+  'Prime Video (Rent)',
   'Disney+',
   'Peacock',
   'Paramount+',
@@ -148,6 +149,12 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
               }
               if (t.media?.backdrop_path && t.media.backdrop_path.startsWith('/') && !t.media.backdrop_path.startsWith('http')) {
                 t.media.backdrop_path = `https://image.tmdb.org/t/p/w1280${t.media.backdrop_path}`;
+              }
+              if (t.media_type === 'movie' && t.media) {
+                const s = t.media.streaming_sources || [];
+                if (!s.includes('Prime Video (Rent)')) {
+                  t.media.streaming_sources = [...s, 'Prime Video (Rent)'];
+                }
               }
               return t;
             });
@@ -318,6 +325,9 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   const isItemOnMyServices = (item: MediaItem): boolean => {
     if (!item) return false;
     const sources = item.streaming_sources || (item.primary_source ? [item.primary_source] : []);
+    if (item.media_type === 'movie' && subscribedServices.includes('Prime Video (Rent)')) {
+      return true;
+    }
     return sources.some((source) => subscribedServices.includes(source));
   };
 
