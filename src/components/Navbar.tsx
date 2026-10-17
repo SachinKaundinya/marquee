@@ -66,13 +66,13 @@ export function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 marquee-header">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 marquee-header pt-[env(safe-area-inset-top,0px)]">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand / Logo */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           <div
             onClick={() => setActiveTab('popular')}
-            className="cursor-pointer select-none group py-0.5"
+            className="cursor-pointer select-none group py-0.5 shrink-0"
           >
             <MirarLogo size="md" showText={true} />
           </div>
@@ -118,9 +118,9 @@ export function Navbar({
         </div>
 
         {/* Search & Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-1 justify-end min-w-0">
           {/* Quick Search */}
-          <div className="relative w-40 sm:w-56 md:w-64">
+          <div className="relative flex-1 max-w-[190px] sm:max-w-xs md:max-w-sm">
             <div
               className={`relative flex items-center transition-all duration-300 rounded-lg ${
                 isSearchHighlighted
@@ -162,7 +162,7 @@ export function Navbar({
 
             {/* Search Dropdown Results - Centered and Responsive on Mobile */}
             {searchQuery && searchResults.length > 0 && (
-              <div className="fixed sm:absolute top-16 sm:top-full left-3 right-3 sm:left-0 sm:right-auto sm:mt-2 w-auto sm:w-96 max-w-[calc(100vw-1.5rem)] sm:max-w-sm mx-auto rounded-xl bg-[#14161B] border border-white/[0.1] shadow-[0_20px_50px_rgba(0,0,0,0.85)] py-1 max-h-[65vh] sm:max-h-96 overflow-y-auto z-50 divide-y divide-white/[0.04]">
+              <div className="fixed sm:absolute top-[calc(env(safe-area-inset-top,0px)+3.75rem)] sm:top-full left-3 right-3 sm:left-0 sm:right-auto sm:mt-2 w-auto sm:w-96 max-w-[calc(100vw-1.5rem)] sm:max-w-sm mx-auto rounded-xl bg-[#14161B] border border-white/[0.1] shadow-[0_20px_50px_rgba(0,0,0,0.85)] py-1 max-h-[65vh] sm:max-h-96 overflow-y-auto z-50 divide-y divide-white/[0.04]">
                 {searchResults.map((item) => (
                   <div
                     key={`${item.media_type}-${item.tmdb_id}`}
@@ -214,7 +214,7 @@ export function Navbar({
           <button
             onClick={openServicesModal}
             title="Configure My Streaming Subscriptions"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer shrink-0"
           >
             <Tv className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">My Services</span>
@@ -242,7 +242,7 @@ export function Navbar({
 
           {/* Google Sign In / User Profile */}
           {user ? (
-            <div className="flex items-center gap-2 pl-1 border-l border-white/[0.08]">
+            <div className="flex items-center gap-2 pl-1 border-l border-white/[0.08] shrink-0">
               <div className="w-7 h-7 rounded-full bg-white/[0.08] border border-white/20 overflow-hidden shrink-0">
                 {user.avatar_url ? (
                   <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
@@ -263,10 +263,10 @@ export function Navbar({
           ) : (
             <button
               onClick={() => signInWithGoogle()}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-[#F3F4F6] text-[#0A0B0D] text-xs font-medium transition-all shadow-sm cursor-pointer shrink-0"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white hover:bg-[#F3F4F6] text-[#0A0B0D] text-xs font-medium transition-all shadow-sm cursor-pointer shrink-0"
             >
               {/* Google SVG Logo */}
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
@@ -284,7 +284,7 @@ export function Navbar({
                   d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
                 />
               </svg>
-              <span>Sign in</span>
+              <span className="hidden sm:inline">Sign in</span>
             </button>
           )}
         </div>

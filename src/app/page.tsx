@@ -33,7 +33,7 @@ export default function Home() {
           />
 
           {/* Main Content Area */}
-          <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 pb-28 sm:pb-16">
+          <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 pb-16 sm:pb-12">
             {activeTab === 'popular' && (
               <WatchlistGrid mode="popular" />
             )}
