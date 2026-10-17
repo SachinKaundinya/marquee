@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Upload, X, Database, LogOut } from 'lucide-react';
+import { Search, Upload, X, Database, LogOut, Tv } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { useAuth } from '@/context/AuthContext';
 import { searchTitles } from '@/lib/tmdb';
@@ -20,7 +20,7 @@ export function Navbar({
   onOpenImport,
   onOpenApiSettings,
 }: NavbarProps) {
-  const { openQuickLog } = useMedia();
+  const { openQuickLog, openServicesModal } = useMedia();
   const { user, signInWithGoogle, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MediaItem[]>([]);
@@ -144,14 +144,24 @@ export function Navbar({
             )}
           </div>
 
+          {/* Subscribed Services Trigger */}
+          <button
+            onClick={openServicesModal}
+            title="Configure My Streaming Subscriptions"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
+          >
+            <Tv className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">My Services</span>
+          </button>
+
           {/* Database API Connect */}
           <button
             onClick={onOpenApiSettings}
-            title="Configure Entertainment Database API"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
+            title="Entertainment Database Engines"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
           >
             <Database className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">OMDb / IMDb API</span>
+            <span>Engines</span>
           </button>
 
           {/* Import CSV Trigger */}

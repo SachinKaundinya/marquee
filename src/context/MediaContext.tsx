@@ -6,6 +6,19 @@ import { INITIAL_USER_TITLES, MOCK_CATALOG } from '@/data/mockCatalog';
 import { toast } from 'sonner';
 import { getTrendingTitles } from '@/lib/tmdb';
 
+export const ALL_SERVICES = [
+  'Apple TV+',
+  'Max',
+  'Netflix',
+  'Hulu',
+  'Prime Video',
+  'Disney+',
+  'Peacock',
+  'Paramount+',
+  'Criterion Channel',
+  'MGM+',
+];
+
 interface MediaContextType {
   userTitles: UserTitle[];
   catalog: MediaItem[];
@@ -24,11 +37,22 @@ interface MediaContextType {
   diaryTitles: UserTitle[];
   importTitles: (titles: UserTitle[]) => void;
   getUserTitle: (tmdbId: number, mediaType: MediaType) => UserTitle | undefined;
+  
+  // Subscribed Services Management
+  subscribedServices: string[];
+  toggleSubscribedService: (serviceName: string) => void;
+  setSubscribedServices: (services: string[]) => void;
+  isServiceSubscribed: (serviceName: string) => boolean;
+  isItemOnMyServices: (item: MediaItem) => boolean;
+  isServicesModalOpen: boolean;
+  openServicesModal: () => void;
+  closeServicesModal: () => void;
 }
 
 const MediaContext = createContext<MediaContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'marquee_user_titles_v2';
+const SUBS_STORAGE_KEY = 'marquee_user_subscriptions_v2';
 
 export function MediaProvider({ children }: { children: React.ReactNode }) {
   const [userTitles, setUserTitles] = useState<UserTitle[]>(INITIAL_USER_TITLES);
@@ -36,6 +60,15 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [quickLogItem, setQuickLogItem] = useState<{ item: MediaItem; initialStatus?: TrackingStatus } | null>(null);
+  
+  // Default subscribed services (e.g. Netflix, Apple TV+, Max)
+  const [subscribedServices, setSubscribedServicesState] = useState<string[]>([
+    'Apple TV+',
+    'Max',
+    'Netflix',
+    'Prime Video',
+  ]);
+  const [isServicesModalOpen, setIsServicesModalOpen] = useState(false);
 
   // Hydrate from localStorage and fetch live trending titles
   useEffect(() => {
@@ -51,12 +84,23 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       // Ignore parse errors on first load
     }
 
+    try {
+      const storedSubs = localStorage.getItem(SUBS_STORAGE_KEY);
+      if (storedSubs) {
+        const parsed = JSON.parse(storedSubs);
+        if (Array.isArray(parsed)) {
+          setSubscribedServicesState(parsed);
+        }
+      }
+    } catch {
+      // Ignore
+    }
+
     // Fetch live trending titles from TMDb
     getTrendingTitles()
       .then((trending) => {
         if (trending && trending.length > 0) {
           setCatalog((prev) => {
-            // Merge trending with existing to ensure curated titles remain accessible
             const map = new Map<number, MediaItem>();
             trending.forEach((item) => map.set(item.tmdb_id, item));
             prev.forEach((item) => {
@@ -73,7 +117,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-  // Sync to localStorage
+  // Sync titles to localStorage
   const persistTitles = (titles: UserTitle[]) => {
     setUserTitles(titles);
     try {
@@ -81,6 +125,39 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // Storage quota or private mode
     }
+  };
+
+  // Subscribed services management
+  const setSubscribedServices = (services: string[]) => {
+    setSubscribedServicesState(services);
+    try {
+      localStorage.setItem(SUBS_STORAGE_KEY, JSON.stringify(services));
+    } catch {
+      //
+    }
+  };
+
+  const toggleSubscribedService = (serviceName: string) => {
+    const updated = subscribedServices.includes(serviceName)
+      ? subscribedServices.filter((s) => s !== serviceName)
+      : [...subscribedServices, serviceName];
+
+    setSubscribedServices(updated);
+    toast.success(
+      updated.includes(serviceName)
+        ? `Added ${serviceName} to your services`
+        : `Removed ${serviceName} from your services`
+    );
+  };
+
+  const isServiceSubscribed = (serviceName: string): boolean => {
+    return subscribedServices.includes(serviceName);
+  };
+
+  const isItemOnMyServices = (item: MediaItem): boolean => {
+    if (!item) return false;
+    const sources = item.streaming_sources || (item.primary_source ? [item.primary_source] : []);
+    return sources.some((source) => subscribedServices.includes(source));
   };
 
   const openQuickLog = (item: MediaItem, initialStatus?: TrackingStatus) => {
@@ -100,7 +177,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       (t) => t.tmdb_id === tmdbId && t.media_type === mediaType
     );
 
-    const media = catalog.find((c) => c.tmdb_id === tmdbId && c.media_type === mediaType) ||
+    const media =
+      catalog.find((c) => c.tmdb_id === tmdbId && c.media_type === mediaType) ||
       userTitles[existingIndex]?.media;
 
     if (existingIndex >= 0) {
@@ -145,7 +223,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       (t) => t.tmdb_id === log.tmdb_id && t.media_type === log.media_type
     );
 
-    const media = log.media ||
+    const media =
+      log.media ||
       catalog.find((c) => c.tmdb_id === log.tmdb_id && c.media_type === log.media_type) ||
       userTitles[existingIndex]?.media;
 
@@ -157,9 +236,13 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         rating: log.rating ?? updated[existingIndex].rating,
         notes: log.notes ?? updated[existingIndex].notes,
         is_rewatch: log.is_rewatch ?? updated[existingIndex].is_rewatch,
-        watched_on: log.watched_on ?? updated[existingIndex].watched_on ?? new Date().toISOString().split('T')[0],
+        watched_on:
+          log.watched_on ??
+          updated[existingIndex].watched_on ??
+          new Date().toISOString().split('T')[0],
         platform_name: log.platform_name ?? updated[existingIndex].platform_name,
-        streaming_provider_id: log.streaming_provider_id ?? updated[existingIndex].streaming_provider_id,
+        streaming_provider_id:
+          log.streaming_provider_id ?? updated[existingIndex].streaming_provider_id,
         updated_at: new Date().toISOString(),
         media: media || updated[existingIndex].media,
       };
@@ -174,7 +257,9 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         rating: log.rating,
         notes: log.notes,
         is_rewatch: log.is_rewatch || false,
-        watched_on: log.watched_on || (log.status === 'watched' ? new Date().toISOString().split('T')[0] : null),
+        watched_on:
+          log.watched_on ||
+          (log.status === 'watched' ? new Date().toISOString().split('T')[0] : null),
         platform_name: log.platform_name,
         streaming_provider_id: log.streaming_provider_id,
         created_at: new Date().toISOString(),
@@ -198,7 +283,6 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   };
 
   const importTitles = (newTitles: UserTitle[]) => {
-    // Deduplicate against existing by tmdb_id + media_type
     const map = new Map<string, UserTitle>();
     for (const t of userTitles) {
       map.set(`${t.tmdb_id}-${t.media_type}`, t);
@@ -245,6 +329,14 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         diaryTitles,
         importTitles,
         getUserTitle,
+        subscribedServices,
+        toggleSubscribedService,
+        setSubscribedServices,
+        isServiceSubscribed,
+        isItemOnMyServices,
+        isServicesModalOpen,
+        openServicesModal: () => setIsServicesModalOpen(true),
+        closeServicesModal: () => setIsServicesModalOpen(false),
       }}
     >
       {children}

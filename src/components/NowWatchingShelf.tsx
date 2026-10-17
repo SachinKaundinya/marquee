@@ -9,7 +9,7 @@ import { springTransition, tapScale } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 
 export function NowWatchingShelf() {
-  const { nowWatchingTitles, updateStatus, openQuickLog } = useMedia();
+  const { nowWatchingTitles, updateStatus, openQuickLog, isServiceSubscribed } = useMedia();
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [exitingId, setExitingId] = useState<string | null>(null);
 
@@ -76,6 +76,8 @@ export function NowWatchingShelf() {
               const media = title.media;
               if (!media) return null;
               const isExiting = exitingId === title.id;
+              const source = media.primary_source || media.streaming_sources?.[0] || 'Streaming Service';
+              const onSubscribedService = isServiceSubscribed(source);
 
               return (
                 <motion.div
@@ -124,7 +126,7 @@ export function NowWatchingShelf() {
                                 activeMenuId === title.id ? null : title.id
                               )
                             }
-                            className="p-1 rounded text-[#8E93A0] hover:text-white hover:bg-white/[0.08] transition-colors"
+                            className="p-1 rounded text-[#8E93A0] hover:text-white hover:bg-white/[0.08] transition-colors cursor-pointer"
                           >
                             <MoreVertical className="w-4 h-4" />
                           </button>
@@ -135,7 +137,7 @@ export function NowWatchingShelf() {
                               <button
                                 type="button"
                                 onClick={() => handleMoveToWatchlist(title)}
-                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2"
+                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer"
                               >
                                 <ArrowDownToLine className="w-3.5 h-3.5" />
                                 Move to Watchlist
@@ -143,7 +145,7 @@ export function NowWatchingShelf() {
                               <button
                                 type="button"
                                 onClick={() => handleMoveToDropped(title)}
-                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2"
+                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer"
                               >
                                 <Archive className="w-3.5 h-3.5" />
                                 Shelve / Drop
@@ -151,6 +153,26 @@ export function NowWatchingShelf() {
                             </div>
                           )}
                         </div>
+                      </div>
+
+                      {/* Where to CURRENTLY Watch Source Badge */}
+                      <div className="mt-2.5 flex items-center gap-2 flex-wrap">
+                        <span className="text-[11px] text-[#8E93A0]">Watch on:</span>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                            onSubscribedService
+                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold'
+                              : 'bg-white/[0.04] text-[#F3F4F6] border border-white/[0.08]'
+                          }`}
+                        >
+                          {onSubscribedService && <Check className="w-3 h-3 stroke-[2.5]" />}
+                          {source}
+                        </span>
+                        {onSubscribedService && (
+                          <span className="text-[10px] text-emerald-500/80 uppercase tracking-wider font-semibold">
+                            (Subscribed)
+                          </span>
+                        )}
                       </div>
 
                       {/* Notes Preview if available */}

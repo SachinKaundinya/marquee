@@ -10,6 +10,7 @@ import { DiaryFeed } from '@/components/DiaryFeed';
 import { QuickLogModal } from '@/components/QuickLogModal';
 import { CsvImportModal } from '@/components/CsvImportModal';
 import { ApiSettingsModal } from '@/components/ApiSettingsModal';
+import { ServicesModal } from '@/components/ServicesModal';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'shelf' | 'diary' | 'explore'>('shelf');
@@ -55,6 +56,7 @@ export default function Home() {
             isOpen={isApiSettingsOpen}
             onClose={() => setIsApiSettingsOpen(false)}
           />
+          <ServicesModal />
 
           {/* Micro-Craft Footer */}
           <footer className="border-t border-white/[0.06] py-6 text-center text-xs text-[#8E93A0]">

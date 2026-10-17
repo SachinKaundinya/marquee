@@ -11,6 +11,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.6,
     genres: ['Drama', 'Mystery', 'Sci-Fi'],
     overview: 'Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives.',
+    streaming_sources: ['Apple TV+'],
+    primary_source: 'Apple TV+',
   },
   {
     id: 111803,
@@ -22,6 +24,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.0,
     genres: ['Comedy', 'Drama', 'Mystery'],
     overview: 'A sharp social satire following the exploits of various employees and guests at an exclusive resort over the span of a week.',
+    streaming_sources: ['Max'],
+    primary_source: 'Max',
   },
   {
     id: 693134,
@@ -34,6 +38,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.4,
     genres: ['Action', 'Adventure', 'Drama', 'Sci-Fi'],
     overview: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.',
+    streaming_sources: ['Max', 'Prime Video'],
+    primary_source: 'Max',
   },
   {
     id: 76331,
@@ -44,7 +50,9 @@ export const MOCK_CATALOG: MediaItem[] = [
     release_year: 2018,
     vote_average: 8.8,
     genres: ['Drama'],
-    overview: 'The Roy family is known for controlling the biggest media and entertainment company in the world. However, their world changes when their aging father steps down.',
+    overview: 'The Roy family is known for controlling the biggest media and entertainment company in the world.',
+    streaming_sources: ['Max'],
+    primary_source: 'Max',
   },
   {
     id: 124364,
@@ -56,6 +64,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.5,
     genres: ['Comedy', 'Drama'],
     overview: 'A young chef from the fine dining world comes home to Chicago to run his family Italian beef sandwich shop.',
+    streaming_sources: ['Hulu'],
+    primary_source: 'Hulu',
   },
   {
     id: 126308,
@@ -67,6 +77,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.6,
     genres: ['Action', 'Adventure', 'Drama', 'History'],
     overview: 'When a mysterious European ship is found marooned in a nearby Japanese fishing village, Lord Yoshii Toranaga discovers secrets that could tip the scales of power.',
+    streaming_sources: ['Hulu'],
+    primary_source: 'Hulu',
   },
   {
     id: 872585,
@@ -79,6 +91,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.2,
     genres: ['Biography', 'Drama', 'History'],
     overview: 'The story of J. Robert Oppenheimer’s role in the development of the atomic bomb during World War II.',
+    streaming_sources: ['Peacock'],
+    primary_source: 'Peacock',
   },
   {
     id: 1396,
@@ -90,6 +104,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 9.5,
     genres: ['Crime', 'Drama', 'Thriller'],
     overview: 'A chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine.',
+    streaming_sources: ['Netflix'],
+    primary_source: 'Netflix',
   },
   {
     id: 155,
@@ -102,6 +118,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 9.1,
     genres: ['Action', 'Crime', 'Drama'],
     overview: 'When a menace known as the Joker wreaks havoc and chaos on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
+    streaming_sources: ['Max'],
+    primary_source: 'Max',
   },
   {
     id: 157336,
@@ -114,6 +132,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.7,
     genres: ['Adventure', 'Drama', 'Sci-Fi'],
     overview: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
+    streaming_sources: ['Paramount+', 'Prime Video'],
+    primary_source: 'Paramount+',
   },
   {
     id: 27205,
@@ -126,6 +146,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.8,
     genres: ['Action', 'Adventure', 'Sci-Fi'],
     overview: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
+    streaming_sources: ['Max'],
+    primary_source: 'Max',
   },
   {
     id: 666277,
@@ -138,6 +160,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 7.8,
     genres: ['Drama', 'Romance'],
     overview: 'Nora and Hae Sung, two deeply connected childhood friends, are wrested apart after Nora\'s family emigrates from South Korea.',
+    streaming_sources: ['Netflix'],
+    primary_source: 'Netflix',
   },
   {
     id: 496243,
@@ -150,6 +174,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.5,
     genres: ['Drama', 'Thriller'],
     overview: 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.',
+    streaming_sources: ['Max', 'Hulu'],
+    primary_source: 'Max',
   },
   {
     id: 244786,
@@ -162,6 +188,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.5,
     genres: ['Drama', 'Music'],
     overview: 'A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing.',
+    streaming_sources: ['Netflix'],
+    primary_source: 'Netflix',
   },
   {
     id: 550,
@@ -174,6 +202,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.8,
     genres: ['Drama'],
     overview: 'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.',
+    streaming_sources: ['Hulu'],
+    primary_source: 'Hulu',
   },
   {
     id: 680,
@@ -186,6 +216,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.8,
     genres: ['Crime', 'Drama'],
     overview: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.',
+    streaming_sources: ['Max', 'Paramount+'],
+    primary_source: 'Max',
   },
   {
     id: 603,
@@ -198,6 +230,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.7,
     genres: ['Action', 'Sci-Fi'],
     overview: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
+    streaming_sources: ['Max'],
+    primary_source: 'Max',
   },
   {
     id: 238,
@@ -210,6 +244,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 9.2,
     genres: ['Crime', 'Drama'],
     overview: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
+    streaming_sources: ['Paramount+'],
+    primary_source: 'Paramount+',
   },
   {
     id: 87108,
@@ -221,6 +257,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 9.3,
     genres: ['Drama', 'History', 'Thriller'],
     overview: 'In April 1986, the city of Chernobyl in the Soviet Union suffers one of the worst nuclear disasters in the history of mankind.',
+    streaming_sources: ['Max'],
+    primary_source: 'Max',
   },
   {
     id: 66732,
@@ -232,6 +270,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 8.6,
     genres: ['Drama', 'Fantasy', 'Horror'],
     overview: 'In 1980s Indiana, a group of young friends witness supernatural forces and secret government exploits.',
+    streaming_sources: ['Netflix'],
+    primary_source: 'Netflix',
   },
   {
     id: 1399,
@@ -243,6 +283,8 @@ export const MOCK_CATALOG: MediaItem[] = [
     vote_average: 9.2,
     genres: ['Action', 'Adventure', 'Drama', 'Fantasy'],
     overview: 'Nine noble families vie for control over the lands of Westeros, while an ancient enemy returns after being dormant for millennia.',
+    streaming_sources: ['Max'],
+    primary_source: 'Max',
   }
 ];
 

@@ -25,6 +25,8 @@ export interface MediaItem {
   genres: string[];
   overview?: string;
   streaming_provider?: StreamingProvider;
+  streaming_sources?: string[];
+  primary_source?: string;
 }
 
 export interface UserTitle {
