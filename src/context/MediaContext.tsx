@@ -306,10 +306,9 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
           });
           return Array.from(map.values());
         });
-        toast.success(`Loaded ${moreTitles.length} more titles from TMDb`);
       }
     } catch {
-      toast.error('Failed to load more titles from TMDb');
+      // Silently fail background pagination without interrupting the user experience
     } finally {
       setIsCatalogLoading(false);
     }
