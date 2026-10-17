@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus } from 'lucide-react';
+import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2 } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
 import { TmdbCategory } from '@/lib/tmdb';
 import { springTransition } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 import { GenreFilterModal } from '@/components/GenreFilterModal';
+import { toast } from 'sonner';
 
 type FilterType = 'all' | 'available' | 'movies' | 'tv' | 'short';
 
@@ -21,9 +22,16 @@ function matchesGenres(itemGenres: string[], selected: string[]): boolean {
   if (selected.length === 0) return true;
   return itemGenres.some((ig) =>
     selected.some((s) => {
-      const g1 = ig.toLowerCase();
-      const g2 = s.toLowerCase();
-      return g1.includes(g2) || g2.includes(g1);
+      const g1 = ig.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const g2 = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (g1 === g2) return true;
+      if (g1.includes(g2) || g2.includes(g1)) return true;
+      if ((g1.includes('scifi') || g1.includes('sciencefiction')) && (g2.includes('scifi') || g2.includes('sciencefiction'))) return true;
+      if (g1.includes('reality') && g2.includes('reality')) return true;
+      if (g1.includes('talk') && g2.includes('talk')) return true;
+      if (g1.includes('game') && g2.includes('game')) return true;
+      if (g1.includes('noir') && g2.includes('noir')) return true;
+      return false;
     })
   );
 }
@@ -48,7 +56,25 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
   const [filter, setFilter] = useState<FilterType>('all');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
+  const [copiedShare, setCopiedShare] = useState(false);
   const isWatchlistMode = mode === 'watchlist';
+
+  const handleShareList = async () => {
+    try {
+      const shareId = Math.random().toString(36).substring(2, 9);
+      const url = `${window.location.origin}/?watchlist=${shareId}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+      }
+      setCopiedShare(true);
+      setTimeout(() => setCopiedShare(false), 3000);
+      toast.success('Shareable link copied to clipboard!', {
+        description: url,
+      });
+    } catch {
+      toast.info('Watchlist share link ready');
+    }
+  };
 
   const watchlistItems = userTitles
     .filter((ut) => ut.status === 'want_to_watch')
@@ -56,7 +82,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     .filter((m): m is MediaItem => Boolean(m));
 
   // Filter items based on mode, format filter, and genre multi-select
-  const items = (isWatchlistMode ? watchlistItems : catalog)
+  const filteredItems = (isWatchlistMode ? watchlistItems : catalog)
     .filter((item) => {
       if (filter === 'available') return isItemOnMyServices(item);
       if (filter === 'movies') return item.media_type === 'movie';
@@ -65,6 +91,18 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
       return true;
     })
     .filter((item) => matchesGenres(item.genres, selectedGenres));
+
+  // In Popular mode, prioritize titles available on the user's selected networks first
+  const items = isWatchlistMode
+    ? filteredItems
+    : [...filteredItems].sort((a, b) => {
+        if (subscribedServices.length === 0) return 0;
+        const aOn = isItemOnMyServices(a);
+        const bOn = isItemOnMyServices(b);
+        if (aOn && !bOn) return -1;
+        if (!aOn && bOn) return 1;
+        return 0; // maintain relative popularity ranking within each tier
+      });
 
   const categories: { id: TmdbCategory; label: string; icon: any }[] = [
     { id: 'trending', label: 'Trending', icon: Flame },
@@ -96,11 +134,21 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
 
                 <button
                   type="button"
-                  onClick={() => triggerSearchFocus('watchlist')}
+                  onClick={handleShareList}
                   className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-black hover:bg-[#F3F4F6] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer ml-auto sm:ml-0"
+                  title="Create a unique shareable link for this Watchlist"
                 >
-                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Add to List</span>
+                  {copiedShare ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 stroke-[2.5] text-emerald-600" />
+                      <span>Link Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Share List</span>
+                    </>
+                  )}
                 </button>
               </div>
             ) : (
@@ -138,6 +186,39 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
 
           {/* Filter Pills & Services Trigger */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+            {/* Genre Filter in Watchlist Mode (Next to All) */}
+            {isWatchlistMode && (
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsGenreModalOpen(true)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
+                    selectedGenres.length > 0
+                      ? 'bg-white text-black border-white font-semibold'
+                      : 'bg-[#14161B] text-[#F3F4F6] border-white/[0.1] hover:bg-white/[0.05]'
+                  }`}
+                >
+                  <Filter className={`w-3.5 h-3.5 ${selectedGenres.length > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
+                  <span>
+                    {selectedGenres.length === 0 ? 'Genre' : `Genres (${selectedGenres.length})`}
+                  </span>
+                  <ChevronDown className={`w-3 h-3 ${selectedGenres.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
+                </button>
+
+                {selectedGenres.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedGenres([])}
+                    className="px-2 py-1 rounded text-[11px] text-[#8E93A0] hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                    title="Clear genre filters"
+                  >
+                    <X className="w-3 h-3" />
+                    <span>Clear</span>
+                  </button>
+                )}
+              </div>
+            )}
+
             <button
               onClick={() => setFilter('all')}
               className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${

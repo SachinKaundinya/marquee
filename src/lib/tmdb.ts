@@ -143,7 +143,7 @@ export async function fetchTmdbCategory(
       defaultType = 'movie';
       break;
     case 'popular_tv':
-      endpoint = '/tv/popular';
+      endpoint = '/discover/tv?sort_by=popularity.desc&without_genres=10763,10764,10767,10766&vote_count.gte=50';
       defaultType = 'tv';
       break;
     case 'top_rated':
@@ -157,7 +157,8 @@ export async function fetchTmdbCategory(
   }
 
   try {
-    const url = `${TMDB_BASE_URL}${endpoint}?page=${page}`;
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${TMDB_BASE_URL}${endpoint}${separator}page=${page}`;
     const headers: Record<string, string> = token
       ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
       : {};
@@ -168,6 +169,30 @@ export async function fetchTmdbCategory(
       const data = await res.json();
       return (data.results || [])
         .filter((item: any) => Boolean(item.poster_path))
+        .filter((item: any) => {
+          if (category === 'popular_tv') {
+            const genreIds: number[] = item.genre_ids || [];
+            // Remove Reality (10764), Talk (10767), News (10763), Soap (10766)
+            if (genreIds.some((id) => [10763, 10764, 10767, 10766].includes(id))) return false;
+            const name = (item.name || item.title || '').toLowerCase();
+            const disallowed = [
+              'late night',
+              'tonight show',
+              'jimmy kimmel',
+              'daily show',
+              'survivor',
+              'big brother',
+              'love island',
+              'the voice',
+              'rupaul',
+              'bachelor',
+              'bachelorette',
+              'real housewives',
+            ];
+            if (disallowed.some((d) => name.includes(d))) return false;
+          }
+          return true;
+        })
         .map((item: any) => {
           if (!item.media_type) {
             item.media_type = defaultType;
@@ -232,14 +257,144 @@ const GENRE_MAP: Record<number, string> = {
   53: 'Thriller',
   10752: 'War',
   37: 'Western',
-  10759: 'Action & Adventure',
-  10762: 'Kids',
+  10759: 'Action',
+  10762: 'Family',
   10763: 'News',
-  10764: 'Reality',
-  10765: 'Sci-Fi & Fantasy',
-  10766: 'Soap',
-  10767: 'Talk',
-  10768: 'War & Politics',
+  10764: 'Reality-TV',
+  10765: 'Sci-Fi',
+  10766: 'Drama',
+  10767: 'Talk-Show',
+  10768: 'War',
+};
+
+const SHOW_NETWORK_MAP: Record<string, string> = {
+  // Apple TV+
+  'slow horses': 'Apple TV+',
+  'severance': 'Apple TV+',
+  'ted lasso': 'Apple TV+',
+  'foundation': 'Apple TV+',
+  'silo': 'Apple TV+',
+  'the morning show': 'Apple TV+',
+  'shrinking': 'Apple TV+',
+  'bad sisters': 'Apple TV+',
+  'for all mankind': 'Apple TV+',
+  'black bird': 'Apple TV+',
+  'presumed innocent': 'Apple TV+',
+  'pachinko': 'Apple TV+',
+  'masters of the air': 'Apple TV+',
+
+  // Max / HBO
+  'succession': 'Max',
+  'the white lotus': 'Max',
+  'the last of us': 'Max',
+  'house of the dragon': 'Max',
+  'game of thrones': 'Max',
+  'euphoria': 'Max',
+  'the sopranos': 'Max',
+  'the wire': 'Max',
+  'barry': 'Max',
+  'true detective': 'Max',
+  'chernobyl': 'Max',
+  'hacks': 'Max',
+  'curb your enthusiasm': 'Max',
+  'industry': 'Max',
+  'the penguin': 'Max',
+  'dune: prophecy': 'Max',
+
+  // Netflix
+  'stranger things': 'Netflix',
+  'breaking bad': 'Netflix',
+  'better call saul': 'Netflix',
+  'squid game': 'Netflix',
+  'the crown': 'Netflix',
+  'wednesday': 'Netflix',
+  'black mirror': 'Netflix',
+  'ozark': 'Netflix',
+  'mindhunter': 'Netflix',
+  'dark': 'Netflix',
+  'beef': 'Netflix',
+  'peaky blinders': 'Netflix',
+  "the queen's gambit": 'Netflix',
+  'bridgerton': 'Netflix',
+  'narcos': 'Netflix',
+  'baby reindeer': 'Netflix',
+  'the diplomat': 'Netflix',
+  'one piece': 'Netflix',
+  'cobra kai': 'Netflix',
+  'monsters': 'Netflix',
+  'rip': 'Netflix',
+  'supernatural': 'Netflix',
+  'grey\'s anatomy': 'Netflix',
+  'ncis': 'Netflix',
+
+  // Hulu / FX
+  'the bear': 'Hulu',
+  'shogun': 'Hulu',
+  'only murders in the building': 'Hulu',
+  'fargo': 'Hulu',
+  'what we do in the shadows': 'Hulu',
+  'dopesick': 'Hulu',
+  "the handmaid's tale": 'Hulu',
+  'say nothing': 'Hulu',
+  "it's always sunny in philadelphia": 'Hulu',
+  'reservation dogs': 'Hulu',
+  'the americans': 'Hulu',
+  'justified': 'Hulu',
+  'fleishman is in trouble': 'Hulu',
+  'the rookie': 'Hulu',
+  'criminal minds': 'Hulu',
+  'family guy': 'Hulu',
+  'the simpsons': 'Disney+',
+
+  // Prime Video
+  'reacher': 'Prime Video',
+  'the boys': 'Prime Video',
+  'fallout': 'Prime Video',
+  'the lord of the rings: the rings of power': 'Prime Video',
+  'invincible': 'Prime Video',
+  'fleabag': 'Prime Video',
+  'the wheel of time': 'Prime Video',
+  'mr. & mrs. smith': 'Prime Video',
+  "tom clancy's jack ryan": 'Prime Video',
+  'bosch': 'Prime Video',
+  'the expanse': 'Prime Video',
+  'good omens': 'Prime Video',
+
+  // Disney+
+  'the mandalorian': 'Disney+',
+  'andor': 'Disney+',
+  'loki': 'Disney+',
+  'wandavision': 'Disney+',
+  'daredevil: born again': 'Disney+',
+  'star wars: the bad batch': 'Disney+',
+  'star wars: the clone wars': 'Disney+',
+  "x-men '97": 'Disney+',
+  'percy jackson and the olympians': 'Disney+',
+
+  // Peacock
+  'the office': 'Peacock',
+  'parks and recreation': 'Peacock',
+  'poker face': 'Peacock',
+  'yellowstone': 'Peacock',
+  'battlestar galactica': 'Peacock',
+  'columbo': 'Peacock',
+  'ted': 'Peacock',
+  'brooklyn nine-nine': 'Peacock',
+  'law & order: special victims unit': 'Peacock',
+  'law & order': 'Peacock',
+
+  // Paramount+
+  'yellowjackets': 'Paramount+',
+  'tulsa king': 'Paramount+',
+  'mayor of kingstown': 'Paramount+',
+  'star trek: strange new worlds': 'Paramount+',
+  '1883': 'Paramount+',
+  '1923': 'Paramount+',
+  'lioness': 'Paramount+',
+  'landman': 'Paramount+',
+  'twin peaks': 'Paramount+',
+  'the good fight': 'Paramount+',
+  'the mentalist': 'Max',
 };
 
 const POPULAR_NETWORKS = [
@@ -265,14 +420,18 @@ function formatTmdbItem(item: any): MediaItem {
     ? item.genre_ids.map((id: number) => GENRE_MAP[id] || 'Film').filter(Boolean)
     : [isMovie ? 'Feature' : 'Series'];
 
-  // Predictable deterministic provider fallback based on title hash if not yet fetched
+  const rawTitle = isMovie ? item.title : item.name;
+  const titleKey = (rawTitle || '').toLowerCase().trim();
+  const matchedNetwork = SHOW_NETWORK_MAP[titleKey];
+
+  // Predictable deterministic provider fallback based on title hash if not in lookup
   const providerIndex = Math.abs(item.id) % POPULAR_NETWORKS.length;
-  const defaultProvider = POPULAR_NETWORKS[providerIndex];
+  const defaultProvider = matchedNetwork || POPULAR_NETWORKS[providerIndex];
 
   return {
     id: item.id,
     tmdb_id: item.id,
-    title: isMovie ? item.title : item.name,
+    title: rawTitle,
     media_type: isMovie ? 'movie' : 'tv',
     poster_path: item.poster_path
       ? `${TMDB_IMAGE_BASE}/w500${item.poster_path}`
