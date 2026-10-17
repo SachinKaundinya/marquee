@@ -87,16 +87,39 @@ export async function searchTitles(query: string): Promise<MediaItem[]> {
 
     if (res.ok) {
       const data = await res.json();
-      const results = (data.results || [])
+      const rawResults = (data.results || [])
         .filter(
           (item: any) =>
             (item.media_type === 'movie' || item.media_type === 'tv') &&
             Boolean(item.poster_path)
         )
-        .slice(0, 18)
-        .map((item: any) => formatTmdbItem(item));
+        .slice(0, 10);
 
-      if (results.length > 0) return results;
+      const enriched = await Promise.all(
+        rawResults.map(async (item: any) => {
+          const formatted = formatTmdbItem(item);
+          try {
+            const credUrl = `${TMDB_BASE_URL}/${item.media_type}/${item.id}/credits`;
+            const finalCredUrl = token ? credUrl : `${credUrl}?api_key=${key}`;
+            const credRes = await fetch(finalCredUrl, { headers });
+            if (credRes.ok) {
+              const credData = await credRes.json();
+              const topCast = (credData.cast || [])
+                .slice(0, 3)
+                .map((c: any) => c.name)
+                .filter(Boolean);
+              if (topCast.length > 0) {
+                formatted.stars = topCast;
+              }
+            }
+          } catch {
+            // ignore
+          }
+          return formatted;
+        })
+      );
+
+      if (enriched.length > 0) return enriched;
     }
   } catch {
     // Fallback to OMDb on error
@@ -214,16 +237,17 @@ export async function getTrendingTitles(): Promise<MediaItem[]> {
 export async function getInitialDeepCatalog(): Promise<MediaItem[]> {
   // Fetch multiple diverse categories in parallel for a deep, rich catalog
   try {
-    const [t1, t2, popM, popTv, topM] = await Promise.all([
+    const [t1, t2, popM, popTv, topM1, topM2] = await Promise.all([
       fetchTmdbCategory('trending', 1),
       fetchTmdbCategory('trending', 2),
       fetchTmdbCategory('popular_movies', 1),
       fetchTmdbCategory('popular_tv', 1),
       fetchTmdbCategory('top_rated', 1),
+      fetchTmdbCategory('top_rated', 2),
     ]);
 
     const map = new Map<number, MediaItem>();
-    [...t1, ...t2, ...popM, ...popTv, ...topM].forEach((item) => {
+    [...t1, ...t2, ...popM, ...popTv, ...topM1, ...topM2].forEach((item) => {
       map.set(item.tmdb_id, item);
     });
 

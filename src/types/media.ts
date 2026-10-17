@@ -32,6 +32,7 @@ export interface MediaItem {
   streaming_provider?: StreamingProvider;
   streaming_sources?: string[];
   primary_source?: string;
+  stars?: string[];
 }
 
 export interface UserTitle {

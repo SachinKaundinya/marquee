@@ -161,20 +161,47 @@ export function Navbar({
 
             {/* Search Dropdown Results */}
             {searchQuery && searchResults.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1.5 rounded-xl bg-[#14161B] border border-white/[0.08] shadow-[0_16px_40px_rgba(0,0,0,0.8)] py-1 max-h-80 overflow-y-auto z-50">
+              <div className="absolute top-full right-0 sm:left-0 sm:right-auto mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-sm rounded-xl bg-[#14161B] border border-white/[0.1] shadow-[0_20px_50px_rgba(0,0,0,0.85)] py-1 max-h-96 overflow-y-auto z-50 divide-y divide-white/[0.04]">
                 {searchResults.map((item) => (
                   <div
                     key={`${item.media_type}-${item.tmdb_id}`}
                     onClick={() => handleSelectResult(item)}
-                    className="flex items-center gap-3 px-3 py-2 hover:bg-white/[0.06] cursor-pointer transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.08] cursor-pointer transition-colors"
                   >
+                    {/* Poster Thumbnail */}
+                    <div className="w-10 h-14 rounded overflow-hidden bg-[#1D2027] shrink-0 border border-white/[0.08] shadow-sm">
+                      {item.poster_path ? (
+                        <img
+                          src={item.poster_path}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[9px] text-[#636875]">
+                          No Poster
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Metadata: Title, Year + Type, Stars */}
                     <div className="min-w-0 flex-1">
-                      <div className="text-xs font-medium text-[#F3F4F6] truncate">
+                      <div className="text-sm font-semibold text-[#F3F4F6] truncate tracking-tight">
                         {item.title}
                       </div>
-                      <div className="text-[11px] text-[#8E93A0] tabular-nums">
-                        {item.media_type === 'movie' ? 'Film' : 'TV'} • {item.release_year}
+                      <div className="text-xs text-[#9CA3AF] tabular-nums mt-0.5">
+                        {item.release_year}{' '}
+                        {item.media_type === 'movie' ? 'Movie' : 'TV Series'}
                       </div>
+                      {item.stars && item.stars.length > 0 ? (
+                        <div className="text-xs text-[#8E93A0] truncate mt-0.5">
+                          {item.stars.slice(0, 3).join(', ')}
+                        </div>
+                      ) : item.genres && item.genres.length > 0 ? (
+                        <div className="text-xs text-[#636875] truncate mt-0.5">
+                          {item.genres.slice(0, 2).join(', ')}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 ))}

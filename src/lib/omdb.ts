@@ -102,5 +102,8 @@ function formatOmdbItem(item: any): MediaItem {
     vote_average: Number(rating.toFixed(1)),
     genres,
     overview: item.Plot !== 'N/A' ? item.Plot : undefined,
+    stars: item.Actors && item.Actors !== 'N/A'
+      ? item.Actors.split(',').map((a: string) => a.trim()).filter(Boolean)
+      : undefined,
   };
 }

@@ -92,16 +92,34 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     })
     .filter((item) => matchesGenres(item.genres, selectedGenres));
 
-  // In Popular mode, prioritize titles available on the user's selected networks first
+function getRatingTier(voteAverage: number): number {
+  if (voteAverage >= 8.0) return 3; // 8.0+
+  if (voteAverage >= 7.0) return 2; // 7.0 - 7.9
+  if (voteAverage >= 6.0) return 1; // 6.0 - 6.9
+  return 0; // below 6.0
+}
+
+  // In For You / Popular mode, recommend titles rated 8.0+ first, then 7.0+, then 6.0+, etc.
+  // Within each rating tier, prioritize titles available on the user's selected networks, followed by rating
   const items = isWatchlistMode
     ? filteredItems
     : [...filteredItems].sort((a, b) => {
-        if (subscribedServices.length === 0) return 0;
-        const aOn = isItemOnMyServices(a);
-        const bOn = isItemOnMyServices(b);
-        if (aOn && !bOn) return -1;
-        if (!aOn && bOn) return 1;
-        return 0; // maintain relative popularity ranking within each tier
+        const tierA = getRatingTier(a.vote_average);
+        const tierB = getRatingTier(b.vote_average);
+        if (tierB !== tierA) {
+          return tierB - tierA; // 8.0+ first, then 7.0+, then 6.0+
+        }
+
+        // Within the same rating tier, prioritize titles on user's selected networks
+        if (subscribedServices.length > 0) {
+          const aOn = isItemOnMyServices(a);
+          const bOn = isItemOnMyServices(b);
+          if (aOn && !bOn) return -1;
+          if (!aOn && bOn) return 1;
+        }
+
+        // Within the same tier and network status, sort by vote_average descending
+        return b.vote_average - a.vote_average;
       });
 
   const categories: { id: TmdbCategory; label: string; icon: any }[] = [

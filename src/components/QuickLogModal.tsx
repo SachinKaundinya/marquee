@@ -26,11 +26,7 @@ export function QuickLogModal() {
   const [notes, setNotes] = useState<string>(existingTitle?.notes ?? '');
   const [isRewatch, setIsRewatch] = useState<boolean>(existingTitle?.is_rewatch ?? false);
 
-  // Date seen
   const todayStr = new Date().toISOString().split('T')[0];
-  const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-  const [watchedDate, setWatchedDate] = useState<string>(existingTitle?.watched_on || todayStr);
-  const [dateSelection, setDateSelection] = useState<'today' | 'yesterday' | 'custom'>('today');
 
   useEffect(() => {
     if (quickLogItem?.item) {
@@ -43,25 +39,10 @@ export function QuickLogModal() {
       );
       setNotes(existing?.notes ?? '');
       setIsRewatch(existing?.is_rewatch ?? false);
-      setWatchedDate(existing?.watched_on || todayStr);
-      setDateSelection(
-        existing?.watched_on === yesterdayStr
-          ? 'yesterday'
-          : existing?.watched_on === todayStr
-          ? 'today'
-          : existing?.watched_on
-          ? 'custom'
-          : 'today'
-      );
     }
   }, [quickLogItem]);
 
   if (!quickLogItem || !item) return null;
-
-  const handleDateQuickSelect = (type: 'today' | 'yesterday') => {
-    setDateSelection(type);
-    setWatchedDate(type === 'today' ? todayStr : yesterdayStr);
-  };
 
   const handleSave = () => {
     if (!status) return;
@@ -78,7 +59,7 @@ export function QuickLogModal() {
       rating: status === 'watched' ? rating : null,
       notes: notes.trim() || null,
       is_rewatch: isRewatch,
-      watched_on: status === 'watched' ? watchedDate : null,
+      watched_on: existingTitle?.watched_on || todayStr,
       media: item,
     });
     closeQuickLog();
@@ -230,49 +211,7 @@ export function QuickLogModal() {
               </div>
             </div>
 
-            {/* Date Seen (When marked as Watched) */}
-            {status === 'watched' && (
-              <div>
-                <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-2 block">
-                  Date Seen
-                </label>
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleDateQuickSelect('today')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
-                      dateSelection === 'today'
-                        ? 'bg-white/10 text-white border-white/30'
-                        : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
-                    }`}
-                  >
-                    Today
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDateQuickSelect('yesterday')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
-                      dateSelection === 'yesterday'
-                        ? 'bg-white/10 text-white border-white/30'
-                        : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
-                    }`}
-                  >
-                    Yesterday
-                  </button>
-                  <div className="relative flex items-center">
-                    <input
-                      type="date"
-                      value={watchedDate}
-                      onChange={(e) => {
-                        setDateSelection('custom');
-                        setWatchedDate(e.target.value);
-                      }}
-                      className="bg-white/[0.02] border border-white/[0.06] text-xs text-[#F3F4F6] rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-white/30 tabular-nums cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+
 
             {/* 10-Star Rating */}
             {status === 'watched' && (
