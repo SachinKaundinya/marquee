@@ -34,6 +34,8 @@ export interface MediaItem {
   primary_source?: string | null;
   stars?: string[];
   original_language?: string;
+  origin_country?: string[];
+  genre_ids?: number[];
   is_international?: boolean;
 }
 

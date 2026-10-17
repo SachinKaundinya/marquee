@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2, Clapperboard, Calendar, Globe } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
-import { TmdbCategory, isAnimeItem } from '@/lib/tmdb';
+import { TmdbCategory, isAnimeItem, isNonEnglishItem } from '@/lib/tmdb';
 import { springTransition } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 import { GenreFilterModal } from '@/components/GenreFilterModal';
@@ -122,6 +122,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
         const key = `${item.media_type}-${item.tmdb_id}`;
         if (userTrackedKeys.has(key)) return false;
         if (isAnimeItem(item)) return false;
+        if (selectedCategory !== 'international' && isNonEnglishItem(item)) return false;
         if (selectedCategory === 'taste_match') {
           const isDoc = (item.genres || []).some(
             (g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary'

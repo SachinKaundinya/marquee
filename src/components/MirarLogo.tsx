@@ -10,82 +10,138 @@ interface MirarLogoProps {
 
 export function MirarLogo({ size = 'md', showText = true, className = '' }: MirarLogoProps) {
   const iconSizes = {
-    sm: 'w-6 h-6',
-    md: 'w-8 h-8',
-    lg: 'w-10 h-10',
-    xl: 'w-14 h-14',
+    sm: 'w-7 h-7',
+    md: 'w-9 h-9',
+    lg: 'w-11 h-11',
+    xl: 'w-14 h-14 sm:w-16 sm:h-16',
   };
 
   const textSizes = {
-    sm: 'text-sm tracking-tight',
-    md: 'text-base tracking-tight',
-    lg: 'text-xl tracking-tight',
-    xl: 'text-3xl tracking-tight',
+    sm: 'text-lg',
+    md: 'text-2xl sm:text-[26px]',
+    lg: 'text-3xl sm:text-4xl',
+    xl: 'text-5xl sm:text-6xl',
   };
 
   return (
     <div className={`flex items-center gap-2.5 select-none ${className}`}>
-      {/* Quirky & Fun Mirar Mascot / Eyewear Icon */}
+      {/* Professional Cinema Optic Lens Mark */}
       <div className={`relative ${iconSizes[size]} shrink-0 flex items-center justify-center`}>
         <svg
-          viewBox="0 0 48 48"
+          viewBox="0 0 44 44"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full drop-shadow-[0_2px_10px_rgba(239,68,68,0.25)]"
+          className="w-full h-full drop-shadow-[0_2px_12px_rgba(0,242,254,0.25)]"
         >
-          {/* Quirky Outer Cinema Frame with bridge */}
+          <defs>
+            <linearGradient id="lensFrameGrad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#181B22" />
+              <stop offset="1" stopColor="#0B0D12" />
+            </linearGradient>
+            <linearGradient id="lensBorderGrad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stopColor="rgba(255, 255, 255, 0.22)" />
+              <stop offset="1" stopColor="rgba(255, 255, 255, 0.04)" />
+            </linearGradient>
+            <filter id="lensApertureGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1.2" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          {/* Dark Metallic Lens Chassis */}
           <rect
-            x="3"
-            y="11"
+            x="1"
+            y="1"
             width="42"
-            height="26"
-            rx="13"
-            fill="#121318"
+            height="42"
+            rx="11"
+            fill="url(#lensFrameGrad)"
+            stroke="url(#lensBorderGrad)"
+            strokeWidth="1.5"
+          />
+
+          {/* Precision Optic Calibration Ring */}
+          <circle
+            cx="22"
+            cy="22"
+            r="16"
+            stroke="rgba(255, 255, 255, 0.08)"
+            strokeWidth="1"
+            strokeDasharray="2 3"
+          />
+
+          {/* Horizontal Anamorphic Streak */}
+          <path
+            d="M7 22H37"
             stroke="rgba(255, 255, 255, 0.15)"
-            strokeWidth="2"
-          />
-
-          {/* Left Eye (Cyan Cinema Lens) */}
-          <circle cx="16" cy="24" r="9" fill="#0E2A38" stroke="#06B6D4" strokeWidth="2.5" />
-          {/* Left Pupil (Playfully looking slightly upward/forward) */}
-          <circle cx="17.5" cy="22.5" r="4.5" fill="#F8FAFC" />
-          <circle cx="19" cy="21" r="1.8" fill="#06B6D4" />
-          {/* Cute highlight sparkle */}
-          <circle cx="15.5" cy="20.5" r="1.2" fill="#FFFFFF" />
-
-          {/* Quirky Bridge Line */}
-          <path
-            d="M23 23C24 21.5 24 21.5 25 23"
-            stroke="#F59E0B"
-            strokeWidth="2.5"
+            strokeWidth="1"
             strokeLinecap="round"
           />
 
-          {/* Right Eye (Playful Coral / Magenta Cinema Lens - Slightly tilted/quirky) */}
-          <circle cx="32" cy="24" r="9" fill="#38101E" stroke="#F43F5E" strokeWidth="2.5" />
-          {/* Right Pupil (Wide & curious) */}
-          <circle cx="30.5" cy="22.5" r="4.5" fill="#F8FAFC" />
-          <circle cx="29" cy="21" r="1.8" fill="#F43F5E" />
-          {/* Cute highlight sparkle */}
-          <circle cx="32.5" cy="20.5" r="1.2" fill="#FFFFFF" />
+          {/* Left Cyan Aperture Ring */}
+          <circle
+            cx="18"
+            cy="22"
+            r="7.5"
+            stroke="#00F2FE"
+            strokeWidth="2.2"
+            fill="#00F2FE"
+            fillOpacity="0.12"
+            filter="url(#lensApertureGlow)"
+          />
 
-          {/* Cheeky little popcorn grin or wink arc underneath */}
-          <path
-            d="M20 31.5C22.5 33.5 25.5 33.5 28 31.5"
-            stroke="rgba(255, 255, 255, 0.4)"
-            strokeWidth="1.8"
-            strokeLinecap="round"
+          {/* Right Crimson Aperture Ring */}
+          <circle
+            cx="26"
+            cy="22"
+            r="7.5"
+            stroke="#FF2A54"
+            strokeWidth="2.2"
+            fill="#FF2A54"
+            fillOpacity="0.12"
+            filter="url(#lensApertureGlow)"
+          />
+
+          {/* Glowing Luminous Center Focal Point */}
+          <circle
+            cx="22"
+            cy="22"
+            r="3"
+            fill="#FFFFFF"
+            filter="url(#lensApertureGlow)"
+          />
+          <circle
+            cx="22"
+            cy="22"
+            r="1.4"
+            fill="#FFFFFF"
           />
         </svg>
       </div>
 
       {showText && (
-        <div className="flex items-baseline">
-          <span className={`font-black font-sans ${textSizes[size]} text-white tracking-wider lowercase`}>
-            mirar
+        <div className="flex items-baseline leading-none">
+          <span className={`font-extrabold font-sans ${textSizes[size]} text-white tracking-[-0.03em] lowercase flex items-baseline`}>
+            <span>m</span>
+            {/* The letter 'i' with chromatic glowing dot */}
+            <span className="relative inline-flex flex-col items-center justify-end mx-[0.015em]">
+              <span
+                className="absolute -top-[0.38em] left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none select-none"
+                aria-hidden="true"
+              >
+                <span className="relative flex items-center justify-center">
+                  {/* Left Cyan Circle */}
+                  <span className="w-[0.35em] h-[0.35em] rounded-full bg-[#00F2FE] -mr-[0.11em] shadow-[0_0_8px_#00F2FE,0_0_16px_rgba(0,242,254,0.9),0_0_24px_rgba(0,242,254,0.6)]" />
+                  {/* Right Crimson Circle */}
+                  <span className="w-[0.35em] h-[0.35em] rounded-full bg-[#FF2A54] -ml-[0.11em] shadow-[0_0_8px_#FF2A54,0_0_16px_rgba(255,42,84,0.9),0_0_24px_rgba(255,42,84,0.6)]" />
+                  {/* Glowing White Intersection Core */}
+                  <span className="absolute w-[0.22em] h-[0.22em] rounded-full bg-white shadow-[0_0_6px_#ffffff,0_0_12px_#ffffff]" />
+                </span>
+              </span>
+              <span>ı</span>
+            </span>
+            <span>rar</span>
           </span>
-          {/* Playful dot on the 'r' or badge */}
-          <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#06B6D4] to-[#F43F5E] ml-0.5 inline-block animate-pulse" />
         </div>
       )}
     </div>

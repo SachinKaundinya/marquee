@@ -13,10 +13,21 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Mirar — Title-Level Cinema & TV Tracker",
   description: "An intentional, craft-driven entertainment tracker for cinema and television with zero bloat.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Mirar",
+  },
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
     shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 

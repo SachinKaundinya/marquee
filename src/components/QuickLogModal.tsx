@@ -261,35 +261,6 @@ export function QuickLogModal() {
                 </div>
               </div>
             )}
-
-            {/* Notes & Reflections */}
-            <div>
-              <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-2 block">
-                Notes & Reflections (Optional)
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={3}
-                placeholder="Reflections, memorable performances, craft details..."
-                className="w-full bg-[#0D0E11] border border-white/[0.08] text-base sm:text-sm text-[#F3F4F6] rounded-lg p-3 placeholder-[#636875] focus:outline-none focus:border-white/30 leading-relaxed max-w-[65ch] transition-colors resize-none"
-              />
-            </div>
-
-            {/* Rewatch Toggle */}
-            <div className="pt-1">
-              <label className="flex items-center gap-2.5 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={isRewatch}
-                  onChange={(e) => setIsRewatch(e.target.checked)}
-                  className="w-4 h-4 rounded border-white/20 bg-white/[0.04] text-white focus:ring-0 focus:ring-offset-0 cursor-pointer"
-                />
-                <span className="text-xs text-[#8E93A0]">
-                  I have seen this title before (Rewatch)
-                </span>
-              </label>
-            </div>
           </div>
 
           {/* Footer Save Action */}

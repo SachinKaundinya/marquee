@@ -154,9 +154,43 @@ export async function searchTitles(query: string): Promise<MediaItem[]> {
   );
 }
 
+const ANIME_FRANCHISE_TOKENS = [
+  'attack on titan', 'shingeki no kyojin', 'demon slayer', 'kimetsu no yaiba',
+  'jujutsu kaisen', 'solo leveling', 'chainsaw man', 'bleach', 'one piece',
+  'naruto', 'boruto', 'dragon ball', 'death note', 'hunter x hunter',
+  'fullmetal alchemist', 'spy x family', 'frieren', 'sousou no frieren',
+  'dandadan', 'dan da dan', 'kaiju no. 8', 'kaiju no 8', 'vinland saga',
+  'blue lock', 'mob psycho', 'haikyu', 'my hero academia', 'boku no hero',
+  'tokyo ghoul', 'steins;gate', 'steins gate', 'cowboy bebop', 'evangelion',
+  'neon genesis', 'code geass', 'delicious in dungeon', 'dungeon meshi',
+  'ranma', 'uzumaki', 'black clover', 'sword art online', 'seven deadly sins',
+  'jojo', 'fairy tail', 'one punch man', 'inuyasha', 'sailor moon',
+  'pokemon', 'pokémon', 'yu-gi-oh', 'digimon', 'berserk', 'slam dunk',
+  'initial d', 'gintama', 'ghost in the shell', 'akira', 'spirited away',
+  'princess mononoke', 'howl\'s moving castle', 'your name', 'weathering with you',
+  'suzume', 'a silent voice', 'the boy and the heron', 'grave of the fireflies',
+  'ninja kamui', 'pluto', 'gundam', 'fate/stay', 'fate/zero', 'overlord',
+  're:zero', 'oshi no ko', 'kaguya-sama', 'baki', 'record of ragnarok',
+  'wind breaker', 'mushoku tensei', 'classroom of the elite', 'hell\'s paradise',
+  'jigokuraku', 'mashle', 'shangri-la frontier', 'undead unluck', 'blue exorcist',
+  'dr. stone', 'fire force', 'soul eater', 'promised neverland', 'bungo stray dogs',
+  'assassination classroom', 'noragami', 'toradora', 'violet evergarden',
+  'parasyte', 'erased', 'dororo', 'banana fish', 'devilman crybaby',
+  'cyberpunk: edgerunners', 'castlevania'
+];
+
+const ANIME_KEYWORD_TOKENS = [
+  'anime', 'manga', 'light novel', 'shonen', 'shounen', 'seinen', 'otaku',
+  'isekai', 'mecha', 'studio ghibli', 'hayao miyazaki', 'makoto shinkai',
+  'ufotable', 'toei animation', 'wit studio', 'kyoto animation', 'mappa',
+  'bones', 'cloverworks', 'a-1 pictures', 'madhouse', 'production i.g',
+  'gainax', 'trigger', 'based on the manga', 'based on manga', 'manga series',
+  'anime series', 'anime television'
+];
+
 export function isAnimeItem(item: any): boolean {
   if (!item) return false;
-  const origLang = (item.original_language || '').toLowerCase();
+  const origLang = (item.original_language || '').toLowerCase().trim();
   const genres = (item.genres || []).map((g: string) => (typeof g === 'string' ? g.toLowerCase() : ''));
   const genreIds: number[] = Array.isArray(item.genre_ids) ? item.genre_ids : [];
   const isAnimation =
@@ -164,23 +198,31 @@ export function isAnimeItem(item: any): boolean {
     genres.includes('anime') ||
     genreIds.includes(16);
 
-  if (isAnimation && origLang === 'ja') return true;
-
-  const originCountry = Array.isArray(item.origin_country)
+  const originCountry: string[] = Array.isArray(item.origin_country)
     ? item.origin_country
     : [];
-  if (isAnimation && originCountry.includes('JP')) return true;
+
+  // Japanese or Korean animation is definitely anime
+  if (isAnimation && (origLang === 'ja' || origLang === 'ko' || originCountry.includes('JP') || originCountry.includes('KR'))) {
+    return true;
+  }
+
+  // Japanese TV series originating in JP
+  if (origLang === 'ja' && originCountry.includes('JP') && (isAnimation || item.media_type === 'tv')) {
+    return true;
+  }
 
   const title = (item.title || item.name || '').toLowerCase();
+  const origTitle = (item.original_title || item.original_name || '').toLowerCase();
   const overview = (item.overview || '').toLowerCase();
-  if (
-    title.includes('anime') ||
-    overview.includes('anime series') ||
-    overview.includes('anime television') ||
-    overview.includes('manga series') ||
-    overview.includes('based on the manga') ||
-    overview.includes('based on manga')
-  ) {
+
+  // Franchise title matching
+  if (ANIME_FRANCHISE_TOKENS.some((t) => title.includes(t) || origTitle.includes(t))) {
+    return true;
+  }
+
+  // Keyword / description matching
+  if (ANIME_KEYWORD_TOKENS.some((k) => overview.includes(k) || title.includes(k))) {
     return true;
   }
 
@@ -196,7 +238,7 @@ export function isNonEnglishItem(item: any): boolean {
     ? item.origin_country
     : [];
   const englishCountries = ['US', 'GB', 'CA', 'AU', 'NZ', 'IE'];
-  if (countries.length > 0 && !countries.some((c) => englishCountries.includes(c)) && lang !== 'en') {
+  if (countries.length > 0 && !countries.some((c) => englishCountries.includes(c))) {
     return true;
   }
   return false;
@@ -547,7 +589,7 @@ export async function fetchTmdbCategory(
       defaultType = 'movie';
       break;
     case 'popular_tv':
-      endpoint = '/discover/tv?sort_by=popularity.desc&without_genres=10763,10764,10767,10766&vote_count.gte=50';
+      endpoint = '/discover/tv?sort_by=popularity.desc&without_genres=10763,10764,10767,10766,16&with_original_language=en&vote_count.gte=50';
       defaultType = 'tv';
       break;
     case 'top_rated':
@@ -940,6 +982,8 @@ function formatTmdbItem(item: any): MediaItem {
     streaming_sources: sources,
     primary_source: defaultProvider,
     original_language: item.original_language,
+    origin_country: Array.isArray(item.origin_country) ? item.origin_country : undefined,
+    genre_ids: Array.isArray(item.genre_ids) ? item.genre_ids : undefined,
     is_international: isNonEnglishItem(item),
   };
 }
