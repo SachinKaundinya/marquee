@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Repeat, Calendar, Film, MapPin, Plus } from 'lucide-react';
+import { Star, Repeat, Film, MapPin, Plus, Check } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { UserTitle } from '@/types/media';
 import { springTransition } from '@/tokens/motion';
@@ -133,7 +133,7 @@ export function DiaryFeed() {
           </button>
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {displayedTitles.map((title) => {
             const media = title.media;
             if (!media) return null;
@@ -141,74 +141,74 @@ export function DiaryFeed() {
             return (
               <motion.div
                 key={title.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={springTransition}
                 onClick={() => openQuickLog(media)}
-                className="group flex items-start gap-4 p-3.5 rounded-xl bg-[#14161B] border border-white/[0.08] hover:bg-[#1C1F26] transition-colors cursor-pointer shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
+                className="group relative cursor-pointer flex flex-col"
               >
-                {/* Poster Thumbnail */}
-                <div className="w-12 shrink-0">
+                {/* Poster Container */}
+                <div className="relative aspect-[2/3] w-full rounded-md overflow-hidden bg-[#14161B] border border-white/[0.08] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] group-hover:border-white/20 transition-all duration-200">
                   <MediaPoster
                     src={media.poster_path}
                     title={media.title}
                     mediaType={media.media_type}
                     year={media.release_year}
                   />
-                </div>
 
-                {/* Title, Metadata, Rating, and Review Note */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <h4 className="text-sm font-medium text-[#F3F4F6] truncate tracking-tight group-hover:text-white transition-colors">
-                        {media.title}
-                      </h4>
-                      <span className="text-xs text-[#8E93A0] tabular-nums">
-                        ({media.release_year})
-                      </span>
-                      {title.is_rewatch && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#8E93A0] bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.06]">
-                          <Repeat className="w-2.5 h-2.5" />
-                          Rewatch
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Rating Stars */}
-                    {title.rating && (
-                      <div className="flex items-center gap-1 shrink-0">
-                        <div className="flex items-center gap-0.5">
-                          {Array.from({ length: Math.floor(title.rating) }).map((_, i) => (
-                            <Star
-                              key={i}
-                              className="w-3.5 h-3.5 fill-[#E5A93C] text-[#E5A93C]"
-                            />
-                          ))}
-                          {title.rating % 1 !== 0 && (
-                            <span className="text-[#E5A93C] text-xs font-bold">½</span>
-                          )}
-                        </div>
-                        <span className="text-xs text-[#E5A93C] font-semibold tabular-nums ml-1">
-                          {title.rating.toFixed(1)}
-                        </span>
-                      </div>
-                    )}
+                  {/* Top Left Status Badge */}
+                  <div className="absolute top-1.5 left-1.5 z-10">
+                    <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/90 text-white shadow-md backdrop-blur-sm">
+                      <Check className="w-2.5 h-2.5 stroke-[2.5]" />
+                      <span>Watched</span>
+                    </span>
                   </div>
 
-                  {/* Platform Tag */}
-                  {title.platform_name && (
-                    <div className="mt-1 flex items-center gap-1 text-[11px] text-[#8E93A0]">
-                      <MapPin className="w-3 h-3 text-[#636875]" />
-                      <span>{title.platform_name}</span>
+                  {/* Top Right Rating Badge */}
+                  {title.rating ? (
+                    <div className="absolute top-1.5 right-1.5 z-10">
+                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-[#E5A93C] border border-white/10 shadow-md backdrop-blur-sm">
+                        <Star className="w-2.5 h-2.5 fill-[#E5A93C] text-[#E5A93C]" />
+                        <span>{title.rating.toFixed(1)}</span>
+                      </span>
+                    </div>
+                  ) : media.vote_average ? (
+                    <div className="absolute top-1.5 right-1.5 z-10">
+                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-white/90 border border-white/10 shadow-md backdrop-blur-sm">
+                        <Star className="w-2.5 h-2.5 fill-[#E5A93C] text-[#E5A93C]" />
+                        <span>{media.vote_average.toFixed(1)}</span>
+                      </span>
+                    </div>
+                  ) : null}
+
+                  {/* Rewatch tag if applicable */}
+                  {title.is_rewatch && (
+                    <div className="absolute bottom-1.5 left-1.5 z-10">
+                      <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium bg-black/75 text-white/80 border border-white/10 backdrop-blur-sm">
+                        <Repeat className="w-2.5 h-2.5 text-[#8E93A0]" />
+                        <span>Rewatch</span>
+                      </span>
                     </div>
                   )}
+                </div>
 
-                  {/* Notes snippet */}
-                  {title.notes && (
-                    <p className="mt-2 text-xs text-[#8E93A0] leading-relaxed max-w-[65ch] line-clamp-2 italic">
-                      &ldquo;{title.notes}&rdquo;
-                    </p>
+                {/* Title, Year & Metadata */}
+                <div className="mt-2 flex flex-col">
+                  <h3 className="text-xs font-semibold text-[#F3F4F6] truncate tracking-tight group-hover:text-white transition-colors">
+                    {media.title}
+                  </h3>
+                  <div className="flex items-center justify-between gap-1 text-[11px] text-[#8E93A0] mt-0.5">
+                    <span className="tabular-nums">{media.release_year}</span>
+                    <span className="truncate max-w-[12ch]">
+                      {media.genres?.[0] || (media.media_type === 'movie' ? 'Film' : 'Series')}
+                    </span>
+                  </div>
+                  {title.platform_name && (
+                    <div className="flex items-center gap-1 text-[10px] text-[#636875] truncate mt-0.5">
+                      <MapPin className="w-2.5 h-2.5 shrink-0" />
+                      <span className="truncate">{title.platform_name}</span>
+                    </div>
                   )}
                 </div>
               </motion.div>

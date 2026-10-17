@@ -19,15 +19,15 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
       icon: Flame,
     },
     {
-      id: 'diary' as const,
-      label: 'Diary',
-      icon: BookOpen,
-    },
-    {
       id: 'watchlist' as const,
       label: 'My Watchlist',
       icon: Bookmark,
       badge: watchlistTitles.length > 0 ? watchlistTitles.length : null,
+    },
+    {
+      id: 'diary' as const,
+      label: 'Diary',
+      icon: BookOpen,
     },
   ];
 

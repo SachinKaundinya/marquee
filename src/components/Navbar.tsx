@@ -89,16 +89,6 @@ export function Navbar({
               Popular
             </button>
             <button
-              onClick={() => setActiveTab('diary')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                activeTab === 'diary'
-                  ? 'bg-white/10 text-white font-semibold'
-                  : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
-              }`}
-            >
-              Diary
-            </button>
-            <button
               onClick={() => setActiveTab('watchlist')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'watchlist'
@@ -112,6 +102,16 @@ export function Navbar({
                   {watchlistTitles.length}
                 </span>
               )}
+            </button>
+            <button
+              onClick={() => setActiveTab('diary')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                activeTab === 'diary'
+                  ? 'bg-white/10 text-white font-semibold'
+                  : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
+              }`}
+            >
+              Diary
             </button>
           </nav>
         </div>

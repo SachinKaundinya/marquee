@@ -136,12 +136,25 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const validTitles = parsed.filter(
-            (t: any) =>
-              !t.id?.startsWith('user-title-') &&
-              !localHidden.includes(`${t.media_type}-${t.tmdb_id}`)
-          );
+          const validTitles = parsed
+            .filter(
+              (t: any) =>
+                !t.id?.startsWith('user-title-') &&
+                !localHidden.includes(`${t.media_type}-${t.tmdb_id}`)
+            )
+            .map((t: any) => {
+              if (t.media?.poster_path && t.media.poster_path.startsWith('/') && !t.media.poster_path.startsWith('http')) {
+                t.media.poster_path = `https://image.tmdb.org/t/p/w500${t.media.poster_path}`;
+              }
+              if (t.media?.backdrop_path && t.media.backdrop_path.startsWith('/') && !t.media.backdrop_path.startsWith('http')) {
+                t.media.backdrop_path = `https://image.tmdb.org/t/p/w1280${t.media.backdrop_path}`;
+              }
+              return t;
+            });
+
           setUserTitles(validTitles);
+          // Sync normalized image URLs to localStorage
+          localStorage.setItem(currentKey, JSON.stringify(validTitles));
           return;
         }
       }

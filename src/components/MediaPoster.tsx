@@ -22,6 +22,19 @@ export function MediaPoster({
 }: MediaPosterProps) {
   const [hasError, setHasError] = useState(false);
 
+  // Normalize image URL in case relative TMDb path is passed
+  const imageSrc = React.useMemo(() => {
+    if (!src || !src.trim()) return undefined;
+    const trimmed = src.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:')) {
+      return trimmed;
+    }
+    if (trimmed.startsWith('/')) {
+      return `https://image.tmdb.org/t/p/w500${trimmed}`;
+    }
+    return `https://image.tmdb.org/t/p/w500/${trimmed}`;
+  }, [src]);
+
   // Fallback cinematic artwork generator with subtle tone variation
   const getPosterAccent = (text: string) => {
     let hash = 0;
@@ -38,9 +51,9 @@ export function MediaPoster({
     <div
       className={`relative aspect-[2/3] w-full rounded-md overflow-hidden bg-[#14161B] border border-white/[0.08] select-none ${className}`}
     >
-      {!hasError && src ? (
+      {!hasError && imageSrc ? (
         <img
-          src={src}
+          src={imageSrc}
           alt={title}
           onError={() => setHasError(true)}
           className="w-full h-full object-cover brightness-[0.96] transition-transform duration-300 group-hover:scale-[1.02]"
