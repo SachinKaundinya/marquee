@@ -35,16 +35,18 @@ export default function Home() {
           {/* Main Content Area */}
           <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 pb-28 sm:pb-16">
             {activeTab === 'popular' && (
-              <>
-                {/* Now Watching Shelf */}
-                <NowWatchingShelf />
-
-                {/* Popular & Trending Catalog Grid */}
-                <WatchlistGrid mode="popular" />
-              </>
+              <WatchlistGrid mode="popular" />
             )}
 
-            {activeTab === 'diary' && <DiaryFeed />}
+            {activeTab === 'diary' && (
+              <>
+                {/* Now Watching Active Series Shelf */}
+                <NowWatchingShelf />
+
+                {/* Chronological Watched Diary */}
+                <DiaryFeed />
+              </>
+            )}
 
             {activeTab === 'watchlist' && (
               <WatchlistGrid

@@ -55,6 +55,11 @@ interface MediaContextType {
   isServicesModalOpen: boolean;
   openServicesModal: () => void;
   closeServicesModal: () => void;
+
+  // Search Focus Trigger
+  searchFocusTrigger: number;
+  searchFocusContext?: 'diary' | 'watchlist';
+  triggerSearchFocus: (context?: 'diary' | 'watchlist') => void;
 }
 
 const MediaContext = createContext<MediaContextType | undefined>(undefined);
@@ -85,6 +90,15 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     'Prime Video',
   ]);
   const [isServicesModalOpen, setIsServicesModalOpen] = useState(false);
+
+  // Search Focus Trigger State
+  const [searchFocusTrigger, setSearchFocusTrigger] = useState<number>(0);
+  const [searchFocusContext, setSearchFocusContext] = useState<'diary' | 'watchlist' | undefined>();
+
+  const triggerSearchFocus = (context?: 'diary' | 'watchlist') => {
+    setSearchFocusContext(context);
+    setSearchFocusTrigger((prev) => prev + 1);
+  };
 
   // Hydrate from localStorage and fetch deep live catalog
   useEffect(() => {
@@ -451,6 +465,9 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         isServicesModalOpen,
         openServicesModal: () => setIsServicesModalOpen(true),
         closeServicesModal: () => setIsServicesModalOpen(false),
+        searchFocusTrigger,
+        searchFocusContext,
+        triggerSearchFocus,
       }}
     >
       {children}

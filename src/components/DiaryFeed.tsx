@@ -2,14 +2,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Repeat, Calendar, Film, MapPin } from 'lucide-react';
+import { Star, Repeat, Calendar, Film, MapPin, Plus } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { UserTitle } from '@/types/media';
 import { springTransition } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 
 export function DiaryFeed() {
-  const { diaryTitles, openQuickLog } = useMedia();
+  const { diaryTitles, openQuickLog, triggerSearchFocus } = useMedia();
 
   // Group titles by Year and Month: "October 2026"
   const groupedTitles = diaryTitles.reduce<Record<string, UserTitle[]>>((acc, item) => {
@@ -37,15 +37,33 @@ export function DiaryFeed() {
             {diaryTitles.length} Logged
           </span>
         </div>
+
+        {/* Add to List Button */}
+        <button
+          type="button"
+          onClick={() => triggerSearchFocus('diary')}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-xs font-medium text-white border border-white/[0.1] transition-all cursor-pointer shadow-sm active:scale-95"
+        >
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+          <span>Add to List</span>
+        </button>
       </div>
 
       {monthKeys.length === 0 ? (
-        <div className="p-12 text-center rounded-xl bg-[#14161B] border border-white/[0.08]">
+        <div className="p-12 text-center rounded-xl bg-[#14161B] border border-white/[0.08] max-w-lg mx-auto">
           <Film className="w-8 h-8 text-[#8E93A0] mx-auto mb-2 opacity-50" />
           <h4 className="text-sm font-medium text-[#F3F4F6] mb-1">Your diary is empty</h4>
-          <p className="text-xs text-[#8E93A0] max-w-xs mx-auto">
+          <p className="text-xs text-[#8E93A0] max-w-xs mx-auto mb-4 leading-relaxed">
             Log movies or finished TV series to build your chronological viewing journal.
           </p>
+          <button
+            type="button"
+            onClick={() => triggerSearchFocus('diary')}
+            className="px-4 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm inline-flex items-center gap-1.5"
+          >
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Add to List</span>
+          </button>
         </div>
       ) : (
         <div className="space-y-8">

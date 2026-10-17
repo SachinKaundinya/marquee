@@ -21,10 +21,30 @@ export function Navbar({
   onOpenImport,
   onOpenApiSettings,
 }: NavbarProps) {
-  const { openQuickLog, openServicesModal, watchlistTitles } = useMedia();
+  const {
+    openQuickLog,
+    openServicesModal,
+    watchlistTitles,
+    searchFocusTrigger,
+    searchFocusContext,
+  } = useMedia();
   const { user, signInWithGoogle, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MediaItem[]>([]);
+  const [isSearchHighlighted, setIsSearchHighlighted] = useState(false);
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (searchFocusTrigger > 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      searchInputRef.current?.focus();
+      setIsSearchHighlighted(true);
+      const timer = setTimeout(() => {
+        setIsSearchHighlighted(false);
+      }, 2200);
+      return () => clearTimeout(timer);
+    }
+  }, [searchFocusTrigger]);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const q = e.target.value;
@@ -100,14 +120,31 @@ export function Navbar({
         <div className="flex items-center gap-2.5">
           {/* Quick Search */}
           <div className="relative w-40 sm:w-56 md:w-64">
-            <div className="relative flex items-center">
-              <Search className="w-3.5 h-3.5 text-[#8E93A0] absolute left-3 pointer-events-none" />
+            <div
+              className={`relative flex items-center transition-all duration-300 rounded-lg ${
+                isSearchHighlighted
+                  ? 'ring-2 ring-emerald-400 border border-emerald-400 scale-[1.04] shadow-[0_0_24px_rgba(52,211,153,0.35)]'
+                  : 'border border-white/[0.08]'
+              }`}
+            >
+              <Search
+                className={`w-3.5 h-3.5 absolute left-3 pointer-events-none transition-colors ${
+                  isSearchHighlighted ? 'text-emerald-400' : 'text-[#8E93A0]'
+                }`}
+              />
               <input
+                ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder="Search film or TV..."
-                className="w-full bg-[#14161B] border border-white/[0.08] text-xs text-[#F3F4F6] pl-8 pr-7 py-1.5 rounded-lg focus:outline-none focus:border-white/25 placeholder-[#636875] transition-colors"
+                placeholder={
+                  searchFocusContext === 'watchlist'
+                    ? 'Search to add to Watchlist...'
+                    : searchFocusContext === 'diary'
+                    ? 'Search to add to Diary...'
+                    : 'Search film or TV...'
+                }
+                className="w-full bg-[#14161B] text-xs text-[#F3F4F6] pl-8 pr-7 py-1.5 rounded-lg focus:outline-none focus:border-white/25 placeholder-[#636875] transition-colors"
               />
               {searchQuery && (
                 <button

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Bookmark, Play, EyeOff } from 'lucide-react';
+import { X, Check, Bookmark, Play, EyeOff, Trash2 } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { StarRating } from '@/components/StarRating';
 import { TrackingStatus } from '@/types/media';
@@ -10,7 +10,7 @@ import { drawerTransition, tapScale } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 
 export function QuickLogModal() {
-  const { quickLogItem, closeQuickLog, saveLog, getUserTitle, markNotInterested } = useMedia();
+  const { quickLogItem, closeQuickLog, saveLog, getUserTitle, markNotInterested, removeTitle } = useMedia();
 
   const item = quickLogItem?.item;
   const initialStatus = quickLogItem?.initialStatus;
@@ -81,6 +81,11 @@ export function QuickLogModal() {
       watched_on: status === 'watched' ? watchedDate : null,
       media: item,
     });
+    closeQuickLog();
+  };
+
+  const handleRemove = () => {
+    removeTitle(item.tmdb_id, item.media_type);
     closeQuickLog();
   };
 
@@ -329,32 +334,65 @@ export function QuickLogModal() {
                 Select an option above to log or remove this title
               </div>
             ) : status === 'watched' ? (
-              <motion.button
-                whileTap={tapScale}
-                onClick={handleSave}
-                className="w-full py-3 px-4 rounded-lg bg-emerald-500 text-black font-semibold text-sm flex items-center justify-center gap-2 hover:bg-emerald-400 active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(16,185,129,0.25)] cursor-pointer"
-              >
-                <Check className="w-4 h-4 stroke-[2.5]" />
-                Save as Watched
-              </motion.button>
+              existingTitle?.status === 'watched' ? (
+                <motion.button
+                  whileTap={tapScale}
+                  onClick={handleRemove}
+                  className="w-full py-3 px-4 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-rose-500/25 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4 stroke-[2.5]" />
+                  Remove as Watched
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileTap={tapScale}
+                  onClick={handleSave}
+                  className="w-full py-3 px-4 rounded-lg bg-emerald-500 text-black font-semibold text-sm flex items-center justify-center gap-2 hover:bg-emerald-400 active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(16,185,129,0.25)] cursor-pointer"
+                >
+                  <Check className="w-4 h-4 stroke-[2.5]" />
+                  Save as Watched
+                </motion.button>
+              )
             ) : status === 'want_to_watch' ? (
-              <motion.button
-                whileTap={tapScale}
-                onClick={handleSave}
-                className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
-              >
-                <Bookmark className="w-4 h-4 stroke-[2.5]" />
-                Save to Watchlist
-              </motion.button>
+              existingTitle?.status === 'want_to_watch' ? (
+                <motion.button
+                  whileTap={tapScale}
+                  onClick={handleRemove}
+                  className="w-full py-3 px-4 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-rose-500/25 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4 stroke-[2.5]" />
+                  Remove from Watchlist
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileTap={tapScale}
+                  onClick={handleSave}
+                  className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
+                >
+                  <Bookmark className="w-4 h-4 stroke-[2.5]" />
+                  Save to Watchlist
+                </motion.button>
+              )
             ) : status === 'watching' ? (
-              <motion.button
-                whileTap={tapScale}
-                onClick={handleSave}
-                className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
-              >
-                <Play className="w-4 h-4 stroke-[2.5]" />
-                Move to Now Watching
-              </motion.button>
+              existingTitle?.status === 'watching' ? (
+                <motion.button
+                  whileTap={tapScale}
+                  onClick={handleRemove}
+                  className="w-full py-3 px-4 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-rose-500/25 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4 stroke-[2.5]" />
+                  Remove from Now Watching
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileTap={tapScale}
+                  onClick={handleSave}
+                  className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
+                >
+                  <Play className="w-4 h-4 stroke-[2.5]" />
+                  Move to Now Watching
+                </motion.button>
+              )
             ) : (
               <motion.button
                 whileTap={tapScale}
