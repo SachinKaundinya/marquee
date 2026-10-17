@@ -188,8 +188,29 @@ const ANIME_KEYWORD_TOKENS = [
   'anime series', 'anime television'
 ];
 
+export function isAnimationItem(item: any): boolean {
+  if (!item) return false;
+  const genres = (item.genres || []).map((g: string) => (typeof g === 'string' ? g.toLowerCase() : ''));
+  const genreIds: number[] = Array.isArray(item.genre_ids) ? item.genre_ids : [];
+  if (
+    genres.includes('animation') ||
+    genres.includes('anime') ||
+    genres.includes('animated') ||
+    genreIds.includes(16)
+  ) {
+    return true;
+  }
+  const title = (item.title || item.name || '').toLowerCase();
+  const overview = (item.overview || '').toLowerCase();
+  if (overview.includes('animated film') || overview.includes('animated series') || overview.includes('anime series') || overview.includes('computer-animated')) {
+    return true;
+  }
+  return false;
+}
+
 export function isAnimeItem(item: any): boolean {
   if (!item) return false;
+  if (isAnimationItem(item)) return true;
   const origLang = (item.original_language || '').toLowerCase().trim();
   const genres = (item.genres || []).map((g: string) => (typeof g === 'string' ? g.toLowerCase() : ''));
   const genreIds: number[] = Array.isArray(item.genre_ids) ? item.genre_ids : [];
@@ -627,9 +648,9 @@ export async function fetchTmdbCategory(
           });
       }
 
-      // Add exclusive in-theater and upcoming movies to Trending (excluding foreign titles)
+      // Add exclusive in-theater and upcoming movies to Trending (excluding foreign and animation titles)
       theaterTitles.forEach((thItem) => {
-        if (!isNonEnglishItem(thItem) && !seen.has(thItem.tmdb_id)) {
+        if (!isAnimeItem(thItem) && !isNonEnglishItem(thItem) && !seen.has(thItem.tmdb_id)) {
           seen.add(thItem.tmdb_id);
           items.push(thItem);
         }
