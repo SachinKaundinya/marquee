@@ -2,10 +2,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Repeat, Calendar, Film, Tv, MapPin } from 'lucide-react';
+import { Star, Repeat, Calendar, Film, MapPin } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { UserTitle } from '@/types/media';
 import { springTransition } from '@/tokens/motion';
+import { MediaPoster } from '@/components/MediaPoster';
 
 export function DiaryFeed() {
   const { diaryTitles, openQuickLog } = useMedia();
@@ -43,7 +44,7 @@ export function DiaryFeed() {
           <Film className="w-8 h-8 text-[#8E93A0] mx-auto mb-2 opacity-50" />
           <h4 className="text-sm font-medium text-[#F3F4F6] mb-1">Your diary is empty</h4>
           <p className="text-xs text-[#8E93A0] max-w-xs mx-auto">
-            Log movies or finished TV shows to build your chronological viewing journal.
+            Log movies or finished TV series to build your chronological viewing journal.
           </p>
         </div>
       ) : (
@@ -90,12 +91,12 @@ export function DiaryFeed() {
                         </div>
 
                         {/* Poster Thumbnail */}
-                        <div className="w-12 shrink-0 aspect-[2/3] rounded overflow-hidden bg-black/40 border border-white/[0.06]">
-                          <img
+                        <div className="w-12 shrink-0">
+                          <MediaPoster
                             src={media.poster_path}
-                            alt={media.title}
-                            className="w-full h-full object-cover brightness-[0.96]"
-                            loading="lazy"
+                            title={media.title}
+                            mediaType={media.media_type}
+                            year={media.release_year}
                           />
                         </div>
 

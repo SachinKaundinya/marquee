@@ -2,14 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Calendar as CalendarIcon, Film, Tv, Eye, Bookmark, Play } from 'lucide-react';
+import { X, Check, Bookmark, Play } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { StarRating } from '@/components/StarRating';
 import { TrackingStatus } from '@/types/media';
 import { drawerTransition, tapScale } from '@/tokens/motion';
+import { MediaPoster } from '@/components/MediaPoster';
 
 const PLATFORMS = [
   'Cinema / Theater',
+  'Home Theater / TV',
   'Apple TV+',
   'Max',
   'Netflix',
@@ -33,7 +35,7 @@ export function QuickLogModal() {
   const [notes, setNotes] = useState<string>(existingTitle?.notes ?? '');
   const [isRewatch, setIsRewatch] = useState<boolean>(existingTitle?.is_rewatch ?? false);
   const [platform, setPlatform] = useState<string>(
-    existingTitle?.platform_name || item?.streaming_provider?.name || 'Cinema / Theater'
+    existingTitle?.platform_name || (item?.media_type === 'movie' ? 'Cinema / Theater' : 'Home Theater / TV')
   );
 
   // Date seen
@@ -51,8 +53,7 @@ export function QuickLogModal() {
       setIsRewatch(existing?.is_rewatch ?? false);
       setPlatform(
         existing?.platform_name ||
-        quickLogItem.item.streaming_provider?.name ||
-        (quickLogItem.item.media_type === 'movie' ? 'Cinema / Theater' : 'Apple TV+')
+        (quickLogItem.item.media_type === 'movie' ? 'Cinema / Theater' : 'Home Theater / TV')
       );
       setWatchedDate(existing?.watched_on || todayStr);
       setDateSelection(
@@ -112,11 +113,12 @@ export function QuickLogModal() {
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[#101216]">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-12 rounded bg-black/40 overflow-hidden shrink-0 border border-white/[0.06]">
-                <img
+              <div className="w-8 shrink-0">
+                <MediaPoster
                   src={item.poster_path}
-                  alt={item.title}
-                  className="w-full h-full object-cover brightness-[0.96]"
+                  title={item.title}
+                  mediaType={item.media_type}
+                  year={item.release_year}
                 />
               </div>
               <div className="min-w-0">
@@ -136,7 +138,7 @@ export function QuickLogModal() {
 
             <button
               onClick={closeQuickLog}
-              className="p-1.5 rounded-lg text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors"
+              className="p-1.5 rounded-lg text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -153,7 +155,7 @@ export function QuickLogModal() {
                 <button
                   type="button"
                   onClick={() => setStatus('want_to_watch')}
-                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors ${
+                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                     status === 'want_to_watch'
                       ? 'bg-white/10 text-white border-white/30 shadow-sm'
                       : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
@@ -167,7 +169,7 @@ export function QuickLogModal() {
                   <button
                     type="button"
                     onClick={() => setStatus('watching')}
-                    className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors ${
+                    className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                       status === 'watching'
                         ? 'bg-white/10 text-white border-white/30 shadow-sm'
                         : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
@@ -181,7 +183,7 @@ export function QuickLogModal() {
                 <button
                   type="button"
                   onClick={() => setStatus('watched')}
-                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors ${
+                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                     item.media_type === 'movie' ? 'col-span-2' : ''
                   } ${
                     status === 'watched'
@@ -205,7 +207,7 @@ export function QuickLogModal() {
                   <button
                     type="button"
                     onClick={() => handleDateQuickSelect('today')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                       dateSelection === 'today'
                         ? 'bg-white/10 text-white border-white/30'
                         : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
@@ -216,7 +218,7 @@ export function QuickLogModal() {
                   <button
                     type="button"
                     onClick={() => handleDateQuickSelect('yesterday')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                       dateSelection === 'yesterday'
                         ? 'bg-white/10 text-white border-white/30'
                         : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
@@ -264,7 +266,7 @@ export function QuickLogModal() {
             {/* Platform / Location */}
             <div>
               <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-2 block">
-                Platform / Venue
+                Viewing Venue / Medium
               </label>
               <select
                 value={platform}
@@ -279,7 +281,7 @@ export function QuickLogModal() {
               </select>
             </div>
 
-            {/* Notes & Diary Reflections */}
+            {/* Notes & Reflections */}
             <div>
               <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-2 block">
                 Notes & Reflections (Optional)
@@ -288,7 +290,7 @@ export function QuickLogModal() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
-                placeholder="Crisp reflections, favorite sequences, projection quality..."
+                placeholder="Reflections, memorable performances, craft details..."
                 className="w-full bg-[#0D0E11] border border-white/[0.08] text-sm text-[#F3F4F6] rounded-lg p-3 placeholder-[#636875] focus:outline-none focus:border-white/30 leading-relaxed max-w-[65ch] transition-colors resize-none"
               />
             </div>

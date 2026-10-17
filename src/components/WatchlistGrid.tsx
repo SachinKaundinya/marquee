@@ -2,15 +2,16 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Film, Tv, Star, Clock, Check, Plus, Bookmark } from 'lucide-react';
+import { Star, Bookmark } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
-import { springTransition, tapScale } from '@/tokens/motion';
+import { springTransition } from '@/tokens/motion';
+import { MediaPoster } from '@/components/MediaPoster';
 
-type FilterType = 'all' | 'available' | 'movies' | 'tv' | 'short';
+type FilterType = 'all' | 'movies' | 'tv' | 'short';
 
 export function WatchlistGrid() {
-  const { catalog, userTitles, openQuickLog, updateStatus, getUserTitle } = useMedia();
+  const { catalog, userTitles, openQuickLog, getUserTitle } = useMedia();
   const [filter, setFilter] = useState<FilterType>('all');
   const [viewMode, setViewMode] = useState<'watchlist' | 'explore'>('watchlist');
 
@@ -24,7 +25,6 @@ export function WatchlistGrid() {
   ).filter((item) => {
     if (filter === 'movies') return item.media_type === 'movie';
     if (filter === 'tv') return item.media_type === 'tv';
-    if (filter === 'available') return Boolean(item.streaming_provider);
     if (filter === 'short') return Boolean(item.runtime && item.runtime < 100);
     return true;
   });
@@ -37,7 +37,7 @@ export function WatchlistGrid() {
         <div className="flex items-center gap-1 bg-[#14161B] p-1 rounded-lg border border-white/[0.08] w-fit">
           <button
             onClick={() => setViewMode('watchlist')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
               viewMode === 'watchlist'
                 ? 'bg-[#F4F4F6] text-[#0A0B0D] shadow-sm'
                 : 'text-[#8E93A0] hover:text-white'
@@ -47,13 +47,13 @@ export function WatchlistGrid() {
           </button>
           <button
             onClick={() => setViewMode('explore')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
               viewMode === 'explore'
                 ? 'bg-[#F4F4F6] text-[#0A0B0D] shadow-sm'
                 : 'text-[#8E93A0] hover:text-white'
             }`}
           >
-            Explore Catalog
+            Explore Catalog ({catalog.length})
           </button>
         </div>
 
@@ -61,7 +61,7 @@ export function WatchlistGrid() {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <button
             onClick={() => setFilter('all')}
-            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 ${
+            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${
               filter === 'all'
                 ? 'bg-white/10 text-white border-white/20'
                 : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
@@ -71,30 +71,19 @@ export function WatchlistGrid() {
           </button>
 
           <button
-            onClick={() => setFilter('available')}
-            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 ${
-              filter === 'available'
-                ? 'bg-white/10 text-white border-white/20'
-                : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
-            }`}
-          >
-            Available on My Services
-          </button>
-
-          <button
             onClick={() => setFilter('movies')}
-            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 ${
+            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${
               filter === 'movies'
                 ? 'bg-white/10 text-white border-white/20'
                 : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
             }`}
           >
-            Movies
+            Films
           </button>
 
           <button
             onClick={() => setFilter('tv')}
-            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 ${
+            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${
               filter === 'tv'
                 ? 'bg-white/10 text-white border-white/20'
                 : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
@@ -105,7 +94,7 @@ export function WatchlistGrid() {
 
           <button
             onClick={() => setFilter('short')}
-            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 ${
+            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors shrink-0 cursor-pointer ${
               filter === 'short'
                 ? 'bg-white/10 text-white border-white/20'
                 : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04]'
@@ -127,13 +116,13 @@ export function WatchlistGrid() {
           </h4>
           <p className="text-xs text-[#8E93A0] max-w-xs mx-auto mb-4">
             {viewMode === 'watchlist'
-              ? 'Browse the explore catalog to queue films and shows you want to watch.'
-              : 'Try clearing active filters or modifying search keywords.'}
+              ? 'Switch to Explore Catalog to discover titles to track.'
+              : 'Try clearing active filters.'}
           </p>
           {viewMode === 'watchlist' && (
             <button
               onClick={() => setViewMode('explore')}
-              className="px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors"
+              className="px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer"
             >
               Explore Titles
             </button>
@@ -143,7 +132,6 @@ export function WatchlistGrid() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {items.map((item) => {
             const userTitle = getUserTitle(item.tmdb_id, item.media_type);
-            const isWatchlist = userTitle?.status === 'want_to_watch';
             const isWatching = userTitle?.status === 'watching';
             const isWatched = userTitle?.status === 'watched';
 
@@ -157,31 +145,24 @@ export function WatchlistGrid() {
                 className="group flex flex-col cursor-pointer"
                 onClick={() => openQuickLog(item)}
               >
-                {/* Poster container with fixed 2:3 aspect ratio (Zero CLS) */}
-                <div className="relative aspect-[2/3] w-full rounded-md overflow-hidden bg-[#181A20] border border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.4)] group-hover:border-white/20 transition-all">
-                  <img
+                {/* Poster container with MediaPoster */}
+                <div className="relative aspect-[2/3] w-full rounded-md overflow-hidden bg-[#181A20] shadow-[0_4px_16px_rgba(0,0,0,0.4)] group-hover:border-white/20 transition-all">
+                  <MediaPoster
                     src={item.poster_path}
-                    alt={item.title}
-                    className="w-full h-full object-cover brightness-[0.96] group-hover:scale-[1.02] transition-transform duration-300"
-                    loading="lazy"
+                    title={item.title}
+                    mediaType={item.media_type}
+                    year={item.release_year}
                   />
-
-                  {/* Provider micro-badge */}
-                  {item.streaming_provider && (
-                    <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/85 backdrop-blur-md border border-white/10 text-[9px] font-semibold text-white/90">
-                      {item.streaming_provider.name}
-                    </div>
-                  )}
 
                   {/* Status Indicator Chip */}
                   {userTitle && (
-                    <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-white text-black text-[9px] font-bold uppercase tracking-wider">
+                    <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-white text-black text-[9px] font-bold uppercase tracking-wider shadow-sm z-20">
                       {isWatching ? 'Watching' : isWatched ? 'Watched' : 'Queue'}
                     </div>
                   )}
 
                   {/* Quick-action overlay button on hover */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 z-20">
                     <span className="px-2.5 py-1 rounded bg-[#F4F4F6] text-[#0A0B0D] text-[11px] font-medium shadow-md">
                       Log Title
                     </span>

@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Check, MoreVertical, Archive, ArrowDownToLine, Plus, Tv } from 'lucide-react';
+import { Check, MoreVertical, Archive, ArrowDownToLine, Tv, Edit3 } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { UserTitle } from '@/types/media';
 import { springTransition, tapScale } from '@/tokens/motion';
+import { MediaPoster } from '@/components/MediaPoster';
 
 export function NowWatchingShelf() {
   const { nowWatchingTitles, updateStatus, openQuickLog } = useMedia();
@@ -65,7 +66,7 @@ export function NowWatchingShelf() {
             No active TV shows on your shelf
           </h3>
           <p className="text-xs text-[#8E93A0] mb-4 max-w-sm mx-auto leading-relaxed">
-            Keep your viewing intentional. Track only the series you are currently engaged with.
+            Keep your viewing intentional. Mark a series as &ldquo;Watching&rdquo; to place it here.
           </p>
         </div>
       ) : (
@@ -75,7 +76,6 @@ export function NowWatchingShelf() {
               const media = title.media;
               if (!media) return null;
               const isExiting = exitingId === title.id;
-              const provider = media.streaming_provider;
 
               return (
                 <motion.div
@@ -91,19 +91,14 @@ export function NowWatchingShelf() {
                   transition={springTransition}
                   className="relative group rounded-xl bg-[#14161B] border border-white/[0.08] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] p-3.5 flex gap-4 transition-colors hover:bg-[#1C1F26]"
                 >
-                  {/* Poster (Strict 2:3 Aspect Ratio) */}
-                  <div className="relative w-20 shrink-0 aspect-[2/3] rounded-md overflow-hidden bg-black/40 border border-white/[0.06]">
-                    <img
+                  {/* Poster (Strict 2:3 Aspect Ratio using MediaPoster) */}
+                  <div className="w-20 shrink-0">
+                    <MediaPoster
                       src={media.poster_path}
-                      alt={media.title}
-                      className="w-full h-full object-cover brightness-[0.96]"
-                      loading="lazy"
+                      title={media.title}
+                      mediaType="tv"
+                      year={media.release_year}
                     />
-                    {provider && (
-                      <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-md border border-white/10 text-[9px] font-semibold text-white/90">
-                        {provider.name}
-                      </div>
-                    )}
                   </div>
 
                   {/* Card Content & Actions */}
@@ -116,7 +111,7 @@ export function NowWatchingShelf() {
                             {media.title}
                           </h3>
                           <p className="text-xs text-[#8E93A0] truncate mt-0.5">
-                            {media.genres.slice(0, 2).join(' • ')}
+                            {media.release_year} • {media.genres.slice(0, 2).join(' / ')}
                           </p>
                         </div>
 
@@ -158,33 +153,29 @@ export function NowWatchingShelf() {
                         </div>
                       </div>
 
-                      {/* Streaming Provider Callout */}
-                      <div className="mt-2 text-xs text-[#8E93A0] flex items-center gap-1.5">
-                        <span className="text-[#636875]">Available on:</span>
-                        <span className="text-[#F3F4F6] font-medium">
-                          {provider ? provider.name : 'Streaming Platform'}
-                        </span>
-                      </div>
+                      {/* Notes Preview if available */}
+                      {title.notes && (
+                        <p className="mt-2 text-xs text-[#8E93A0] line-clamp-2 leading-relaxed italic">
+                          &ldquo;{title.notes}&rdquo;
+                        </p>
+                      )}
                     </div>
 
                     {/* Direct Thumb Actions */}
                     <div className="flex items-center gap-2 pt-3">
-                      {provider?.deep_link_url && (
-                        <a
-                          href={provider.deep_link_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 py-1.5 px-3 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-medium text-[#F3F4F6] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                        >
-                          Watch on {provider.name.split(' ')[0]}
-                          <ExternalLink className="w-3 h-3 text-[#8E93A0]" />
-                        </a>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => openQuickLog(media)}
+                        className="py-1.5 px-3 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-medium text-[#F3F4F6] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-[#8E93A0]" />
+                        Log / Note
+                      </button>
 
                       <motion.button
                         whileTap={tapScale}
                         onClick={() => handleMarkFinished(title)}
-                        className="py-1.5 px-3 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                        className="flex-1 py-1.5 px-3 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
                       >
                         <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                         Mark Finished
