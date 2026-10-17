@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Bookmark, Play, EyeOff, Trash2 } from 'lucide-react';
+import { X, Check, Bookmark, Play, EyeOff, Trash2, Star, Clapperboard, Sparkles } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { StarRating } from '@/components/StarRating';
 import { TrackingStatus } from '@/types/media';
@@ -118,6 +118,32 @@ export function QuickLogModal() {
                 <h3 className="text-base font-semibold text-[#F3F4F6] truncate tracking-tight">
                   {item.title}
                 </h3>
+                <div className="flex items-center gap-2 mt-1">
+                  {item.vote_average > 0 && (
+                    <div className="flex items-center gap-1 text-[11px] font-semibold text-[#E5A93C] bg-[#E5A93C]/10 px-2 py-0.5 rounded">
+                      <Star className="w-3 h-3 fill-[#E5A93C]" />
+                      <span>{item.vote_average.toFixed(1)}</span>
+                    </div>
+                  )}
+                  {item.primary_source && (
+                    <div
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1 ${
+                        item.primary_source === 'In Theaters'
+                          ? 'bg-amber-950/80 text-amber-300 border border-amber-500/50'
+                          : item.primary_source === 'Coming Soon'
+                          ? 'bg-purple-950/80 text-purple-300 border border-purple-500/50'
+                          : 'bg-white/[0.08] text-[#F3F4F6] border border-white/10'
+                      }`}
+                    >
+                      {item.primary_source === 'In Theaters' ? (
+                        <Clapperboard className="w-2.5 h-2.5 text-amber-400" />
+                      ) : item.primary_source === 'Coming Soon' ? (
+                        <Sparkles className="w-2.5 h-2.5 text-purple-400" />
+                      ) : null}
+                      <span>{item.primary_source}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

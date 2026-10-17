@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { getInitialDeepCatalog, fetchTmdbCategory, TmdbCategory } from '@/lib/tmdb';
 import { useAuth } from '@/context/AuthContext';
 import { SACHIN_PERSONAL_TITLES } from '@/data/sachinPersonalTitles';
+import { getImdbRating } from '@/lib/imdbRatings';
 
 export const ALL_SERVICES = [
   'Apple TV+',
@@ -156,6 +157,21 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
                   t.media.streaming_sources = [...s, 'Prime Video (Rent)'];
                 }
               }
+
+              // Auto-heal verified IMDb scores and provider discrepancies
+              if (t.media) {
+                const imdbRating = getImdbRating(t.media.title, t.tmdb_id);
+                if (imdbRating !== undefined) {
+                  t.media.vote_average = imdbRating;
+                }
+                const titleLower = (t.media.title || '').toLowerCase().trim();
+                if (titleLower === 'you can see everything' || t.tmdb_id === 1765072) {
+                  t.media.vote_average = 9.3;
+                  t.media.primary_source = 'In Theaters';
+                  t.media.streaming_sources = ['In Theaters'];
+                }
+              }
+
               return t;
             });
 
