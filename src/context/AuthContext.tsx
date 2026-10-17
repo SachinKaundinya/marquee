@@ -17,15 +17,14 @@ interface AuthContextType {
   isLoading: boolean;
   googleClientId: string;
   setGoogleClientId: (id: string) => void;
-  signInWithGoogle: (email?: string, name?: string) => void;
+  signInWithGoogle: () => void;
   signInWithGoogleCredential: (credential: string) => void;
-  signInWithGoogleManual: (profile: UserProfile) => void;
   signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const LOCAL_SESSION_KEY = 'marquee_google_session_v3';
+const LOCAL_SESSION_KEY = 'marquee_google_session_v4';
 const CLIENT_ID_KEY = 'marquee_google_client_id';
 
 // Default fallback client ID (or configured via environment)
@@ -37,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [googleClientId, setGoogleClientIdState] = useState<string>(ENV_CLIENT_ID);
 
   useEffect(() => {
-    // Check saved client ID
+    // 1. Check saved client ID
     try {
       const storedClientId = localStorage.getItem(CLIENT_ID_KEY);
       if (storedClientId && storedClientId.trim()) {
@@ -49,7 +48,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       //
     }
 
-    // Check active session
+    // 2. Check if returning from Google OAuth redirect (hash containing access_token)
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const accessToken = params.get('access_token');
+      if (accessToken) {
+        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error('Failed to fetch userinfo from Google');
+            return res.json();
+          })
+          .then((data) => {
+            if (data && data.email) {
+              const userProfile: UserProfile = {
+                id: data.sub || `google-${Date.now()}`,
+                email: data.email,
+                name: data.name || data.email.split('@')[0],
+                avatar_url: data.picture,
+              };
+              setUser(userProfile);
+              localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(userProfile));
+              window.history.replaceState(null, '', window.location.pathname);
+              toast.success('Successfully authenticated with Google', {
+                description: `Welcome to Marquee, ${userProfile.name}!`,
+              });
+            }
+          })
+          .catch((err) => {
+            console.error('Google token verification failed', err);
+            toast.error('Google authentication failed. Please try again.');
+          });
+      }
+    }
+
+    // 3. Check active session
     try {
       const stored = localStorage.getItem(LOCAL_SESSION_KEY);
       if (stored) {
@@ -98,42 +133,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signInWithGoogle = (email?: string, name?: string) => {
-    const finalEmail = email?.trim() || 'sachin.bhattiprolu@gmail.com';
-    const computedName =
-      name?.trim() ||
-      finalEmail.split('@')[0].charAt(0).toUpperCase() +
-        finalEmail.split('@')[0].slice(1);
-
-    const profile: UserProfile = {
-      id: `google-${Date.now()}`,
-      email: finalEmail,
-      name: computedName,
-      avatar_url:
-        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
-    };
-
-    setUser(profile);
-    try {
-      localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(profile));
-    } catch {
-      //
+  const signInWithGoogle = () => {
+    if (!googleClientId || googleClientId === 'PLACEHOLDER_CLIENT_ID') {
+      toast.error('Google Client ID is required to open Google sign-on page');
+      return;
     }
-    toast.success('Signed in with Google', {
-      description: `Welcome to Marquee, ${profile.name}!`,
-    });
-  };
-
-  const signInWithGoogleManual = (profile: UserProfile) => {
-    setUser(profile);
-    try {
-      localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(profile));
-    } catch {
-      //
-    }
-    toast.success('Signed in', {
-      description: `Welcome, ${profile.name}!`,
-    });
+    const redirectUri = window.location.origin;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+      googleClientId
+    )}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=token&scope=openid%20email%20profile&prompt=select_account`;
+    window.location.href = authUrl;
   };
 
   const signOut = () => {
@@ -158,7 +169,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setGoogleClientId,
           signInWithGoogle,
           signInWithGoogleCredential,
-          signInWithGoogleManual,
           signOut,
         }}
       >

@@ -119,33 +119,94 @@ export async function searchTitles(query: string): Promise<MediaItem[]> {
   );
 }
 
-export async function getTrendingTitles(): Promise<MediaItem[]> {
+export type TmdbCategory =
+  | 'trending'
+  | 'popular_movies'
+  | 'popular_tv'
+  | 'top_rated'
+  | 'now_playing';
+
+export async function fetchTmdbCategory(
+  category: TmdbCategory,
+  page = 1
+): Promise<MediaItem[]> {
   const { token, key } = getTmdbCredentials();
+  let endpoint = '/trending/all/week';
+  let defaultType: MediaType = 'movie';
+
+  switch (category) {
+    case 'trending':
+      endpoint = '/trending/all/week';
+      break;
+    case 'popular_movies':
+      endpoint = '/movie/popular';
+      defaultType = 'movie';
+      break;
+    case 'popular_tv':
+      endpoint = '/tv/popular';
+      defaultType = 'tv';
+      break;
+    case 'top_rated':
+      endpoint = '/movie/top_rated';
+      defaultType = 'movie';
+      break;
+    case 'now_playing':
+      endpoint = '/movie/now_playing';
+      defaultType = 'movie';
+      break;
+  }
 
   try {
-    const url = `${TMDB_BASE_URL}/trending/all/day`;
+    const url = `${TMDB_BASE_URL}${endpoint}?page=${page}`;
     const headers: Record<string, string> = token
       ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
       : {};
-
-    const finalUrl = token ? url : `${url}?api_key=${key}`;
+    const finalUrl = token ? url : `${url}&api_key=${key}`;
     const res = await fetch(finalUrl, { headers });
 
     if (res.ok) {
       const data = await res.json();
-      const trending = (data.results || [])
-        .filter(
-          (item: any) =>
-            (item.media_type === 'movie' || item.media_type === 'tv') &&
-            Boolean(item.poster_path)
-        )
-        .slice(0, 30)
-        .map((item: any) => formatTmdbItem(item));
+      return (data.results || [])
+        .filter((item: any) => Boolean(item.poster_path))
+        .map((item: any) => {
+          if (!item.media_type) {
+            item.media_type = defaultType;
+          }
+          return formatTmdbItem(item);
+        });
+    }
+  } catch (err) {
+    console.error('Failed to fetch TMDb category', category, err);
+  }
+  return [];
+}
 
-      if (trending.length > 0) return trending;
+export async function getTrendingTitles(): Promise<MediaItem[]> {
+  const titles = await fetchTmdbCategory('trending', 1);
+  return titles.length > 0 ? titles : MOCK_CATALOG;
+}
+
+export async function getInitialDeepCatalog(): Promise<MediaItem[]> {
+  // Fetch multiple diverse categories in parallel for a deep, rich catalog
+  try {
+    const [t1, t2, popM, popTv, topM] = await Promise.all([
+      fetchTmdbCategory('trending', 1),
+      fetchTmdbCategory('trending', 2),
+      fetchTmdbCategory('popular_movies', 1),
+      fetchTmdbCategory('popular_tv', 1),
+      fetchTmdbCategory('top_rated', 1),
+    ]);
+
+    const map = new Map<number, MediaItem>();
+    [...t1, ...t2, ...popM, ...popTv, ...topM].forEach((item) => {
+      map.set(item.tmdb_id, item);
+    });
+
+    if (map.size > 0) {
+      return Array.from(map.values());
     }
   } catch {
-    // Fallback
+    //
   }
 
   return MOCK_CATALOG;

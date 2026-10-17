@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserTitle, MediaItem, QuickLogInput, TrackingStatus, MediaType } from '@/types/media';
 import { INITIAL_USER_TITLES, MOCK_CATALOG } from '@/data/mockCatalog';
 import { toast } from 'sonner';
-import { getTrendingTitles } from '@/lib/tmdb';
+import { getInitialDeepCatalog, fetchTmdbCategory, TmdbCategory } from '@/lib/tmdb';
 
 export const ALL_SERVICES = [
   'Apple TV+',
@@ -38,6 +38,12 @@ interface MediaContextType {
   importTitles: (titles: UserTitle[]) => void;
   getUserTitle: (tmdbId: number, mediaType: MediaType) => UserTitle | undefined;
   
+  // Catalog Category & Pagination
+  selectedCategory: TmdbCategory;
+  changeCategory: (category: TmdbCategory) => void;
+  loadMoreCatalog: () => Promise<void>;
+  isCatalogLoading: boolean;
+
   // Subscribed Services Management
   subscribedServices: string[];
   toggleSubscribedService: (serviceName: string) => void;
@@ -51,17 +57,23 @@ interface MediaContextType {
 
 const MediaContext = createContext<MediaContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'marquee_user_titles_v2';
-const SUBS_STORAGE_KEY = 'marquee_user_subscriptions_v2';
+const STORAGE_KEY = 'marquee_user_titles_v3';
+const SUBS_STORAGE_KEY = 'marquee_user_subscriptions_v3';
 
 export function MediaProvider({ children }: { children: React.ReactNode }) {
-  const [userTitles, setUserTitles] = useState<UserTitle[]>(INITIAL_USER_TITLES);
-  const [catalog, setCatalog] = useState<MediaItem[]>(MOCK_CATALOG);
+  // Start completely clean: no random hardcoded titles
+  const [userTitles, setUserTitles] = useState<UserTitle[]>([]);
+  const [catalog, setCatalog] = useState<MediaItem[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [quickLogItem, setQuickLogItem] = useState<{ item: MediaItem; initialStatus?: TrackingStatus } | null>(null);
+
+  // Catalog category & pagination
+  const [selectedCategory, setSelectedCategory] = useState<TmdbCategory>('trending');
+  const [categoryPages, setCategoryPages] = useState<Record<string, number>>({ trending: 1 });
+  const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   
-  // Default subscribed services (e.g. Netflix, Apple TV+, Max)
+  // Default subscribed services
   const [subscribedServices, setSubscribedServicesState] = useState<string[]>([
     'Apple TV+',
     'Max',
@@ -70,14 +82,22 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   ]);
   const [isServicesModalOpen, setIsServicesModalOpen] = useState(false);
 
-  // Hydrate from localStorage and fetch live trending titles
+  // Hydrate from localStorage and fetch deep live catalog
   useEffect(() => {
     try {
+      // Clear legacy mock titles from previous version
+      localStorage.removeItem('marquee_user_titles_v2');
+      localStorage.removeItem('marquee_user_titles');
+
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setUserTitles(parsed);
+        if (Array.isArray(parsed)) {
+          // Strictly reject any mock IDs
+          const genuineUserTitles = parsed.filter(
+            (t: any) => !t.id?.startsWith('user-title-')
+          );
+          setUserTitles(genuineUserTitles);
         }
       }
     } catch {
@@ -96,26 +116,60 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       // Ignore
     }
 
-    // Fetch live trending titles from TMDb
-    getTrendingTitles()
-      .then((trending) => {
-        if (trending && trending.length > 0) {
-          setCatalog((prev) => {
-            const map = new Map<number, MediaItem>();
-            trending.forEach((item) => map.set(item.tmdb_id, item));
-            prev.forEach((item) => {
-              if (!map.has(item.tmdb_id)) {
-                map.set(item.tmdb_id, item);
-              }
-            });
-            return Array.from(map.values());
-          });
+    // Deep Catalog Initialization from TMDb
+    setIsCatalogLoading(true);
+    getInitialDeepCatalog()
+      .then((deepTitles) => {
+        if (deepTitles && deepTitles.length > 0) {
+          setCatalog(deepTitles);
         }
       })
-      .catch(() => {
-        // Retain mock catalog fallback
+      .finally(() => {
+        setIsCatalogLoading(false);
       });
   }, []);
+
+  const changeCategory = async (category: TmdbCategory) => {
+    setSelectedCategory(category);
+    setIsCatalogLoading(true);
+    try {
+      const titles = await fetchTmdbCategory(category, 1);
+      setCategoryPages((prev) => ({ ...prev, [category]: 1 }));
+      if (titles && titles.length > 0) {
+        setCatalog(titles);
+      }
+    } finally {
+      setIsCatalogLoading(false);
+    }
+  };
+
+  const loadMoreCatalog = async () => {
+    if (isCatalogLoading) return;
+    const nextPage = (categoryPages[selectedCategory] || 1) + 1;
+    setIsCatalogLoading(true);
+
+    try {
+      const moreTitles = await fetchTmdbCategory(selectedCategory, nextPage);
+      if (moreTitles && moreTitles.length > 0) {
+        setCategoryPages((prev) => ({ ...prev, [selectedCategory]: nextPage }));
+        setCatalog((prev) => {
+          const map = new Map<number, MediaItem>();
+          prev.forEach((item) => map.set(item.tmdb_id, item));
+          moreTitles.forEach((item) => {
+            if (!map.has(item.tmdb_id)) {
+              map.set(item.tmdb_id, item);
+            }
+          });
+          return Array.from(map.values());
+        });
+        toast.success(`Loaded ${moreTitles.length} more titles from TMDb`);
+      }
+    } catch {
+      toast.error('Failed to load more titles from TMDb');
+    } finally {
+      setIsCatalogLoading(false);
+    }
+  };
 
   // Sync titles to localStorage
   const persistTitles = (titles: UserTitle[]) => {
@@ -329,6 +383,10 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         diaryTitles,
         importTitles,
         getUserTitle,
+        selectedCategory,
+        changeCategory,
+        loadMoreCatalog,
+        isCatalogLoading,
         subscribedServices,
         toggleSubscribedService,
         setSubscribedServices,

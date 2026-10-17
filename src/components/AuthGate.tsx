@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '@/context/AuthContext';
-import { Film, CheckCircle2, Key, ArrowRight, Lock, Sparkles } from 'lucide-react';
+import { Film, CheckCircle2, Key, ArrowRight, Lock, ExternalLink, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { springTransition } from '@/tokens/motion';
 
@@ -18,8 +18,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   } = useAuth();
 
   const [inputClientId, setInputClientId] = useState('');
-  const [showConfig, setShowConfig] = useState(false);
-  const [emailInput, setEmailInput] = useState('sachin.bhattiprolu@gmail.com');
+  const [showConfig, setShowConfig] = useState(!googleClientId || googleClientId === 'PLACEHOLDER_CLIENT_ID');
 
   if (isLoading) {
     return (
@@ -37,18 +36,19 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  // Forced Authentication Gate
-  const handleSaveClientId = () => {
+  const handleSaveClientId = (e: React.FormEvent) => {
+    e.preventDefault();
     if (inputClientId.trim()) {
       setGoogleClientId(inputClientId.trim());
       setShowConfig(false);
     }
   };
 
-  const handleGoogleSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    signInWithGoogle(emailInput);
-  };
+  const hasValidClientId = Boolean(
+    googleClientId &&
+    googleClientId !== 'PLACEHOLDER_CLIENT_ID' &&
+    googleClientId.includes('.apps.googleusercontent.com')
+  );
 
   return (
     <div className="min-h-screen bg-[#0A0B0D] text-[#F3F4F6] flex flex-col justify-between selection:bg-white/20 selection:text-white relative overflow-hidden">
@@ -90,14 +90,15 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
               Sign in to Marquee
             </h1>
             <p className="text-xs text-[#8E93A0] leading-relaxed max-w-xs mx-auto">
-              An intentional, craft-driven entertainment tracker for cinema and television.
+              Authenticate with your Google account to access your personal entertainment tracker and diary.
             </p>
           </div>
 
-          {/* Real Google OAuth Login & Instant Authentication */}
+          {/* Official Google Authentication */}
           <div className="space-y-4 mb-6">
-            {googleClientId && googleClientId !== 'PLACEHOLDER_CLIENT_ID' ? (
-              <div className="flex flex-col items-center gap-3">
+            {hasValidClientId ? (
+              <div className="space-y-3">
+                {/* Official Google Popup Button */}
                 <div className="flex justify-center w-full py-1">
                   <GoogleLogin
                     onSuccess={(credentialResponse) => {
@@ -115,36 +116,15 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
                     width="340"
                   />
                 </div>
+
+                {/* Direct Redirect to accounts.google.com */}
                 <button
                   type="button"
-                  onClick={() => handleGoogleSubmit()}
-                  className="text-xs text-[#8E93A0] hover:text-white underline cursor-pointer"
-                >
-                  Quick Enter with {emailInput}
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleGoogleSubmit} className="space-y-3">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-medium text-[#8E93A0] uppercase tracking-wider block">
-                    Google Account
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    placeholder="name@gmail.com"
-                    className="w-full bg-[#0D0E11] border border-white/[0.08] text-xs text-[#F3F4F6] px-3.5 py-2.5 rounded-xl focus:outline-none focus:border-white/30 transition-colors"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-3 px-4 rounded-xl bg-white hover:bg-[#F3F4F6] text-[#0A0B0D] font-medium text-xs flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer active:scale-[0.98]"
+                  onClick={signInWithGoogle}
+                  className="w-full py-2.5 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#F3F4F6] flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   {/* Google SVG Logo */}
-                  <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
                     <path
                       fill="#4285F4"
                       d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
@@ -162,51 +142,96 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
                       d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
                     />
                   </svg>
-                  <span>Sign in with Google Account</span>
-                  <ArrowRight className="w-3.5 h-3.5 ml-0.5 opacity-60" />
+                  <span>Open accounts.google.com Sign-In Page</span>
+                  <ExternalLink className="w-3 h-3 text-[#8E93A0]" />
                 </button>
 
-                <div className="pt-2 flex items-center justify-between text-[11px] text-[#8E93A0]">
+                <div className="pt-1 text-center">
                   <button
                     type="button"
                     onClick={() => setShowConfig(!showConfig)}
-                    className="hover:text-white underline cursor-pointer flex items-center gap-1"
+                    className="text-[11px] text-[#8E93A0] hover:text-white underline cursor-pointer"
                   >
-                    <Key className="w-3 h-3" />
-                    <span>{showConfig ? 'Hide Client ID Settings' : 'Custom Google Cloud Client ID'}</span>
+                    {showConfig ? 'Hide Client ID' : 'Change Google Cloud Client ID'}
                   </button>
                 </div>
+              </div>
+            ) : (
+              /* When Google Client ID is not yet connected */
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs space-y-2">
+                  <div className="flex items-center gap-2 font-semibold text-amber-300">
+                    <ShieldCheck className="w-4 h-4 shrink-0" />
+                    <span>Google Cloud Client ID Required</span>
+                  </div>
+                  <p className="text-[#8E93A0] leading-relaxed text-[11px]">
+                    To take users directly to Google's official sign-on page (<span className="text-white font-mono">accounts.google.com</span>), Google strictly requires an OAuth 2.0 Client ID from Google Cloud Console.
+                  </p>
+                </div>
 
-                {showConfig && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="p-3.5 rounded-xl bg-black/40 border border-white/[0.08] space-y-3"
-                  >
-                    <div className="flex items-center gap-1.5 text-xs text-[#F3F4F6] font-medium">
-                      <Key className="w-3.5 h-3.5 text-[#8E93A0]" />
-                      <span>Google Cloud Client ID</span>
-                    </div>
-                    <p className="text-[11px] text-[#8E93A0] leading-relaxed">
-                      To connect your Google Cloud OAuth client, paste your Client ID (e.g. <span className="font-mono text-white/70">xxxx.apps.googleusercontent.com</span>):
-                    </p>
+                <form onSubmit={handleSaveClientId} className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-medium text-[#8E93A0] uppercase tracking-wider block">
+                      Google OAuth 2.0 Client ID
+                    </label>
                     <input
                       type="text"
+                      required
                       value={inputClientId}
                       onChange={(e) => setInputClientId(e.target.value)}
-                      placeholder="Paste Google Client ID..."
-                      className="w-full bg-[#0D0E11] border border-white/[0.08] text-xs text-[#F3F4F6] px-3 py-2 rounded-lg focus:outline-none focus:border-white/30 font-mono"
+                      placeholder="e.g. 123456789-xxx.apps.googleusercontent.com"
+                      className="w-full bg-[#0D0E11] border border-white/[0.08] text-xs text-[#F3F4F6] px-3.5 py-2.5 rounded-xl focus:outline-none focus:border-white/30 font-mono transition-colors"
                     />
-                    <button
-                      type="button"
-                      onClick={handleSaveClientId}
-                      className="w-full py-1.5 px-3 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-white font-medium transition-colors cursor-pointer"
-                    >
-                      Connect Real Google OAuth
-                    </button>
-                  </motion.div>
-                )}
-              </form>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 px-4 rounded-xl bg-white hover:bg-[#F3F4F6] text-[#0A0B0D] font-medium text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer active:scale-[0.98]"
+                  >
+                    <span>Connect Google Sign-In</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+
+                <div className="text-center">
+                  <a
+                    href="https://console.cloud.google.com/apis/credentials"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] text-[#8E93A0] hover:text-white inline-flex items-center gap-1 underline"
+                  >
+                    <span>Create a Web Client ID in Google Cloud Console</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {showConfig && hasValidClientId && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="p-3.5 rounded-xl bg-black/40 border border-white/[0.08] space-y-3 mt-3"
+              >
+                <div className="flex items-center gap-1.5 text-xs text-[#F3F4F6] font-medium">
+                  <Key className="w-3.5 h-3.5 text-[#8E93A0]" />
+                  <span>Update Google Client ID</span>
+                </div>
+                <input
+                  type="text"
+                  value={inputClientId}
+                  onChange={(e) => setInputClientId(e.target.value)}
+                  placeholder="Paste new Google Client ID..."
+                  className="w-full bg-[#0D0E11] border border-white/[0.08] text-xs text-[#F3F4F6] px-3 py-2 rounded-lg focus:outline-none focus:border-white/30 font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={handleSaveClientId}
+                  className="w-full py-1.5 px-3 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-white font-medium transition-colors cursor-pointer"
+                >
+                  Save Changes
+                </button>
+              </motion.div>
             )}
           </div>
 
