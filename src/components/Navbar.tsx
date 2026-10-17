@@ -147,11 +147,11 @@ export function Navbar({
           {/* Database API Connect */}
           <button
             onClick={onOpenApiSettings}
-            title="Configure TMDb Database API"
+            title="Configure Entertainment Database API"
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
           >
             <Database className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">TMDb API</span>
+            <span className="hidden md:inline">OMDb / IMDb API</span>
           </button>
 
           {/* Import CSV Trigger */}
