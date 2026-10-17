@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Search, Upload, X, Database, LogOut, Tv } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
+import { MirarLogo } from '@/components/MirarLogo';
 import { useAuth } from '@/context/AuthContext';
 import { searchTitles } from '@/lib/tmdb';
 import { MediaItem } from '@/types/media';
@@ -50,14 +51,9 @@ export function Navbar({
         <div className="flex items-center gap-6">
           <div
             onClick={() => setActiveTab('shelf')}
-            className="flex items-center gap-2 cursor-pointer select-none group"
+            className="cursor-pointer select-none group py-0.5"
           >
-            <div className="w-5 h-5 rounded bg-white text-black font-bold text-xs flex items-center justify-center tracking-tighter">
-              M
-            </div>
-            <span className="text-sm font-semibold tracking-[0.16em] uppercase text-[#F3F4F6] group-hover:text-white transition-colors">
-              Marquee
-            </span>
+            <MirarLogo size="md" showText={true} />
           </div>
 
           {/* Navigation Tabs */}

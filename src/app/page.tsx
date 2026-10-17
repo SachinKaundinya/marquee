@@ -65,10 +65,10 @@ export default function Home() {
             <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="font-semibold uppercase tracking-wider text-[#F3F4F6]">
-                  Marquee
+                  Mirar
                 </span>
                 <span>•</span>
-                <span>Title-Level Parity Architecture</span>
+                <span>Title-Level Entertainment Tracker</span>
               </div>
               <div className="tabular-nums text-[11px] text-[#636875]">
                 Built with Next.js 15, Tailwind CSS & Framer Motion

@@ -17,7 +17,9 @@ export function QuickLogModal() {
 
   const existingTitle = item ? getUserTitle(item.tmdb_id, item.media_type) : undefined;
 
-  const [status, setStatus] = useState<TrackingStatus>('watched');
+  const [status, setStatus] = useState<TrackingStatus | null>(
+    initialStatus || existingTitle?.status || null
+  );
   const [rating, setRating] = useState<number>(
     existingTitle?.rating ? (existingTitle.rating <= 5 ? existingTitle.rating * 2 : existingTitle.rating) : 8.0
   );
@@ -33,7 +35,7 @@ export function QuickLogModal() {
   useEffect(() => {
     if (quickLogItem?.item) {
       const existing = getUserTitle(quickLogItem.item.tmdb_id, quickLogItem.item.media_type);
-      setStatus(initialStatus || existing?.status || 'watched');
+      setStatus(initialStatus || existing?.status || null);
       setRating(
         existing?.rating
           ? (existing.rating <= 5 ? existing.rating * 2 : existing.rating)
@@ -62,6 +64,13 @@ export function QuickLogModal() {
   };
 
   const handleSave = () => {
+    if (!status) return;
+
+    if (status === 'not_interested') {
+      markNotInterested(item.tmdb_id, item.media_type);
+      return;
+    }
+
     saveLog({
       tmdb_id: item.tmdb_id,
       media_type: item.media_type,
@@ -136,15 +145,17 @@ export function QuickLogModal() {
 
           {/* Form Content */}
           <div className="p-5 space-y-5 overflow-y-auto">
-            {/* Synopsis / Blurb */}
+            {/* Synopsis / Blurb with full fitting container */}
             {item.overview && (
               <div>
                 <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] mb-1.5 block">
                   Synopsis
                 </label>
-                <p className="text-xs text-[#C5C8D0] leading-relaxed line-clamp-4 bg-white/[0.02] border border-white/[0.06] p-3 rounded-lg">
-                  {item.overview}
-                </p>
+                <div className="max-h-36 overflow-y-auto bg-white/[0.02] border border-white/[0.08] p-3.5 rounded-lg scrollbar-thin">
+                  <p className="text-xs text-[#C5C8D0] leading-relaxed break-words whitespace-normal">
+                    {item.overview}
+                  </p>
+                </div>
               </div>
             )}
 
@@ -154,16 +165,16 @@ export function QuickLogModal() {
                 <label className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0] block">
                   Status
                 </label>
-                <span className="text-[10px] text-[#636875]">Update tracking or dismiss</span>
+                <span className="text-[10px] text-[#636875]">Select an option to update</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button
                   type="button"
-                  onClick={() => setStatus('want_to_watch')}
-                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                  onClick={() => setStatus(status === 'want_to_watch' ? null : 'want_to_watch')}
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                     status === 'want_to_watch'
-                      ? 'bg-white/10 text-white border-white/30 shadow-sm'
-                      : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
+                      ? 'bg-white/10 text-white border-white/30 shadow-sm font-semibold'
+                      : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                   }`}
                 >
                   <Bookmark className="w-3.5 h-3.5" />
@@ -173,11 +184,11 @@ export function QuickLogModal() {
                 {item.media_type === 'tv' ? (
                   <button
                     type="button"
-                    onClick={() => setStatus('watching')}
-                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                    onClick={() => setStatus(status === 'watching' ? null : 'watching')}
+                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                       status === 'watching'
-                        ? 'bg-white/10 text-white border-white/30 shadow-sm'
-                        : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
+                        ? 'bg-blue-500/20 text-blue-300 border-blue-500/40 shadow-sm font-semibold'
+                        : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                     }`}
                   >
                     <Play className="w-3.5 h-3.5" />
@@ -187,22 +198,26 @@ export function QuickLogModal() {
 
                 <button
                   type="button"
-                  onClick={() => setStatus('watched')}
-                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
+                  onClick={() => setStatus(status === 'watched' ? null : 'watched')}
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                     status === 'watched'
-                      ? 'bg-white/10 text-white border-white/30 shadow-sm'
-                      : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05]'
+                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm font-semibold'
+                      : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                   }`}
                 >
                   <Check className="w-3.5 h-3.5" />
-                  {item.media_type === 'tv' ? 'Finished' : 'Watched'}
+                  Watched
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => markNotInterested(item.tmdb_id, item.media_type)}
+                  onClick={() => setStatus(status === 'not_interested' ? null : 'not_interested')}
                   title="Remove this title from Feed"
-                  className="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border border-rose-500/20 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                    status === 'not_interested'
+                      ? 'bg-rose-500/20 text-rose-400 border-rose-500/40 shadow-sm font-semibold'
+                      : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-rose-400 hover:border-rose-500/20'
+                  }`}
                 >
                   <EyeOff className="w-3.5 h-3.5" />
                   Not Interested
@@ -309,18 +324,47 @@ export function QuickLogModal() {
 
           {/* Footer Save Action */}
           <div className="p-4 border-t border-white/[0.08] bg-[#101216]">
-            <motion.button
-              whileTap={tapScale}
-              onClick={handleSave}
-              className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
-            >
-              <Check className="w-4 h-4 stroke-[2.5]" />
-              {status === 'want_to_watch'
-                ? 'Save to Watchlist'
-                : status === 'watching'
-                ? 'Move to Now Watching'
-                : 'Save to Diary'}
-            </motion.button>
+            {!status ? (
+              <div className="w-full py-3 px-4 rounded-lg bg-white/[0.03] text-[#8E93A0] border border-white/[0.06] text-xs font-medium text-center select-none">
+                Select an option above to log or remove this title
+              </div>
+            ) : status === 'watched' ? (
+              <motion.button
+                whileTap={tapScale}
+                onClick={handleSave}
+                className="w-full py-3 px-4 rounded-lg bg-emerald-500 text-black font-semibold text-sm flex items-center justify-center gap-2 hover:bg-emerald-400 active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(16,185,129,0.25)] cursor-pointer"
+              >
+                <Check className="w-4 h-4 stroke-[2.5]" />
+                Save as Watched
+              </motion.button>
+            ) : status === 'want_to_watch' ? (
+              <motion.button
+                whileTap={tapScale}
+                onClick={handleSave}
+                className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
+              >
+                <Bookmark className="w-4 h-4 stroke-[2.5]" />
+                Save to Watchlist
+              </motion.button>
+            ) : status === 'watching' ? (
+              <motion.button
+                whileTap={tapScale}
+                onClick={handleSave}
+                className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
+              >
+                <Play className="w-4 h-4 stroke-[2.5]" />
+                Move to Now Watching
+              </motion.button>
+            ) : (
+              <motion.button
+                whileTap={tapScale}
+                onClick={handleSave}
+                className="w-full py-3 px-4 rounded-lg bg-rose-500 text-white font-medium text-sm flex items-center justify-center gap-2 hover:bg-rose-600 active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(244,63,94,0.3)] cursor-pointer"
+              >
+                <EyeOff className="w-4 h-4 stroke-[2.5]" />
+                Remove Title from Feed
+              </motion.button>
+            )}
           </div>
         </motion.div>
       </div>

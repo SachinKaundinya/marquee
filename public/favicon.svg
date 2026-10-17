@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Dark modern background -->
+  <rect width="64" height="64" rx="18" fill="#0A0B0D"/>
+  
+  <!-- Outer Quirky Glasses Frame -->
+  <rect x="6" y="16" width="52" height="32" rx="16" fill="#14161B" stroke="rgba(255, 255, 255, 0.15)" stroke-width="2.5"/>
+  
+  <!-- Left Eye: Cyan 3D Lens -->
+  <circle cx="21" cy="32" r="11" fill="#082F49" stroke="#06B6D4" stroke-width="3"/>
+  <circle cx="23" cy="30" r="5.5" fill="#FFFFFF"/>
+  <circle cx="25" cy="28.5" r="2.2" fill="#06B6D4"/>
+  <circle cx="20.5" cy="27.5" r="1.5" fill="#FFFFFF"/>
+  
+  <!-- Quirky Bridge -->
+  <path d="M30 31C31 29 33 29 34 31" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Right Eye: Pink/Coral 3D Lens -->
+  <circle cx="43" cy="32" r="11" fill="#4C0519" stroke="#F43F5E" stroke-width="3"/>
+  <circle cx="41" cy="30" r="5.5" fill="#FFFFFF"/>
+  <circle cx="39" cy="28.5" r="2.2" fill="#F43F5E"/>
+  <circle cx="43.5" cy="27.5" r="1.5" fill="#FFFFFF"/>
+  
+  <!-- Playful Smile -->
+  <path d="M26 42C29.5 44.5 34.5 44.5 38 42" stroke="rgba(255, 255, 255, 0.5)" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

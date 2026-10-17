@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(userProfile));
               window.history.replaceState(null, '', window.location.pathname);
               toast.success('Successfully authenticated with Google', {
-                description: `Welcome to Marquee, ${userProfile.name}!`,
+                description: `Welcome to Mirar, ${userProfile.name}!`,
               });
             }
           })
@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(userProfile);
       localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(userProfile));
       toast.success('Authenticated with Google', {
-        description: `Welcome to Marquee, ${userProfile.name}!`,
+        description: `Welcome to Mirar, ${userProfile.name}!`,
       });
     } catch {
       toast.error('Failed to decode Google authentication token');
@@ -158,7 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       //
     }
-    toast.info('Signed out of Marquee');
+    toast.info('Signed out of Mirar');
   };
 
   const activeClientId = googleClientId || 'PLACEHOLDER_CLIENT_ID';

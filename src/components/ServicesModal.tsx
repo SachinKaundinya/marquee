@@ -70,7 +70,7 @@ export function ServicesModal() {
           </div>
 
           <p className="text-xs text-[#8E93A0] leading-relaxed mb-4">
-            Choose the providers you subscribe to. Marquee will badge titles with their source and unlock the &ldquo;Available on My Services&rdquo; filter so you know what you can stream right now.
+            Choose the providers you subscribe to. Mirar will badge titles with their source and unlock the &ldquo;Available on My Services&rdquo; filter so you know what you can stream right now.
           </p>
 
           {/* Quick Select Actions */}

@@ -3,8 +3,13 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Marquee — Title-Level Cinema & TV Tracker",
+  title: "Mirar — Title-Level Cinema & TV Tracker",
   description: "An intentional, craft-driven entertainment tracker for cinema and television with zero bloat.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

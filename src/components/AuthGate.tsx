@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Film, CheckCircle2, ArrowRight, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { springTransition } from '@/tokens/motion';
+import { MirarLogo } from '@/components/MirarLogo';
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const {
@@ -20,7 +21,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center">
         <div className="flex items-center gap-2 text-xs text-[#8E93A0] tracking-wider uppercase">
           <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-          Loading Marquee...
+          Loading Mirar...
         </div>
       </div>
     );
@@ -39,12 +40,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       {/* Header */}
       <header className="p-6 max-w-6xl w-full mx-auto flex items-center justify-between relative z-10">
         <div className="flex items-center gap-2 select-none">
-          <div className="w-5 h-5 rounded bg-white text-black font-bold text-xs flex items-center justify-center tracking-tighter">
-            M
-          </div>
-          <span className="text-sm font-semibold tracking-[0.16em] uppercase text-[#F3F4F6]">
-            Marquee
-          </span>
+          <MirarLogo size="md" showText={true} />
         </div>
 
         <div className="flex items-center gap-1.5 text-xs text-[#8E93A0]">
@@ -61,14 +57,14 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
           transition={springTransition}
           className="w-full max-w-md rounded-2xl bg-[#14161B] border border-white/[0.08] shadow-[0_32px_80px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] p-7 sm:p-8 flex flex-col"
         >
-          {/* Logo Badge */}
-          <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mb-5 mx-auto text-white shadow-inner">
-            <Film className="w-6 h-6 stroke-[1.5]" />
+          {/* Logo Badge with Quirky Mascot */}
+          <div className="flex justify-center mb-4">
+            <MirarLogo size="xl" showText={false} />
           </div>
 
           <div className="text-center mb-6">
             <h1 className="text-xl font-semibold tracking-tight text-[#F3F4F6] mb-1.5">
-              Sign in to Marquee
+              Sign in to Mirar
             </h1>
             <p className="text-xs text-[#8E93A0] leading-relaxed max-w-xs mx-auto">
               Authenticate with your Google account to access your personal entertainment tracker and diary.
@@ -117,7 +113,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
 
       {/* Footer */}
       <footer className="p-6 text-center text-[11px] text-[#636875] relative z-10">
-        Marquee • Strictly Title-Level Entertainment Tracker
+        Mirar • Strictly Title-Level Entertainment Tracker
       </footer>
     </div>
   );
