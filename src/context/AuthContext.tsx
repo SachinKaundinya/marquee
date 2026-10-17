@@ -27,8 +27,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const LOCAL_SESSION_KEY = 'marquee_google_session_v4';
 const CLIENT_ID_KEY = 'marquee_google_client_id';
 
+const DEFAULT_GOOGLE_CLIENT_ID =
+  '96488444786-2h8vju5p7jdib9mk1kotr7qrgbglcl2a.apps.googleusercontent.com';
+
 // Default fallback client ID (or configured via environment)
-const ENV_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
+const ENV_CLIENT_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID;
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
