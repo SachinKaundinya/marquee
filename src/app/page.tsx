@@ -12,9 +12,10 @@ import { QuickLogModal } from '@/components/QuickLogModal';
 import { CsvImportModal } from '@/components/CsvImportModal';
 import { ApiSettingsModal } from '@/components/ApiSettingsModal';
 import { ServicesModal } from '@/components/ServicesModal';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'shelf' | 'diary' | 'explore'>('shelf');
+  const [activeTab, setActiveTab] = useState<'popular' | 'diary' | 'watchlist'>('popular');
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isApiSettingsOpen, setIsApiSettingsOpen] = useState(false);
 
@@ -23,7 +24,7 @@ export default function Home() {
       <AuthGate>
         <MediaProvider>
           <div className="min-h-screen bg-[#0A0B0D] text-[#F3F4F6] flex flex-col font-sans selection:bg-white/20 selection:text-white">
-          {/* Top Navigation with Google Sign In & TMDb API Settings */}
+          {/* Top Navigation */}
           <Navbar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -32,21 +33,32 @@ export default function Home() {
           />
 
           {/* Main Content Area */}
-          <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-8 pb-16">
-            {activeTab === 'shelf' && (
+          <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 pb-28 sm:pb-16">
+            {activeTab === 'popular' && (
               <>
-                {/* TV Command Center */}
+                {/* Now Watching Shelf */}
                 <NowWatchingShelf />
 
-                {/* Watchlist & Catalog Grid */}
-                <WatchlistGrid />
+                {/* Popular & Trending Catalog Grid */}
+                <WatchlistGrid mode="popular" />
               </>
             )}
 
             {activeTab === 'diary' && <DiaryFeed />}
 
-            {activeTab === 'explore' && <WatchlistGrid />}
+            {activeTab === 'watchlist' && (
+              <WatchlistGrid
+                mode="watchlist"
+                onSwitchToPopular={() => setActiveTab('popular')}
+              />
+            )}
           </main>
+
+          {/* iOS / Mobile Bottom Navigation Menu */}
+          <MobileBottomNav
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
 
           {/* Modals */}
           <QuickLogModal />
@@ -61,7 +73,7 @@ export default function Home() {
           <ServicesModal />
 
           {/* Micro-Craft Footer */}
-          <footer className="border-t border-white/[0.06] py-6 text-center text-xs text-[#8E93A0]">
+          <footer className="border-t border-white/[0.06] pt-6 pb-20 sm:pb-6 text-center text-xs text-[#8E93A0]">
             <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="font-semibold uppercase tracking-wider text-[#F3F4F6]">

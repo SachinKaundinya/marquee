@@ -9,8 +9,8 @@ import { searchTitles } from '@/lib/tmdb';
 import { MediaItem } from '@/types/media';
 
 interface NavbarProps {
-  activeTab: 'shelf' | 'diary' | 'explore';
-  setActiveTab: (tab: 'shelf' | 'diary' | 'explore') => void;
+  activeTab: 'popular' | 'diary' | 'watchlist';
+  setActiveTab: (tab: 'popular' | 'diary' | 'watchlist') => void;
   onOpenImport: () => void;
   onOpenApiSettings: () => void;
 }
@@ -21,7 +21,7 @@ export function Navbar({
   onOpenImport,
   onOpenApiSettings,
 }: NavbarProps) {
-  const { openQuickLog, openServicesModal } = useMedia();
+  const { openQuickLog, openServicesModal, watchlistTitles } = useMedia();
   const { user, signInWithGoogle, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MediaItem[]>([]);
@@ -50,43 +50,48 @@ export function Navbar({
         {/* Brand / Logo */}
         <div className="flex items-center gap-6">
           <div
-            onClick={() => setActiveTab('shelf')}
+            onClick={() => setActiveTab('popular')}
             className="cursor-pointer select-none group py-0.5"
           >
             <MirarLogo size="md" showText={true} />
           </div>
 
-          {/* Navigation Tabs */}
+          {/* Navigation Tabs (Desktop) */}
           <nav className="hidden sm:flex items-center gap-1">
             <button
-              onClick={() => setActiveTab('shelf')}
+              onClick={() => setActiveTab('popular')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                activeTab === 'shelf'
-                  ? 'bg-white/10 text-white'
+                activeTab === 'popular'
+                  ? 'bg-white/10 text-white font-semibold'
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
-              Command Center
+              Popular
             </button>
             <button
               onClick={() => setActiveTab('diary')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                 activeTab === 'diary'
-                  ? 'bg-white/10 text-white'
+                  ? 'bg-white/10 text-white font-semibold'
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
               Diary
             </button>
             <button
-              onClick={() => setActiveTab('explore')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                activeTab === 'explore'
-                  ? 'bg-white/10 text-white'
+              onClick={() => setActiveTab('watchlist')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'watchlist'
+                  ? 'bg-white/10 text-white font-semibold'
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
-              Explore
+              <span>My Watchlist</span>
+              {watchlistTitles.length > 0 && (
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/10 text-white font-mono tabular-nums">
+                  {watchlistTitles.length}
+                </span>
+              )}
             </button>
           </nav>
         </div>

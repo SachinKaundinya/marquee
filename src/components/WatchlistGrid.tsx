@@ -11,7 +11,12 @@ import { MediaPoster } from '@/components/MediaPoster';
 
 type FilterType = 'all' | 'available' | 'movies' | 'tv' | 'short';
 
-export function WatchlistGrid() {
+interface WatchlistGridProps {
+  mode?: 'popular' | 'watchlist';
+  onSwitchToPopular?: () => void;
+}
+
+export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: WatchlistGridProps) {
   const {
     catalog,
     userTitles,
@@ -28,15 +33,15 @@ export function WatchlistGrid() {
   } = useMedia();
 
   const [filter, setFilter] = useState<FilterType>('all');
-  const [viewMode, setViewMode] = useState<'watchlist' | 'explore'>('explore');
+  const isWatchlistMode = mode === 'watchlist';
 
   const watchlistItems = userTitles
     .filter((ut) => ut.status === 'want_to_watch')
     .map((ut) => ut.media)
     .filter((m): m is MediaItem => Boolean(m));
 
-  // Filter items based on viewMode and active filter
-  const items = (viewMode === 'watchlist' ? watchlistItems : catalog).filter((item) => {
+  // Filter items based on mode and active filter
+  const items = (isWatchlistMode ? watchlistItems : catalog).filter((item) => {
     if (filter === 'available') return isItemOnMyServices(item);
     if (filter === 'movies') return item.media_type === 'movie';
     if (filter === 'tv') return item.media_type === 'tv';
@@ -56,28 +61,29 @@ export function WatchlistGrid() {
     <section className="mb-12">
       {/* Top Controls Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-white/[0.08]">
-        {/* View Mode Switcher */}
-        <div className="flex items-center gap-1 bg-[#14161B] p-1 rounded-lg border border-white/[0.08] w-fit">
-          <button
-            onClick={() => setViewMode('explore')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
-              viewMode === 'explore'
-                ? 'bg-[#F4F4F6] text-[#0A0B0D] shadow-sm'
-                : 'text-[#8E93A0] hover:text-white'
-            }`}
-          >
-            Explore Catalog ({catalog.length})
-          </button>
-          <button
-            onClick={() => setViewMode('watchlist')}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
-              viewMode === 'watchlist'
-                ? 'bg-[#F4F4F6] text-[#0A0B0D] shadow-sm'
-                : 'text-[#8E93A0] hover:text-white'
-            }`}
-          >
-            Watchlist ({watchlistItems.length})
-          </button>
+        {/* Section Heading */}
+        <div className="flex items-center gap-2.5">
+          {isWatchlistMode ? (
+            <>
+              <Bookmark className="w-4 h-4 text-white" />
+              <h2 className="text-sm font-semibold tracking-wide text-white">
+                My Watchlist
+              </h2>
+              <span className="text-xs text-[#8E93A0] tabular-nums font-mono px-2 py-0.5 rounded bg-white/[0.04]">
+                {watchlistItems.length} Titles
+              </span>
+            </>
+          ) : (
+            <>
+              <Flame className="w-4 h-4 text-[#E5A93C]" />
+              <h2 className="text-sm font-semibold tracking-wide text-white">
+                Popular & Trending
+              </h2>
+              <span className="text-xs text-[#8E93A0] tabular-nums font-mono px-2 py-0.5 rounded bg-white/[0.04]">
+                {catalog.length} In Feed
+              </span>
+            </>
+          )}
         </div>
 
         {/* Filter Pills & Services Trigger */}
@@ -140,8 +146,8 @@ export function WatchlistGrid() {
         </div>
       </div>
 
-      {/* For You Live Feed Selector (When Exploring) */}
-      {viewMode === 'explore' && (
+      {/* For You Live Feed Selector (When on Popular Mode) */}
+      {!isWatchlistMode && (
         <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[11px] font-medium uppercase tracking-wider text-[#636875] mr-1 shrink-0">
             For You:
@@ -170,20 +176,20 @@ export function WatchlistGrid() {
 
       {/* Grid Content */}
       {items.length === 0 ? (
-        <div className="p-12 text-center rounded-xl bg-[#14161B] border border-white/[0.08]">
+        <div className="p-12 text-center rounded-xl bg-[#14161B] border border-white/[0.08] max-w-lg mx-auto">
           <Bookmark className="w-8 h-8 text-[#8E93A0] mx-auto mb-2 opacity-50" />
           <h4 className="text-sm font-medium text-[#F3F4F6] mb-1">
             {filter === 'available'
               ? 'No titles matching your active subscriptions'
-              : viewMode === 'watchlist'
+              : isWatchlistMode
               ? 'Your Watchlist is empty'
               : 'No matching titles found'}
           </h4>
           <p className="text-xs text-[#8E93A0] max-w-sm mx-auto mb-4 leading-relaxed">
             {filter === 'available'
-              ? 'Try selecting more subscriptions or switch filters to browse the entire catalog.'
-              : viewMode === 'watchlist'
-              ? 'Browse the Explore Catalog or search above to add movies and TV series you want to watch.'
+              ? 'Try selecting more subscriptions or switch filters to browse all titles.'
+              : isWatchlistMode
+              ? 'Browse titles in Popular or search above to save movies and TV shows you want to watch.'
               : 'Try clearing active filters or switching TMDb feeds.'}
           </p>
           {filter === 'available' ? (
@@ -193,12 +199,12 @@ export function WatchlistGrid() {
             >
               Manage My Subscriptions
             </button>
-          ) : viewMode === 'watchlist' ? (
+          ) : isWatchlistMode && onSwitchToPopular ? (
             <button
-              onClick={() => setViewMode('explore')}
-              className="px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer"
+              onClick={onSwitchToPopular}
+              className="px-4 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm"
             >
-              Explore Trending Titles
+              Explore Popular Titles
             </button>
           ) : null}
         </div>
@@ -278,8 +284,8 @@ export function WatchlistGrid() {
             })}
           </div>
 
-          {/* Load More Button for Explore Mode */}
-          {viewMode === 'explore' && (
+          {/* Load More Button for Popular Feed */}
+          {!isWatchlistMode && (
             <div className="mt-10 flex flex-col items-center justify-center gap-2">
               <button
                 type="button"
