@@ -1,6 +1,6 @@
 import { MediaItem, MediaType, UserTitle } from '@/types/media';
 import { MOCK_CATALOG } from '@/data/mockCatalog';
-import { searchOmdb } from './omdb';
+import { searchOmdb, getOmdbDetails } from './omdb';
 import { getImdbRating } from './imdbRatings';
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
@@ -986,4 +986,82 @@ function formatTmdbItem(item: any): MediaItem {
     genre_ids: Array.isArray(item.genre_ids) ? item.genre_ids : undefined,
     is_international: isNonEnglishItem(item),
   };
+}
+
+export async function fetchCreditsAndDetails(
+  mediaType: MediaType,
+  tmdbId: number,
+  title?: string
+): Promise<{ creator?: string; stars?: string[] }> {
+  const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  try {
+    const url = `${TMDB_BASE_URL}/${mediaType}/${tmdbId}?append_to_response=credits`;
+    const finalUrl = token ? url : `${url}&api_key=${key}`;
+    const res = await fetch(finalUrl, { headers });
+
+    if (res.ok) {
+      const data = await res.json();
+      const crew: any[] = data.credits?.crew || [];
+      const cast: any[] = data.credits?.cast || [];
+
+      let creatorName = '';
+      if (mediaType === 'tv') {
+        const createdBy = (data.created_by || []).map((c: any) => c.name).filter(Boolean);
+        if (createdBy.length > 0) {
+          creatorName = createdBy.join(', ');
+        } else {
+          const tvDir = crew.find(
+            (c: any) =>
+              c.job === 'Creator' ||
+              c.job === 'Executive Producer' ||
+              c.job === 'Director'
+          );
+          if (tvDir?.name) creatorName = tvDir.name;
+        }
+      } else {
+        const directors = crew
+          .filter((c: any) => c.job === 'Director')
+          .map((c: any) => c.name)
+          .filter(Boolean);
+        if (directors.length > 0) {
+          creatorName = directors.join(', ');
+        }
+      }
+
+      const topStars = cast
+        .slice(0, 3)
+        .map((c: any) => c.name)
+        .filter(Boolean);
+
+      if (creatorName || topStars.length > 0) {
+        return {
+          creator: creatorName || undefined,
+          stars: topStars.length > 0 ? topStars : undefined,
+        };
+      }
+    }
+  } catch {
+    // TMDb error, fallback to OMDb
+  }
+
+  // Fallback to OMDb by title if TMDb credits are unavailable
+  if (title) {
+    try {
+      const omdbItem = await getOmdbDetails(title);
+      if (omdbItem) {
+        return {
+          creator: omdbItem.creator || omdbItem.director || undefined,
+          stars: omdbItem.stars && omdbItem.stars.length > 0 ? omdbItem.stars.slice(0, 3) : undefined,
+        };
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  return {};
 }

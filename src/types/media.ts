@@ -32,6 +32,8 @@ export interface MediaItem {
   streaming_provider?: StreamingProvider | null;
   streaming_sources?: string[];
   primary_source?: string | null;
+  creator?: string;
+  director?: string;
   stars?: string[];
   original_language?: string;
   origin_country?: string[];

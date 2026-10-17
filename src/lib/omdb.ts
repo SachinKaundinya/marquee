@@ -102,6 +102,10 @@ function formatOmdbItem(item: any): MediaItem {
     vote_average: Number(rating.toFixed(1)),
     genres,
     overview: item.Plot !== 'N/A' ? item.Plot : undefined,
+    creator: item.Director && item.Director !== 'N/A'
+      ? item.Director
+      : (item.Writer && item.Writer !== 'N/A' ? item.Writer : undefined),
+    director: item.Director && item.Director !== 'N/A' ? item.Director : undefined,
     stars: item.Actors && item.Actors !== 'N/A'
       ? item.Actors.split(',').map((a: string) => a.trim()).filter(Boolean)
       : undefined,

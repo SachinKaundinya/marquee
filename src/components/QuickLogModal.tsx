@@ -8,6 +8,7 @@ import { StarRating } from '@/components/StarRating';
 import { TrackingStatus } from '@/types/media';
 import { drawerTransition, tapScale } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
+import { fetchCreditsAndDetails } from '@/lib/tmdb';
 
 export function QuickLogModal() {
   const { quickLogItem, closeQuickLog, saveLog, getUserTitle, markNotInterested, removeTitle } = useMedia();
@@ -25,12 +26,20 @@ export function QuickLogModal() {
   );
   const [notes, setNotes] = useState<string>(existingTitle?.notes ?? '');
   const [isRewatch, setIsRewatch] = useState<boolean>(existingTitle?.is_rewatch ?? false);
+  const [creatorName, setCreatorName] = useState<string>(
+    item?.creator || item?.director || existingTitle?.media?.creator || existingTitle?.media?.director || ''
+  );
+  const [starsList, setStarsList] = useState<string[]>(
+    item?.stars || existingTitle?.media?.stars || []
+  );
+  const [isLoadingCredits, setIsLoadingCredits] = useState<boolean>(false);
 
   const todayStr = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     if (quickLogItem?.item) {
-      const existing = getUserTitle(quickLogItem.item.tmdb_id, quickLogItem.item.media_type);
+      const it = quickLogItem.item;
+      const existing = getUserTitle(it.tmdb_id, it.media_type);
       setStatus(initialStatus || existing?.status || null);
       setRating(
         existing?.rating
@@ -39,6 +48,32 @@ export function QuickLogModal() {
       );
       setNotes(existing?.notes ?? '');
       setIsRewatch(existing?.is_rewatch ?? false);
+
+      const resolvedCreator = it.creator || it.director || existing?.media?.creator || existing?.media?.director || '';
+      const resolvedStars = it.stars || existing?.media?.stars || [];
+      setCreatorName(resolvedCreator);
+      setStarsList(resolvedStars);
+
+      // Fetch credits from TMDb/OMDb if missing
+      if (!resolvedCreator || resolvedStars.length === 0) {
+        setIsLoadingCredits(true);
+        fetchCreditsAndDetails(it.media_type, it.tmdb_id, it.title)
+          .then((res) => {
+            if (res.creator) {
+              setCreatorName(res.creator);
+              it.creator = res.creator;
+              it.director = res.creator;
+            }
+            if (res.stars && res.stars.length > 0) {
+              setStarsList(res.stars);
+              it.stars = res.stars;
+            }
+          })
+          .catch(() => {})
+          .finally(() => {
+            setIsLoadingCredits(false);
+          });
+      }
     }
   }, [quickLogItem]);
 
@@ -60,7 +95,12 @@ export function QuickLogModal() {
       notes: notes.trim() || null,
       is_rewatch: isRewatch,
       watched_on: existingTitle?.watched_on || todayStr,
-      media: item,
+      media: {
+        ...item,
+        creator: creatorName || item.creator || item.director,
+        director: creatorName || item.director,
+        stars: starsList && starsList.length > 0 ? starsList : item.stars,
+      },
     });
     closeQuickLog();
   };
@@ -168,6 +208,30 @@ export function QuickLogModal() {
                     {item.overview}
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* Creator & Stars Information */}
+            {(creatorName || (starsList && starsList.length > 0) || isLoadingCredits) && (
+              <div className="space-y-1.5 pt-0.5">
+                {(creatorName || isLoadingCredits) && (
+                  <div className="text-xs flex items-baseline gap-2 leading-relaxed">
+                    <span className="font-semibold text-white/90 shrink-0">Creator:</span>
+                    <span className="text-[#C5C8D0]">
+                      {creatorName ? creatorName : <span className="text-[#636875] italic">Loading director...</span>}
+                    </span>
+                  </div>
+                )}
+                {(starsList.length > 0 || isLoadingCredits) && (
+                  <div className="text-xs flex items-baseline gap-2 leading-relaxed">
+                    <span className="font-semibold text-white/90 shrink-0">Stars:</span>
+                    <span className="text-[#C5C8D0]">
+                      {starsList.length > 0
+                        ? starsList.slice(0, 3).join(', ')
+                        : <span className="text-[#636875] italic">Loading cast...</span>}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 
