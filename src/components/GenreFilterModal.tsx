@@ -31,6 +31,7 @@ export const COMMON_GENRES = [
   'Sport',
   'Talk-Show',
   'Thriller',
+  'True Crime',
   'War',
   'Western',
 ];

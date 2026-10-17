@@ -222,7 +222,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     setSelectedCategory(category);
     setIsCatalogLoading(true);
     try {
-      const titles = await fetchTmdbCategory(category, 1);
+      const titles = await fetchTmdbCategory(category, 1, userTitles);
       setCategoryPages((prev) => ({ ...prev, [category]: 1 }));
       if (titles && titles.length > 0) {
         const visible = titles.filter(
@@ -241,7 +241,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     setIsCatalogLoading(true);
 
     try {
-      const moreTitles = await fetchTmdbCategory(selectedCategory, nextPage);
+      const moreTitles = await fetchTmdbCategory(selectedCategory, nextPage, userTitles);
       if (moreTitles && moreTitles.length > 0) {
         setCategoryPages((prev) => ({ ...prev, [selectedCategory]: nextPage }));
         setCatalog((prev) => {

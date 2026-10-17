@@ -1,4 +1,4 @@
-import { MediaItem, MediaType } from '@/types/media';
+import { MediaItem, MediaType, UserTitle } from '@/types/media';
 import { MOCK_CATALOG } from '@/data/mockCatalog';
 import { searchOmdb } from './omdb';
 
@@ -142,17 +142,178 @@ export async function searchTitles(query: string): Promise<MediaItem[]> {
   );
 }
 
+export function isAnimeItem(item: any): boolean {
+  if (!item) return false;
+  const origLang = (item.original_language || '').toLowerCase();
+  const genres = (item.genres || []).map((g: string) => (typeof g === 'string' ? g.toLowerCase() : ''));
+  const genreIds: number[] = Array.isArray(item.genre_ids) ? item.genre_ids : [];
+  const isAnimation =
+    genres.includes('animation') ||
+    genres.includes('anime') ||
+    genreIds.includes(16);
+
+  if (isAnimation && origLang === 'ja') return true;
+
+  const originCountry = Array.isArray(item.origin_country)
+    ? item.origin_country
+    : [];
+  if (isAnimation && originCountry.includes('JP')) return true;
+
+  const title = (item.title || item.name || '').toLowerCase();
+  const overview = (item.overview || '').toLowerCase();
+  if (
+    title.includes('anime') ||
+    overview.includes('anime series') ||
+    overview.includes('anime television') ||
+    overview.includes('manga series') ||
+    overview.includes('based on the manga') ||
+    overview.includes('based on manga')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 export type TmdbCategory =
+  | 'taste_match'
   | 'trending'
   | 'popular_movies'
   | 'popular_tv'
   | 'top_rated'
   | 'now_playing';
 
-export async function fetchTmdbCategory(
-  category: TmdbCategory,
+export async function fetchTrueCrimeTitles(page = 1): Promise<MediaItem[]> {
+  const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  try {
+    const movieUrl = `${TMDB_BASE_URL}/discover/movie?with_keywords=33722&sort_by=vote_average.desc&vote_count.gte=30&page=${page}`;
+    const tvUrl = `${TMDB_BASE_URL}/discover/tv?with_genres=80,99&sort_by=vote_average.desc&vote_count.gte=30&page=${page}`;
+
+    const [mRes, tvRes] = await Promise.all([
+      fetch(token ? movieUrl : `${movieUrl}&api_key=${key}`, { headers }),
+      fetch(token ? tvUrl : `${tvUrl}&api_key=${key}`, { headers }),
+    ]);
+
+    const results: MediaItem[] = [];
+    if (mRes.ok) {
+      const data = await mRes.json();
+      (data.results || []).forEach((item: any) => {
+        if (!item.poster_path || isAnimeItem(item)) return;
+        item.media_type = 'movie';
+        const formatted = formatTmdbItem(item);
+        if (!formatted.genres.includes('True Crime')) {
+          formatted.genres.push('True Crime');
+        }
+        results.push(formatted);
+      });
+    }
+    if (tvRes.ok) {
+      const data = await tvRes.json();
+      (data.results || []).forEach((item: any) => {
+        if (!item.poster_path || isAnimeItem(item)) return;
+        item.media_type = 'tv';
+        const formatted = formatTmdbItem(item);
+        if (!formatted.genres.includes('True Crime')) {
+          formatted.genres.push('True Crime');
+        }
+        results.push(formatted);
+      });
+    }
+    return results;
+  } catch (err) {
+    console.error('Failed to fetch True Crime titles', err);
+    return [];
+  }
+}
+
+export async function fetchTasteMatchRecommendations(
+  userTitles: UserTitle[],
   page = 1
 ): Promise<MediaItem[]> {
+  const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  // If user has no logged titles yet, fallback to top-rated
+  if (!userTitles || userTitles.length === 0) {
+    return fetchTmdbCategory('top_rated', page);
+  }
+
+  const validUserTitles = userTitles.filter(
+    (t) => t.status === 'watched' || t.status === 'want_to_watch' || t.status === 'watching'
+  );
+
+  const existingIds = new Set(validUserTitles.map((t) => `${t.media_type}-${t.tmdb_id}`));
+
+  const movieSeeds = validUserTitles.filter((t) => t.media_type === 'movie');
+  const tvSeeds = validUserTitles.filter((t) => t.media_type === 'tv');
+
+  const startIndex = ((page - 1) * 3) % Math.max(1, validUserTitles.length);
+  const selectedSeeds: UserTitle[] = [];
+
+  for (let i = 0; i < 3 && movieSeeds.length > 0; i++) {
+    const idx = (startIndex + i) % movieSeeds.length;
+    selectedSeeds.push(movieSeeds[idx]);
+  }
+  for (let i = 0; i < 2 && tvSeeds.length > 0; i++) {
+    const idx = (startIndex + i) % tvSeeds.length;
+    selectedSeeds.push(tvSeeds[idx]);
+  }
+
+  try {
+    const recPromises = selectedSeeds.map(async (seed) => {
+      const endpoint = `/${seed.media_type}/${seed.tmdb_id}/recommendations?page=1`;
+      const url = `${TMDB_BASE_URL}${endpoint}`;
+      const finalUrl = token ? url : `${url}&api_key=${key}`;
+      const res = await fetch(finalUrl, { headers });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data.results || [])
+        .filter((item: any) => Boolean(item.poster_path))
+        .filter((item: any) => !isAnimeItem(item))
+        .map((item: any) => {
+          if (!item.media_type) {
+            item.media_type = seed.media_type;
+          }
+          return formatTmdbItem(item);
+        });
+    });
+
+    const settled = await Promise.all(recPromises);
+    const combined = settled.flat();
+
+    const map = new Map<number, MediaItem>();
+    combined.forEach((item) => {
+      const keyStr = `${item.media_type}-${item.tmdb_id}`;
+      if (!existingIds.has(keyStr) && !map.has(item.tmdb_id)) {
+        map.set(item.tmdb_id, item);
+      }
+    });
+
+    if (map.size > 0) {
+      return Array.from(map.values());
+    }
+  } catch (err) {
+    console.error('Failed to fetch Taste Match recommendations', err);
+  }
+
+  return fetchTmdbCategory('top_rated', page);
+}
+
+export async function fetchTmdbCategory(
+  category: TmdbCategory,
+  page = 1,
+  userTitles?: UserTitle[]
+): Promise<MediaItem[]> {
+  if (category === 'taste_match') {
+    return fetchTasteMatchRecommendations(userTitles || [], page);
+  }
+
   const { token, key } = getTmdbCredentials();
   let endpoint = '/trending/all/week';
   let defaultType: MediaType = 'movie';
@@ -192,6 +353,7 @@ export async function fetchTmdbCategory(
       const data = await res.json();
       return (data.results || [])
         .filter((item: any) => Boolean(item.poster_path))
+        .filter((item: any) => !isAnimeItem(item))
         .filter((item: any) => {
           if (category === 'popular_tv') {
             const genreIds: number[] = item.genre_ids || [];
@@ -235,20 +397,24 @@ export async function getTrendingTitles(): Promise<MediaItem[]> {
 }
 
 export async function getInitialDeepCatalog(): Promise<MediaItem[]> {
-  // Fetch multiple diverse categories in parallel for a deep, rich catalog
+  // Fetch multiple diverse categories in parallel including True Crime
   try {
-    const [t1, t2, popM, popTv, topM1, topM2] = await Promise.all([
+    const [t1, t2, popM, popTv, topM1, topM2, tc1, tc2] = await Promise.all([
       fetchTmdbCategory('trending', 1),
       fetchTmdbCategory('trending', 2),
       fetchTmdbCategory('popular_movies', 1),
       fetchTmdbCategory('popular_tv', 1),
       fetchTmdbCategory('top_rated', 1),
       fetchTmdbCategory('top_rated', 2),
+      fetchTrueCrimeTitles(1),
+      fetchTrueCrimeTitles(2),
     ]);
 
     const map = new Map<number, MediaItem>();
-    [...t1, ...t2, ...popM, ...popTv, ...topM1, ...topM2].forEach((item) => {
-      map.set(item.tmdb_id, item);
+    [...t1, ...t2, ...popM, ...popTv, ...topM1, ...topM2, ...tc1, ...tc2].forEach((item) => {
+      if (!isAnimeItem(item)) {
+        map.set(item.tmdb_id, item);
+      }
     });
 
     if (map.size > 0) {
@@ -447,6 +613,23 @@ function formatTmdbItem(item: any): MediaItem {
   const rawTitle = isMovie ? item.title : item.name;
   const titleKey = (rawTitle || '').toLowerCase().trim();
   const matchedNetwork = SHOW_NETWORK_MAP[titleKey];
+
+  // Auto-detect and tag True Crime
+  const overviewText = (item.overview || '').toLowerCase();
+  const isTrueCrime =
+    (genres.includes('Crime') && genres.includes('Documentary')) ||
+    (genres.includes('Crime') && (
+      overviewText.includes('true story') ||
+      overviewText.includes('real-life') ||
+      overviewText.includes('serial killer') ||
+      overviewText.includes('true crime') ||
+      overviewText.includes('murder investigation')
+    )) ||
+    (Array.isArray(item.genre_ids) && item.genre_ids.includes(80) && item.genre_ids.includes(99));
+
+  if (isTrueCrime && !genres.includes('True Crime')) {
+    genres.push('True Crime');
+  }
 
   // Predictable deterministic provider fallback based on title hash if not in lookup
   const providerIndex = Math.abs(item.id) % POPULAR_NETWORKS.length;

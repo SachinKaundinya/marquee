@@ -10,10 +10,25 @@ import { MediaPoster } from '@/components/MediaPoster';
 
 export function DiaryFeed() {
   const { diaryTitles, openQuickLog, triggerSearchFocus } = useMedia();
+  const [category, setCategory] = React.useState<'all' | 'movies' | 'tv'>('all');
+
+  const movieCount = diaryTitles.filter(
+    (t) => t.media_type === 'movie' || t.media?.media_type === 'movie'
+  ).length;
+
+  const tvCount = diaryTitles.filter(
+    (t) => t.media_type === 'tv' || t.media?.media_type === 'tv'
+  ).length;
+
+  const displayedTitles = diaryTitles.filter((t) => {
+    if (category === 'movies') return t.media_type === 'movie' || t.media?.media_type === 'movie';
+    if (category === 'tv') return t.media_type === 'tv' || t.media?.media_type === 'tv';
+    return true;
+  });
 
   return (
     <section className="mb-12">
-      <div className="flex items-center justify-between mb-6 pb-2 border-b border-white/[0.08]">
+      <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/[0.08]">
         <div className="flex items-center gap-2">
           <Film className="w-4 h-4 text-[#8E93A0]" />
           <h2 className="text-xs font-semibold uppercase tracking-wider text-[#F3F4F6]">
@@ -35,12 +50,78 @@ export function DiaryFeed() {
         </button>
       </div>
 
-      {diaryTitles.length === 0 ? (
+      {/* Categories Filter: All, Movies, TV Shows */}
+      <div className="flex items-center gap-1.5 mb-5 overflow-x-auto pb-1 scrollbar-none">
+        <button
+          type="button"
+          onClick={() => setCategory('all')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+            category === 'all'
+              ? 'bg-white text-black font-semibold border-white shadow-sm'
+              : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+          }`}
+        >
+          <span>All</span>
+          <span
+            className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+              category === 'all' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
+            }`}
+          >
+            {diaryTitles.length}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCategory('movies')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+            category === 'movies'
+              ? 'bg-white text-black font-semibold border-white shadow-sm'
+              : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+          }`}
+        >
+          <span>Movies</span>
+          <span
+            className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+              category === 'movies' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
+            }`}
+          >
+            {movieCount}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCategory('tv')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+            category === 'tv'
+              ? 'bg-white text-black font-semibold border-white shadow-sm'
+              : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+          }`}
+        >
+          <span>TV Shows</span>
+          <span
+            className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+              category === 'tv' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
+            }`}
+          >
+            {tvCount}
+          </span>
+        </button>
+      </div>
+
+      {displayedTitles.length === 0 ? (
         <div className="p-12 text-center rounded-xl bg-[#14161B] border border-white/[0.08] max-w-lg mx-auto">
           <Film className="w-8 h-8 text-[#8E93A0] mx-auto mb-2 opacity-50" />
-          <h4 className="text-sm font-medium text-[#F3F4F6] mb-1">Your diary is empty</h4>
+          <h4 className="text-sm font-medium text-[#F3F4F6] mb-1">
+            {diaryTitles.length === 0
+              ? 'Your diary is empty'
+              : `No ${category === 'movies' ? 'movies' : 'TV shows'} in your diary`}
+          </h4>
           <p className="text-xs text-[#8E93A0] max-w-xs mx-auto mb-4 leading-relaxed">
-            Log movies or finished TV series to build your personal diary collection.
+            {diaryTitles.length === 0
+              ? 'Log movies or finished TV series to build your personal diary collection.'
+              : `Switch category filter or add more titles to your diary.`}
           </p>
           <button
             type="button"
@@ -53,7 +134,7 @@ export function DiaryFeed() {
         </div>
       ) : (
         <div className="space-y-2.5">
-          {diaryTitles.map((title) => {
+          {displayedTitles.map((title) => {
             const media = title.media;
             if (!media) return null;
 

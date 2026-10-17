@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2 } from 'lucide-react';
+import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2, Clapperboard } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
-import { TmdbCategory } from '@/lib/tmdb';
+import { TmdbCategory, isAnimeItem } from '@/lib/tmdb';
 import { springTransition } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 import { GenreFilterModal } from '@/components/GenreFilterModal';
@@ -18,7 +18,7 @@ interface WatchlistGridProps {
   onSwitchToPopular?: () => void;
 }
 
-function matchesGenres(itemGenres: string[], selected: string[]): boolean {
+function matchesGenres(itemGenres: string[], selected: string[], itemOverview = ''): boolean {
   if (selected.length === 0) return true;
   return itemGenres.some((ig) =>
     selected.some((s) => {
@@ -31,6 +31,17 @@ function matchesGenres(itemGenres: string[], selected: string[]): boolean {
       if (g1.includes('talk') && g2.includes('talk')) return true;
       if (g1.includes('game') && g2.includes('game')) return true;
       if (g1.includes('noir') && g2.includes('noir')) return true;
+      if (g2.includes('truecrime') || g1.includes('truecrime')) {
+        if (g1.includes('truecrime') && g2.includes('truecrime')) return true;
+        if (itemGenres.some((x) => x.toLowerCase().includes('crime')) &&
+            (itemGenres.some((x) => x.toLowerCase().includes('doc')) || itemGenres.some((x) => x.toLowerCase().includes('biography')))) {
+          return true;
+        }
+        const ov = itemOverview.toLowerCase();
+        if (ov.includes('true crime') || ov.includes('serial killer') || ov.includes('true story') || ov.includes('real-life')) {
+          return true;
+        }
+      }
       return false;
     })
   );
@@ -76,13 +87,34 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     }
   };
 
+  // Set of tracked titles (Watchlist, Watched/Diary, Now Watching)
+  const userTrackedKeys = React.useMemo(() => {
+    const set = new Set<string>();
+    userTitles.forEach((ut) => {
+      if (['want_to_watch', 'watched', 'watching'].includes(ut.status)) {
+        set.add(`${ut.media_type}-${ut.tmdb_id}`);
+      }
+    });
+    return set;
+  }, [userTitles]);
+
   const watchlistItems = userTitles
     .filter((ut) => ut.status === 'want_to_watch')
     .map((ut) => ut.media)
     .filter((m): m is MediaItem => Boolean(m));
 
-  // Filter items based on mode, format filter, and genre multi-select
-  const filteredItems = (isWatchlistMode ? watchlistItems : catalog)
+  // In Popular mode, immediately exclude any title added to Watchlist or Diary, and exclude Anime
+  const baseItems = isWatchlistMode
+    ? watchlistItems
+    : catalog.filter((item) => {
+        const key = `${item.media_type}-${item.tmdb_id}`;
+        if (userTrackedKeys.has(key)) return false;
+        if (isAnimeItem(item)) return false;
+        return true;
+      });
+
+  // Filter items based on format filter and genre multi-select
+  const filteredItems = baseItems
     .filter((item) => {
       if (filter === 'available') return isItemOnMyServices(item);
       if (filter === 'movies') return item.media_type === 'movie';
@@ -90,14 +122,22 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
       if (filter === 'short') return Boolean(item.runtime && item.runtime < 100);
       return true;
     })
-    .filter((item) => matchesGenres(item.genres, selectedGenres));
+    .filter((item) => matchesGenres(item.genres, selectedGenres, item.overview || ''));
 
-function getRatingTier(voteAverage: number): number {
-  if (voteAverage >= 8.0) return 3; // 8.0+
-  if (voteAverage >= 7.0) return 2; // 7.0 - 7.9
-  if (voteAverage >= 6.0) return 1; // 6.0 - 6.9
-  return 0; // below 6.0
-}
+  // Auto-replenish: when a user logs a title and it is removed from the feed,
+  // load more recommendations automatically if the visible list gets low
+  React.useEffect(() => {
+    if (!isWatchlistMode && filteredItems.length < 18 && !isCatalogLoading) {
+      loadMoreCatalog();
+    }
+  }, [filteredItems.length, isWatchlistMode, isCatalogLoading, loadMoreCatalog]);
+
+  function getRatingTier(voteAverage: number): number {
+    if (voteAverage >= 8.0) return 3; // 8.0+
+    if (voteAverage >= 7.0) return 2; // 7.0 - 7.9
+    if (voteAverage >= 6.0) return 1; // 6.0 - 6.9
+    return 0; // below 6.0
+  }
 
   // In For You / Popular mode, recommend titles rated 8.0+ first, then 7.0+, then 6.0+, etc.
   // Within each rating tier, prioritize titles available on the user's selected networks, followed by rating
@@ -123,11 +163,12 @@ function getRatingTier(voteAverage: number): number {
       });
 
   const categories: { id: TmdbCategory; label: string; icon: any }[] = [
+    { id: 'taste_match', label: 'Taste Match', icon: Sparkles },
     { id: 'trending', label: 'Trending', icon: Flame },
     { id: 'popular_movies', label: 'Popular Movies', icon: Film },
     { id: 'popular_tv', label: 'Popular TV', icon: Tv },
     { id: 'top_rated', label: 'Top Rated', icon: Trophy },
-    { id: 'now_playing', label: 'In Theaters', icon: Sparkles },
+    { id: 'now_playing', label: 'In Theaters', icon: Clapperboard },
   ];
 
   return (
