@@ -282,7 +282,7 @@ function formatTmdbItem(item: any): MediaItem {
       : undefined,
     release_year: year || 2024,
     vote_average: Number((item.vote_average || 0).toFixed(1)),
-    genres: genres.length > 0 ? genres.slice(0, 3) : ['Drama'],
+    genres: genres.length > 0 ? genres : ['Drama'],
     overview: item.overview,
     streaming_sources: [defaultProvider],
     primary_source: defaultProvider,
