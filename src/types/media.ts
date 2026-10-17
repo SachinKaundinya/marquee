@@ -23,15 +23,15 @@ export interface MediaItem {
   title: string;
   media_type: MediaType;
   poster_path: string;
-  backdrop_path?: string;
+  backdrop_path?: string | null;
   release_year: number;
-  runtime?: number; // minutes
+  runtime?: number | null; // minutes
   vote_average: number;
   genres: string[];
-  overview?: string;
-  streaming_provider?: StreamingProvider;
+  overview?: string | null;
+  streaming_provider?: StreamingProvider | null;
   streaming_sources?: string[];
-  primary_source?: string;
+  primary_source?: string | null;
   stars?: string[];
 }
 

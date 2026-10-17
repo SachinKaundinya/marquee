@@ -5,6 +5,8 @@ import { UserTitle, MediaItem, QuickLogInput, TrackingStatus, MediaType } from '
 import { INITIAL_USER_TITLES, MOCK_CATALOG } from '@/data/mockCatalog';
 import { toast } from 'sonner';
 import { getInitialDeepCatalog, fetchTmdbCategory, TmdbCategory } from '@/lib/tmdb';
+import { useAuth } from '@/context/AuthContext';
+import { SACHIN_PERSONAL_TITLES } from '@/data/sachinPersonalTitles';
 
 export const ALL_SERVICES = [
   'Apple TV+',
@@ -64,11 +66,18 @@ interface MediaContextType {
 
 const MediaContext = createContext<MediaContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'marquee_user_titles_v3';
 const SUBS_STORAGE_KEY = 'marquee_user_subscriptions_v3';
 const HIDDEN_STORAGE_KEY = 'marquee_hidden_titles_v1';
 
+function getUserStorageKey(email?: string | null): string {
+  if (!email) return 'mirar_user_titles_guest';
+  const sanitized = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  return `mirar_user_titles_${sanitized}`;
+}
+
 export function MediaProvider({ children }: { children: React.ReactNode }) {
+  const { user, isLoading: isAuthLoading } = useAuth();
+
   // Start completely clean: no random hardcoded titles
   const [userTitles, setUserTitles] = useState<UserTitle[]>([]);
   const [catalog, setCatalog] = useState<MediaItem[]>([]);
@@ -100,8 +109,14 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     setSearchFocusTrigger((prev) => prev + 1);
   };
 
-  // Hydrate from localStorage and fetch deep live catalog
+  // Hydrate user-specific titles from localStorage (isolated per user profile)
   useEffect(() => {
+    if (isAuthLoading) return;
+
+    const email = user?.email?.toLowerCase();
+    const currentKey = getUserStorageKey(email);
+    const isSachin = email === 'sachin.bhattiprolu@gmail.com';
+
     let localHidden: string[] = [];
     try {
       const storedHidden = localStorage.getItem(HIDDEN_STORAGE_KEY);
@@ -117,27 +132,40 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Clear legacy mock titles from previous version
-      localStorage.removeItem('marquee_user_titles_v2');
-      localStorage.removeItem('marquee_user_titles');
-
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(currentKey);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          // Strictly reject any mock IDs or hidden IDs
-          const genuineUserTitles = parsed.filter(
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const validTitles = parsed.filter(
             (t: any) =>
               !t.id?.startsWith('user-title-') &&
               !localHidden.includes(`${t.media_type}-${t.tmdb_id}`)
           );
-          setUserTitles(genuineUserTitles);
+          setUserTitles(validTitles);
+          return;
         }
       }
-    } catch {
-      // Ignore parse errors on first load
-    }
 
+      // If user profile has no stored titles yet:
+      if (isSachin) {
+        // Seed Sachin's personal list from iCloud notes checklist!
+        setUserTitles(SACHIN_PERSONAL_TITLES);
+        localStorage.setItem(currentKey, JSON.stringify(SACHIN_PERSONAL_TITLES));
+      } else {
+        // Any other user or guest gets a clean, empty list
+        setUserTitles([]);
+      }
+    } catch {
+      if (isSachin) {
+        setUserTitles(SACHIN_PERSONAL_TITLES);
+      } else {
+        setUserTitles([]);
+      }
+    }
+  }, [user?.email, isAuthLoading]);
+
+  // Deep Catalog & Subscriptions Initialization
+  useEffect(() => {
     try {
       const storedSubs = localStorage.getItem(SUBS_STORAGE_KEY);
       if (storedSubs) {
@@ -150,15 +178,11 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       // Ignore
     }
 
-    // Deep Catalog Initialization from TMDb
     setIsCatalogLoading(true);
     getInitialDeepCatalog()
       .then((deepTitles) => {
         if (deepTitles && deepTitles.length > 0) {
-          const visible = deepTitles.filter(
-            (t) => !localHidden.includes(`${t.media_type}-${t.tmdb_id}`)
-          );
-          setCatalog(visible);
+          setCatalog(deepTitles);
         }
       })
       .finally(() => {
@@ -240,11 +264,12 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Sync titles to localStorage
+  // Sync titles to localStorage (scoped to the active authenticated user profile)
   const persistTitles = (titles: UserTitle[]) => {
     setUserTitles(titles);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(titles));
+      const key = getUserStorageKey(user?.email);
+      localStorage.setItem(key, JSON.stringify(titles));
     } catch {
       // Storage quota or private mode
     }
@@ -315,7 +340,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     } else if (media) {
       const newEntry: UserTitle = {
         id: `ut-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        user_id: 'local-user',
+        user_id: user?.email || 'local-user',
         tmdb_id: tmdbId,
         media_type: mediaType,
         status,
@@ -373,7 +398,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     } else {
       const newEntry: UserTitle = {
         id: `ut-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        user_id: 'local-user',
+        user_id: user?.email || 'local-user',
         tmdb_id: log.tmdb_id,
         media_type: log.media_type,
         status: log.status,
