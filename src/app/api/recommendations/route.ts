@@ -49,7 +49,106 @@ export async function POST(req: Request) {
       });
     }
 
-    // 1. If Vercel AI Gateway key is provided
+    // 1. Direct Google Gemini 3.8 Flash API (Fastest, direct, and zero credit card required)
+    if (geminiKey) {
+      const candidatesToRank = candidates.slice(0, 24);
+      const remainingCandidates = candidates.slice(24);
+
+      const candidateListStr = candidatesToRank
+        .map(
+          (c: CandidateInput, idx: number) =>
+            `${idx + 1}. [id: ${c.tmdb_id}] "${c.title}" (${c.release_year || 'N/A'}, ${c.media_type === 'movie' ? 'Movie' : 'Series'}) - Genres: ${(c.genres || []).join(', ')}. Streams on: ${(c.streaming_sources || [c.primary_source]).filter(Boolean).join(', ') || 'VOD'}. Synopsis: ${(c.overview || '').slice(0, 150)}`
+        )
+        .join('\n');
+
+      const favoritesStr = Array.isArray(userFavorites) && userFavorites.length > 0
+        ? userFavorites
+            .slice(0, 10)
+            .map((f: any) => `"${f.title}" (${f.genres?.join('/') || 'Cinema'}, Rating: ${f.rating || 8}+)`)
+            .join(', ')
+        : 'Acclaimed cinema and drama';
+
+      const filtersStr = [
+        activeFilters?.genres?.length ? `Preferred Genres: ${activeFilters.genres.join(', ')}` : null,
+        activeFilters?.decades?.length ? `Decades: ${activeFilters.decades.join(', ')}` : null,
+        activeFilters?.services?.length ? `Available on: ${activeFilters.services.join(', ')}` : null,
+      ]
+        .filter(Boolean)
+        .join(' | ') || 'None';
+
+      const prompt = `You are Mirar's AI Cinephile Recommendation Engine.
+User Taste Profile (Loved Films & TV Series):
+${favoritesStr}
+
+Active Constraints:
+${filtersStr}
+
+Candidate Titles:
+${candidateListStr}
+
+Instructions:
+1. Analyze the user's taste, tone, and stylistic preferences based on their loved titles and active constraints.
+2. Re-rank ALL candidate IDs in descending order of personal recommendation fit (highest match first).
+3. Return ONLY valid JSON with this exact structure:
+{
+  "ranked_ids": [number, number, ...],
+  "highlights": [
+    { "tmdb_id": number, "reason": "Short 1-sentence personalized pitch (max 15 words)" }
+  ]
+}`;
+
+      try {
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${geminiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: {
+                responseMimeType: 'application/json',
+                temperature: 0.2,
+              },
+            }),
+          }
+        );
+
+        if (geminiRes.ok) {
+          const data = await geminiRes.json();
+          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawText) {
+            const parsed = JSON.parse(rawText);
+            const rankedIds: number[] = Array.isArray(parsed.ranked_ids) ? parsed.ranked_ids : [];
+
+            if (rankedIds.length > 0) {
+              const candidateMap = new Map<number, CandidateInput>();
+              candidatesToRank.forEach((c: CandidateInput) => candidateMap.set(c.tmdb_id, c));
+
+              const sorted: CandidateInput[] = [];
+              rankedIds.forEach((id) => {
+                const item = candidateMap.get(id);
+                if (item) {
+                  sorted.push(item);
+                  candidateMap.delete(id);
+                }
+              });
+
+              candidateMap.forEach((item) => sorted.push(item));
+
+              return NextResponse.json({
+                candidates: [...sorted, ...remainingCandidates],
+                usedAI: true,
+                provider: 'Google Gemini 3.8 Flash',
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Direct Gemini API error:', err);
+      }
+    }
+
+    // 2. Vercel AI Gateway fallback
     if (vercelGatewayKey) {
       const candidatesToRank = candidates.slice(0, 24);
       const remainingCandidates = candidates.slice(24);
@@ -141,7 +240,6 @@ Instructions:
                 }
               });
 
-              // Append any unranked candidates from the first batch
               candidateMap.forEach((item) => sorted.push(item));
 
               return NextResponse.json({
@@ -157,117 +255,6 @@ Instructions:
       } else {
         const errText = await gatewayRes.text().catch(() => '');
         console.warn('Vercel AI Gateway response not ok:', gatewayRes.status, errText);
-
-        // If direct Gemini Key is NOT available to save it, notify clearly
-        if (!geminiKey) {
-          return NextResponse.json({
-            candidates,
-            usedAI: false,
-            message:
-              gatewayRes.status === 403
-                ? 'Vercel AI Gateway requires a card on file to unlock free credits (visit https://vercel.com/~/ai).'
-                : 'Vercel AI Gateway call failed. Using TMDb pipeline.',
-          });
-        }
-      }
-    }
-
-    // 2. Direct Google Gemini 2.5 Flash API (100% free with no credit card required)
-    if (geminiKey) {
-      const candidatesToRank = candidates.slice(0, 24);
-      const remainingCandidates = candidates.slice(24);
-
-      const candidateListStr = candidatesToRank
-        .map(
-          (c: CandidateInput, idx: number) =>
-            `${idx + 1}. [id: ${c.tmdb_id}] "${c.title}" (${c.release_year || 'N/A'}, ${c.media_type === 'movie' ? 'Movie' : 'Series'}) - Genres: ${(c.genres || []).join(', ')}. Streams on: ${(c.streaming_sources || [c.primary_source]).filter(Boolean).join(', ') || 'VOD'}. Synopsis: ${(c.overview || '').slice(0, 150)}`
-        )
-        .join('\n');
-
-      const favoritesStr = Array.isArray(userFavorites) && userFavorites.length > 0
-        ? userFavorites
-            .slice(0, 10)
-            .map((f: any) => `"${f.title}" (${f.genres?.join('/') || 'Cinema'}, Rating: ${f.rating || 8}+)`)
-            .join(', ')
-        : 'Acclaimed cinema and drama';
-
-      const filtersStr = [
-        activeFilters?.genres?.length ? `Preferred Genres: ${activeFilters.genres.join(', ')}` : null,
-        activeFilters?.decades?.length ? `Decades: ${activeFilters.decades.join(', ')}` : null,
-        activeFilters?.services?.length ? `Available on: ${activeFilters.services.join(', ')}` : null,
-      ]
-        .filter(Boolean)
-        .join(' | ') || 'None';
-
-      const prompt = `You are Mirar's AI Cinephile Recommendation Engine.
-User Taste Profile (Loved Films & TV Series):
-${favoritesStr}
-
-Active Constraints:
-${filtersStr}
-
-Candidate Titles:
-${candidateListStr}
-
-Instructions:
-1. Analyze the user's taste, tone, and stylistic preferences based on their loved titles and active constraints.
-2. Re-rank ALL candidate IDs in descending order of personal recommendation fit (highest match first).
-3. Return ONLY valid JSON with this exact structure:
-{
-  "ranked_ids": [number, number, ...],
-  "highlights": [
-    { "tmdb_id": number, "reason": "Short 1-sentence personalized pitch (max 15 words)" }
-  ]
-}`;
-
-      try {
-        const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: {
-                responseMimeType: 'application/json',
-                temperature: 0.2,
-              },
-            }),
-          }
-        );
-
-        if (geminiRes.ok) {
-          const data = await geminiRes.json();
-          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (rawText) {
-            const parsed = JSON.parse(rawText);
-            const rankedIds: number[] = Array.isArray(parsed.ranked_ids) ? parsed.ranked_ids : [];
-
-            if (rankedIds.length > 0) {
-              const candidateMap = new Map<number, CandidateInput>();
-              candidatesToRank.forEach((c: CandidateInput) => candidateMap.set(c.tmdb_id, c));
-
-              const sorted: CandidateInput[] = [];
-              rankedIds.forEach((id) => {
-                const item = candidateMap.get(id);
-                if (item) {
-                  sorted.push(item);
-                  candidateMap.delete(id);
-                }
-              });
-
-              candidateMap.forEach((item) => sorted.push(item));
-
-              return NextResponse.json({
-                candidates: [...sorted, ...remainingCandidates],
-                usedAI: true,
-                provider: 'Google Gemini 2.5 Flash',
-              });
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Direct Gemini API error:', err);
       }
     }
 
