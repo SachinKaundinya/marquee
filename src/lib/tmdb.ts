@@ -2,6 +2,7 @@ import { MediaItem, MediaType, UserTitle } from '@/types/media';
 import { MOCK_CATALOG } from '@/data/mockCatalog';
 import { searchOmdb, getOmdbDetails } from './omdb';
 import { getImdbRating } from './imdbRatings';
+import { rankWithJev } from './jevRecommendations';
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
@@ -497,16 +498,21 @@ export async function fetchTasteMatchRecommendations(
     });
 
     if (map.size > 0) {
-      return Array.from(map.values());
+      const results = Array.from(map.values());
+      await Promise.all(results.map(enrichMediaItemWithProviders));
+      const ranked = await rankWithJev(results, userTitles);
+      return ranked;
     }
   } catch (err) {
     console.error('Failed to fetch Taste Match recommendations', err);
   }
 
   const fallback = await fetchTmdbCategory('top_rated', page);
-  return fallback.filter(
+  const filtered = fallback.filter(
     (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary') && !isNonEnglishItem(item)
   );
+  await Promise.all(filtered.map(enrichMediaItemWithProviders));
+  return filtered;
 }
 
 export async function fetchInTheatersTitles(page = 1): Promise<MediaItem[]> {
