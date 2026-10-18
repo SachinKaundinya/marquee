@@ -162,7 +162,14 @@ Instructions:
           }
         }
       } else {
-        console.warn('Vercel AI Gateway response not ok:', gatewayRes.status, await gatewayRes.text().catch(() => ''));
+        const errText = await gatewayRes.text().catch(() => '');
+        console.warn('Vercel AI Gateway response not ok:', gatewayRes.status, errText);
+        return NextResponse.json({
+          candidates,
+          usedAI: false,
+          gatewayStatus: gatewayRes.status,
+          gatewayError: errText,
+        });
       }
     }
 
