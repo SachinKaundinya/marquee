@@ -364,7 +364,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     if (!item) return false;
     const sources = item.streaming_sources || (item.primary_source ? [item.primary_source] : []);
     const hasRentalSub = subscribedServices.includes('Prime (Rent)') || subscribedServices.includes('Prime Video (Rent)');
-    if (item.media_type === 'movie' && hasRentalSub) {
+    if (item.media_type === 'movie' && hasRentalSub && (sources.includes('Prime (Rent)') || sources.includes('Prime Video (Rent)'))) {
       return true;
     }
     return sources.some((source) => isServiceSubscribed(source));

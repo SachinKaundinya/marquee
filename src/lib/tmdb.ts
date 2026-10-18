@@ -29,9 +29,8 @@ export function getTmdbCredentials() {
 
 export function cleanProviderName(name: string): string {
   const n = name.toLowerCase();
-  if (n.includes('amazon video') || (n.includes('prime') && n.includes('rent'))) return 'Prime (Rent)';
   if (n.includes('netflix')) return 'Netflix';
-  if (n.includes('apple')) return 'Apple TV+';
+  if (n.includes('apple tv') || n.includes('apple')) return 'Apple TV+';
   if (n.includes('max') || n.includes('hbo')) return 'Max';
   if (n.includes('hulu')) return 'Hulu';
   if (n.includes('prime') || n.includes('amazon')) return 'Prime Video';
@@ -43,7 +42,17 @@ export function cleanProviderName(name: string): string {
   return name;
 }
 
-export async function fetchWatchProviders(mediaType: MediaType, id: number): Promise<string[]> {
+const watchProvidersCache = new Map<string, { flatrate: string[]; rent: string[] }>();
+
+export async function fetchWatchProviders(
+  mediaType: MediaType,
+  id: number
+): Promise<{ flatrate: string[]; rent: string[] }> {
+  const cacheKey = `${mediaType}-${id}`;
+  if (watchProvidersCache.has(cacheKey)) {
+    return watchProvidersCache.get(cacheKey)!;
+  }
+
   const { token, key } = getTmdbCredentials();
   try {
     const url = `${TMDB_BASE_URL}/${mediaType}/${id}/watch/providers`;
@@ -55,27 +64,61 @@ export async function fetchWatchProviders(mediaType: MediaType, id: number): Pro
     if (res.ok) {
       const data = await res.json();
       const us = data.results?.US;
-      const providers: string[] = [];
+      const flatrate: string[] = [];
+      const rent: string[] = [];
+
       if (us?.flatrate && Array.isArray(us.flatrate)) {
         us.flatrate.forEach((p: any) => {
           const cleaned = cleanProviderName(p.provider_name);
-          if (cleaned) providers.push(cleaned);
-        });
-      }
-      if (us?.rent && Array.isArray(us.rent)) {
-        us.rent.forEach((p: any) => {
-          const n = (p.provider_name || '').toLowerCase();
-          if (n.includes('amazon') || n.includes('prime')) {
-            providers.push('Prime (Rent)');
+          if (cleaned && !flatrate.includes(cleaned)) {
+            flatrate.push(cleaned);
           }
         });
       }
-      return Array.from(new Set(providers));
+
+      if (
+        (us?.rent && Array.isArray(us.rent) && us.rent.length > 0) ||
+        (us?.buy && Array.isArray(us.buy) && us.buy.length > 0)
+      ) {
+        rent.push('Prime (Rent)');
+      }
+
+      const result = { flatrate, rent };
+      watchProvidersCache.set(cacheKey, result);
+      return result;
     }
   } catch {
     //
   }
-  return [];
+
+  const empty = { flatrate: [], rent: [] };
+  watchProvidersCache.set(cacheKey, empty);
+  return empty;
+}
+
+export async function enrichMediaItemWithProviders(item: MediaItem): Promise<MediaItem> {
+  try {
+    const { flatrate, rent } = await fetchWatchProviders(item.media_type, item.tmdb_id);
+    if (flatrate.length > 0) {
+      item.streaming_sources = [...flatrate, ...(rent.length > 0 ? ['Prime (Rent)'] : [])];
+      item.primary_source = flatrate[0];
+    } else if (rent.length > 0) {
+      item.streaming_sources = ['Prime (Rent)'];
+      item.primary_source = 'Prime (Rent)';
+    } else {
+      // If TMDb reports no US providers:
+      // If already marked In Theaters or Coming Soon, keep that
+      if (item.primary_source !== 'In Theaters' && item.primary_source !== 'Coming Soon') {
+        if (item.media_type === 'movie') {
+          item.streaming_sources = ['Prime (Rent)'];
+          item.primary_source = 'Prime (Rent)';
+        }
+      }
+    }
+  } catch {
+    // Keep defaults
+  }
+  return item;
 }
 
 export async function searchTitles(query: string): Promise<MediaItem[]> {
@@ -127,6 +170,7 @@ export async function searchTitles(query: string): Promise<MediaItem[]> {
           } catch {
             // ignore
           }
+          await enrichMediaItemWithProviders(formatted);
           return formatted;
         })
       );
@@ -620,33 +664,46 @@ export async function fetchTmdbCategory(
   }
 
   try {
-    const separator = endpoint.includes('?') ? '&' : '?';
-    const url = `${TMDB_BASE_URL}${endpoint}${separator}page=${page}`;
     const headers: Record<string, string> = token
       ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
       : {};
-    const finalUrl = token ? url : `${url}&api_key=${key}`;
+
+    const buildUrl = (ep: string, p: number) => {
+      const sep = ep.includes('?') ? '&' : '?';
+      const u = `${TMDB_BASE_URL}${ep}${sep}page=${p}`;
+      return token ? u : `${u}&api_key=${key}`;
+    };
 
     if (category === 'trending') {
-      const [res, theaterTitles] = await Promise.all([
-        fetch(finalUrl, { headers }),
+      const trendingPages = [(page - 1) * 2 + 1, (page - 1) * 2 + 2];
+      const [p1Res, p2Res, theaterTitles] = await Promise.all([
+        fetch(buildUrl('/trending/all/week', trendingPages[0]), { headers }),
+        fetch(buildUrl('/trending/all/week', trendingPages[1]), { headers }),
         fetchInTheatersTitles(page),
       ]);
+
+      const rawItems: any[] = [];
+      if (p1Res.ok) {
+        const d1 = await p1Res.json();
+        rawItems.push(...(d1.results || []));
+      }
+      if (p2Res.ok) {
+        const d2 = await p2Res.json();
+        rawItems.push(...(d2.results || []));
+      }
 
       const items: MediaItem[] = [];
       const seen = new Set<number>();
 
-      if (res.ok) {
-        const data = await res.json();
-        (data.results || [])
-          .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && !isNonEnglishItem(item))
-          .forEach((item: any) => {
-            if (!item.media_type) item.media_type = 'movie';
-            const formatted = formatTmdbItem(item);
-            seen.add(formatted.tmdb_id);
-            items.push(formatted);
-          });
-      }
+      rawItems
+        .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && !isNonEnglishItem(item))
+        .forEach((item: any) => {
+          if (!item.media_type) item.media_type = 'movie';
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            items.push(formatTmdbItem(item));
+          }
+        });
 
       // Add exclusive in-theater and upcoming movies to Trending (excluding foreign and animation titles)
       theaterTitles.forEach((thItem) => {
@@ -656,45 +713,151 @@ export async function fetchTmdbCategory(
         }
       });
 
+      // Enrich live streaming providers
+      await Promise.all(items.map(enrichMediaItemWithProviders));
       return items;
     }
+
+    if (category === 'popular_movies') {
+      const moviePages = [(page - 1) * 3 + 1, (page - 1) * 3 + 2, (page - 1) * 3 + 3];
+      const pageResponses = await Promise.all(
+        moviePages.map(async (p) => {
+          try {
+            const r = await fetch(buildUrl('/movie/popular', p), { headers });
+            if (!r.ok) return [];
+            const d = await r.json();
+            return d.results || [];
+          } catch {
+            return [];
+          }
+        })
+      );
+
+      const allResults = pageResponses.flat();
+      const seen = new Set<number>();
+      const items: MediaItem[] = [];
+
+      allResults
+        .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && !isNonEnglishItem(item))
+        .forEach((item: any) => {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            item.media_type = 'movie';
+            items.push(formatTmdbItem(item));
+          }
+        });
+
+      // Enrich live streaming providers
+      await Promise.all(items.map(enrichMediaItemWithProviders));
+      return items;
+    }
+
+    if (category === 'popular_tv') {
+      const tvPages = [(page - 1) * 2 + 1, (page - 1) * 2 + 2];
+      const pageResponses = await Promise.all(
+        tvPages.map(async (p) => {
+          try {
+            const r = await fetch(buildUrl(endpoint, p), { headers });
+            if (!r.ok) return [];
+            const d = await r.json();
+            return d.results || [];
+          } catch {
+            return [];
+          }
+        })
+      );
+
+      const allResults = pageResponses.flat();
+      const seen = new Set<number>();
+      const items: MediaItem[] = [];
+
+      allResults
+        .filter((item: any) => Boolean(item.poster_path))
+        .filter((item: any) => !isAnimeItem(item) && !isNonEnglishItem(item))
+        .filter((item: any) => {
+          const genreIds: number[] = item.genre_ids || [];
+          if (genreIds.some((id) => [10763, 10764, 10767, 10766].includes(id))) return false;
+          const name = (item.name || item.title || '').toLowerCase();
+          const disallowed = [
+            'late night',
+            'tonight show',
+            'jimmy kimmel',
+            'daily show',
+            'survivor',
+            'big brother',
+            'love island',
+            'the voice',
+            'rupaul',
+            'bachelor',
+            'bachelorette',
+            'real housewives',
+          ];
+          if (disallowed.some((d) => name.includes(d))) return false;
+          return true;
+        })
+        .forEach((item: any) => {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            item.media_type = 'tv';
+            items.push(formatTmdbItem(item));
+          }
+        });
+
+      await Promise.all(items.map(enrichMediaItemWithProviders));
+      return items;
+    }
+
+    if (category === 'top_rated') {
+      const topPages = [(page - 1) * 2 + 1, (page - 1) * 2 + 2];
+      const pageResponses = await Promise.all(
+        topPages.map(async (p) => {
+          try {
+            const r = await fetch(buildUrl('/movie/top_rated', p), { headers });
+            if (!r.ok) return [];
+            const d = await r.json();
+            return d.results || [];
+          } catch {
+            return [];
+          }
+        })
+      );
+
+      const allResults = pageResponses.flat();
+      const seen = new Set<number>();
+      const items: MediaItem[] = [];
+
+      allResults
+        .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && !isNonEnglishItem(item))
+        .forEach((item: any) => {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            item.media_type = 'movie';
+            items.push(formatTmdbItem(item));
+          }
+        });
+
+      await Promise.all(items.map(enrichMediaItemWithProviders));
+      return items;
+    }
+
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${TMDB_BASE_URL}${endpoint}${separator}page=${page}`;
+    const finalUrl = token ? url : `${url}&api_key=${key}`;
     const res = await fetch(finalUrl, { headers });
 
     if (res.ok) {
       const data = await res.json();
-      return (data.results || [])
+      const items = (data.results || [])
         .filter((item: any) => Boolean(item.poster_path))
         .filter((item: any) => !isAnimeItem(item) && !isNonEnglishItem(item))
-        .filter((item: any) => {
-          if (category === 'popular_tv') {
-            const genreIds: number[] = item.genre_ids || [];
-            // Remove Reality (10764), Talk (10767), News (10763), Soap (10766)
-            if (genreIds.some((id) => [10763, 10764, 10767, 10766].includes(id))) return false;
-            const name = (item.name || item.title || '').toLowerCase();
-            const disallowed = [
-              'late night',
-              'tonight show',
-              'jimmy kimmel',
-              'daily show',
-              'survivor',
-              'big brother',
-              'love island',
-              'the voice',
-              'rupaul',
-              'bachelor',
-              'bachelorette',
-              'real housewives',
-            ];
-            if (disallowed.some((d) => name.includes(d))) return false;
-          }
-          return true;
-        })
         .map((item: any) => {
           if (!item.media_type) {
             item.media_type = defaultType;
           }
           return formatTmdbItem(item);
         });
+      await Promise.all(items.map(enrichMediaItemWithProviders));
+      return items;
     }
   } catch (err) {
     console.error('Failed to fetch TMDb category', category, err);
