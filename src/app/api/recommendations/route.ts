@@ -12,6 +12,8 @@ interface CandidateInput {
   streaming_sources?: string[];
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const { userFavorites, candidates, activeFilters } = await req.json();
@@ -24,7 +26,11 @@ export async function POST(req: Request) {
     const vercelGatewayKey =
       process.env.AI_GATEWAY_API_KEY ||
       process.env.VERCEL_AI_GATEWAY_KEY ||
-      process.env.VERCEL_AI_GATEWAY_API_KEY;
+      process.env.VERCEL_AI_GATEWAY_API_KEY ||
+      process.env.VERCEL_AI_GATEWAY ||
+      process.env.AI_GATEWAY_KEY ||
+      process.env.GATEWAY_API_KEY ||
+      process.env.AI_KEY;
 
     const openRouterKey =
       process.env.OPENROUTER_API_KEY ||
@@ -34,10 +40,19 @@ export async function POST(req: Request) {
     const apiKey = vercelGatewayKey || openRouterKey;
 
     if (!apiKey) {
+      const detectedEnvKeys = Object.keys(process.env).filter(
+        (k) =>
+          k.toLowerCase().includes('gateway') ||
+          k.toLowerCase().includes('ai_') ||
+          k.toLowerCase().includes('openrouter') ||
+          k.toLowerCase().includes('jev')
+      );
+
       return NextResponse.json({
         candidates,
         usedAI: false,
         message: 'No AI_GATEWAY_API_KEY configured. Using TMDb recommendation pipeline.',
+        detectedEnvKeys,
       });
     }
 
