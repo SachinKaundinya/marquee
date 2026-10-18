@@ -146,7 +146,9 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
             )
             .map((t: any) => {
               if (t.media?.poster_path && t.media.poster_path.startsWith('/') && !t.media.poster_path.startsWith('http')) {
-                t.media.poster_path = `https://image.tmdb.org/t/p/w500${t.media.poster_path}`;
+                t.media.poster_path = `https://image.tmdb.org/t/p/w342${t.media.poster_path}`;
+              } else if (t.media?.poster_path && t.media.poster_path.includes('/w500/')) {
+                t.media.poster_path = t.media.poster_path.replace('/w500/', '/w342/');
               }
               if (t.media?.backdrop_path && t.media.backdrop_path.startsWith('/') && !t.media.backdrop_path.startsWith('http')) {
                 t.media.backdrop_path = `https://image.tmdb.org/t/p/w1280${t.media.backdrop_path}`;

@@ -1154,7 +1154,7 @@ function formatTmdbItem(item: any): MediaItem {
     title: rawTitle,
     media_type: isMovie ? 'movie' : 'tv',
     poster_path: item.poster_path
-      ? (item.poster_path.startsWith('http') ? item.poster_path : `${TMDB_IMAGE_BASE}/w500${item.poster_path}`)
+      ? (item.poster_path.startsWith('http') ? item.poster_path : `${TMDB_IMAGE_BASE}/w342${item.poster_path}`)
       : '',
     backdrop_path: item.backdrop_path
       ? (item.backdrop_path.startsWith('http') ? item.backdrop_path : `${TMDB_IMAGE_BASE}/w1280${item.backdrop_path}`)

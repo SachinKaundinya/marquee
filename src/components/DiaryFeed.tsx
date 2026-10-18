@@ -141,10 +141,8 @@ export function DiaryFeed() {
             return (
               <motion.div
                 key={title.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={springTransition}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 onClick={() => openQuickLog(media)}
                 className="group relative cursor-pointer flex flex-col"
               >

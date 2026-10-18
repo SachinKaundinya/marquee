@@ -144,6 +144,13 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     .filter((item) => matchesGenres(item.genres, selectedGenres, item.overview || ''))
     .filter((item) => matchesDecades(item.release_year, selectedDecades));
 
+  const [visibleCount, setVisibleCount] = useState(30);
+
+  // Reset visibleCount when switching category, tab mode, or filters for instant responsiveness & low memory
+  React.useEffect(() => {
+    setVisibleCount(30);
+  }, [selectedCategory, filter, selectedGenres, selectedDecades, mode]);
+
   // Auto-replenish: when a user logs a title and it is removed from the feed,
   // load more recommendations automatically if the visible list gets low
   React.useEffect(() => {
@@ -154,7 +161,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
 
   const sentinelRef = React.useRef<HTMLDivElement | null>(null);
 
-  // Background infinite pagination using IntersectionObserver: silent, seamless pre-fetching
+  // Background infinite pagination using IntersectionObserver: silent, seamless pre-fetching & progressive rendering
   React.useEffect(() => {
     if (isWatchlistMode) return;
     const sentinel = sentinelRef.current;
@@ -162,8 +169,11 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && !isCatalogLoading) {
-          loadMoreCatalog();
+        if (entries[0]?.isIntersecting) {
+          setVisibleCount((prev) => prev + 24);
+          if (!isCatalogLoading) {
+            loadMoreCatalog();
+          }
         }
       },
       { rootMargin: '600px' }
@@ -202,6 +212,8 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
         // Within the same tier and network status, sort by vote_average descending
         return b.vote_average - a.vote_average;
       });
+
+  const displayedItems = isWatchlistMode ? items : items.slice(0, visibleCount);
 
   const categories: { id: TmdbCategory; label: string; icon: any }[] = [
     { id: 'taste_match', label: 'Taste Match', icon: Sparkles },
@@ -563,7 +575,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {items.map((item) => {
+            {displayedItems.map((item) => {
               const userTitle = getUserTitle(item.tmdb_id, item.media_type);
               const isWatching = userTitle?.status === 'watching';
               const isWatched = userTitle?.status === 'watched';
@@ -575,13 +587,9 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               const isSubscribed = matchingSubscribedSource ? true : (source ? isServiceSubscribed(source) : false);
 
               return (
-                <motion.div
+                <div
                   key={`${item.media_type}-${item.tmdb_id}`}
-                  layout
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={springTransition}
-                  className="group flex flex-col cursor-pointer"
+                  className="group flex flex-col cursor-pointer transition-transform duration-150 active:scale-[0.98]"
                   onClick={() => openQuickLog(item)}
                 >
                   {/* Poster container with MediaPoster */}
@@ -645,7 +653,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
