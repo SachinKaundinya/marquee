@@ -151,15 +151,11 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     setVisibleCount(30);
   }, [selectedCategory, filter, selectedGenres, selectedDecades, mode]);
 
-  // Auto-replenish: when a user logs a title and it is removed from the feed,
-  // load more recommendations automatically if the visible list gets low
-  React.useEffect(() => {
-    if (!isWatchlistMode && filteredItems.length < 18 && !isCatalogLoading) {
-      loadMoreCatalog();
-    }
-  }, [filteredItems.length, isWatchlistMode, isCatalogLoading, loadMoreCatalog]);
-
   const sentinelRef = React.useRef<HTMLDivElement | null>(null);
+  const isLoadingRef = React.useRef(isCatalogLoading);
+  React.useEffect(() => {
+    isLoadingRef.current = isCatalogLoading;
+  }, [isCatalogLoading]);
 
   // Background infinite pagination using IntersectionObserver: silent, seamless pre-fetching & progressive rendering
   React.useEffect(() => {
@@ -171,17 +167,18 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
       (entries) => {
         if (entries[0]?.isIntersecting) {
           setVisibleCount((prev) => prev + 24);
-          if (!isCatalogLoading) {
+          // Only fetch more from TMDb if not currently loading and we have a full page already
+          if (!isLoadingRef.current && filteredItems.length >= 20) {
             loadMoreCatalog();
           }
         }
       },
-      { rootMargin: '600px' }
+      { rootMargin: '200px' }
     );
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [isWatchlistMode, isCatalogLoading, loadMoreCatalog]);
+  }, [isWatchlistMode, loadMoreCatalog, filteredItems.length]);
 
   function getRatingTier(voteAverage: number): number {
     if (voteAverage >= 8.0) return 3; // 8.0+
@@ -509,7 +506,6 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                 <button
                   key={cat.id}
                   onClick={() => changeCategory(cat.id)}
-                  disabled={isCatalogLoading}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer shrink-0 ${
                     isSelected
                       ? 'bg-white text-black font-semibold shadow-sm'
@@ -518,6 +514,9 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                 >
                   <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-black' : 'text-[#8E93A0]'}`} />
                   <span>{cat.label}</span>
+                  {isSelected && isCatalogLoading && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-black/70 animate-pulse ml-0.5" />
+                  )}
                 </button>
               );
             })}
@@ -526,7 +525,17 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
       </div>
 
       {/* Grid Content */}
-      {items.length === 0 ? (
+      {isCatalogLoading && items.length === 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 animate-pulse">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-2">
+              <div className="aspect-[2/3] w-full rounded-md bg-white/[0.04] border border-white/[0.06]" />
+              <div className="h-3.5 w-3/4 bg-white/[0.05] rounded" />
+              <div className="h-2.5 w-1/2 bg-white/[0.03] rounded" />
+            </div>
+          ))}
+        </div>
+      ) : items.length === 0 ? (
         <div className="p-12 text-center rounded-xl bg-[#14161B] border border-white/[0.08] max-w-lg mx-auto">
           <Bookmark className="w-8 h-8 text-[#8E93A0] mx-auto mb-2 opacity-50" />
           <h4 className="text-sm font-medium text-[#F3F4F6] mb-1">
@@ -538,18 +547,28 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
           </h4>
           <p className="text-xs text-[#8E93A0] max-w-sm mx-auto mb-4 leading-relaxed">
             {filter === 'available'
-              ? 'Try selecting more subscriptions or switch filters to browse all titles.'
+              ? 'Try selecting more subscriptions or switch to browsing all titles.'
               : isWatchlistMode
               ? 'Browse titles in Popular or search above to save movies and TV shows you want to watch.'
               : 'Try clearing active filters or switching TMDb feeds.'}
           </p>
           {filter === 'available' ? (
-            <button
-              onClick={openServicesModal}
-              className="px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer"
-            >
-              Manage Streaming Services
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => setFilter('all')}
+                className="px-3.5 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm"
+              >
+                Show All Titles
+              </button>
+              <button
+                type="button"
+                onClick={openServicesModal}
+                className="px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer border border-white/10"
+              >
+                Manage Services
+              </button>
+            </div>
           ) : isWatchlistMode ? (
             <div className="flex flex-wrap items-center justify-center gap-2">
               <button

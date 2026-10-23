@@ -45,6 +45,38 @@ export function cleanProviderName(name: string): string {
 
 const watchProvidersCache = new Map<string, { flatrate: string[]; rent: string[] }>();
 
+// Hydrate from sessionStorage to make subsequent visits & category switching instant
+if (typeof window !== 'undefined') {
+  try {
+    const raw = sessionStorage.getItem('mirar_watch_providers_cache_v2');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      Object.entries(parsed).forEach(([k, v]) => {
+        watchProvidersCache.set(k, v as any);
+      });
+    }
+  } catch {
+    // Ignore storage issues
+  }
+}
+
+function persistWatchProvider(key: string, val: { flatrate: string[]; rent: string[] }) {
+  watchProvidersCache.set(key, val);
+  if (typeof window !== 'undefined' && Math.random() < 0.15) {
+    try {
+      const obj: Record<string, any> = {};
+      let count = 0;
+      for (const [k, v] of watchProvidersCache.entries()) {
+        obj[k] = v;
+        if (++count > 250) break;
+      }
+      sessionStorage.setItem('mirar_watch_providers_cache_v2', JSON.stringify(obj));
+    } catch {
+      // Ignore
+    }
+  }
+}
+
 export async function fetchWatchProviders(
   mediaType: MediaType,
   id: number
@@ -85,7 +117,7 @@ export async function fetchWatchProviders(
       }
 
       const result = { flatrate, rent };
-      watchProvidersCache.set(cacheKey, result);
+      persistWatchProvider(cacheKey, result);
       return result;
     }
   } catch {
@@ -93,7 +125,7 @@ export async function fetchWatchProviders(
   }
 
   const empty = { flatrate: [], rent: [] };
-  watchProvidersCache.set(cacheKey, empty);
+  persistWatchProvider(cacheKey, empty);
   return empty;
 }
 
@@ -120,6 +152,15 @@ export async function enrichMediaItemWithProviders(item: MediaItem): Promise<Med
     // Keep defaults
   }
   return item;
+}
+
+// Batch enrichment to prevent mobile network socket exhaustion
+export async function enrichMediaItemsBatch(items: MediaItem[], batchSize = 8): Promise<MediaItem[]> {
+  for (let i = 0; i < items.length; i += batchSize) {
+    const chunk = items.slice(i, i + batchSize);
+    await Promise.all(chunk.map((item) => enrichMediaItemWithProviders(item)));
+  }
+  return items;
 }
 
 export async function searchTitles(query: string): Promise<MediaItem[]> {
@@ -499,7 +540,7 @@ export async function fetchTasteMatchRecommendations(
 
     if (map.size > 0) {
       const results = Array.from(map.values());
-      await Promise.all(results.map(enrichMediaItemWithProviders));
+      await enrichMediaItemsBatch(results, 8);
       const ranked = await rankWithJev(results, userTitles);
       return ranked;
     }
@@ -511,7 +552,7 @@ export async function fetchTasteMatchRecommendations(
   const filtered = fallback.filter(
     (item) => !item.genres.some((g) => g.toLowerCase().includes('doc') || g.toLowerCase() === 'documentary') && !isNonEnglishItem(item)
   );
-  await Promise.all(filtered.map(enrichMediaItemWithProviders));
+  await enrichMediaItemsBatch(filtered, 8);
   return filtered;
 }
 
@@ -720,12 +761,12 @@ export async function fetchTmdbCategory(
       });
 
       // Enrich live streaming providers
-      await Promise.all(items.map(enrichMediaItemWithProviders));
+      await enrichMediaItemsBatch(items, 8);
       return items;
     }
 
     if (category === 'popular_movies') {
-      const moviePages = [(page - 1) * 3 + 1, (page - 1) * 3 + 2, (page - 1) * 3 + 3];
+      const moviePages = [(page - 1) * 2 + 1, (page - 1) * 2 + 2];
       const pageResponses = await Promise.all(
         moviePages.map(async (p) => {
           try {
@@ -753,8 +794,8 @@ export async function fetchTmdbCategory(
           }
         });
 
-      // Enrich live streaming providers
-      await Promise.all(items.map(enrichMediaItemWithProviders));
+      // Enrich live streaming providers in throttled batches
+      await enrichMediaItemsBatch(items, 8);
       return items;
     }
 
@@ -809,7 +850,7 @@ export async function fetchTmdbCategory(
           }
         });
 
-      await Promise.all(items.map(enrichMediaItemWithProviders));
+      await enrichMediaItemsBatch(items, 8);
       return items;
     }
 
@@ -842,7 +883,7 @@ export async function fetchTmdbCategory(
           }
         });
 
-      await Promise.all(items.map(enrichMediaItemWithProviders));
+      await enrichMediaItemsBatch(items, 8);
       return items;
     }
 
@@ -862,7 +903,7 @@ export async function fetchTmdbCategory(
           }
           return formatTmdbItem(item);
         });
-      await Promise.all(items.map(enrichMediaItemWithProviders));
+      await enrichMediaItemsBatch(items, 8);
       return items;
     }
   } catch (err) {

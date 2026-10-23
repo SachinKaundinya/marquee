@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { UserTitle, MediaItem, QuickLogInput, TrackingStatus, MediaType } from '@/types/media';
 import { INITIAL_USER_TITLES, MOCK_CATALOG } from '@/data/mockCatalog';
 import { toast } from 'sonner';
@@ -92,6 +92,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   const [selectedCategory, setSelectedCategory] = useState<TmdbCategory>('trending');
   const [categoryPages, setCategoryPages] = useState<Record<string, number>>({ trending: 1 });
   const [isCatalogLoading, setIsCatalogLoading] = useState(false);
+  const categoryCacheRef = useRef<Map<string, MediaItem[]>>(new Map());
+  const activeCategoryRequestIdRef = useRef<number>(0);
   
   // Default subscribed services
   const [subscribedServices, setSubscribedServicesState] = useState<string[]>([
@@ -230,6 +232,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
           const visible = trendingTitles.filter(
             (t) => !hiddenTitleKeys.includes(`${t.media_type}-${t.tmdb_id}`)
           );
+          categoryCacheRef.current.set('trending', visible);
           setCatalog(visible);
         } else {
           setCatalog(MOCK_CATALOG);
@@ -258,6 +261,14 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       prev.filter((c) => !(c.tmdb_id === tmdbId && c.media_type === mediaType))
     );
 
+    // Also strip from memory category cache
+    categoryCacheRef.current.forEach((items, cat) => {
+      categoryCacheRef.current.set(
+        cat,
+        items.filter((c) => !(c.tmdb_id === tmdbId && c.media_type === mediaType))
+      );
+    });
+
     // Remove from user watchlist/shelf if present
     const updatedUserTitles = userTitles.filter(
       (t) => !(t.tmdb_id === tmdbId && t.media_type === mediaType)
@@ -273,30 +284,50 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
 
   const changeCategory = async (category: TmdbCategory) => {
     setSelectedCategory(category);
+    const requestId = ++activeCategoryRequestIdRef.current;
+
+    // Instant switch (0ms) if category was previously fetched in this session
+    const cached = categoryCacheRef.current.get(category);
+    if (cached && cached.length > 0) {
+      setCatalog(cached);
+      setIsCatalogLoading(false);
+      return;
+    }
+
     setIsCatalogLoading(true);
     try {
       const titles = await fetchTmdbCategory(category, 1, userTitles);
+      if (activeCategoryRequestIdRef.current !== requestId) return; // Stale request, ignore
+
       setCategoryPages((prev) => ({ ...prev, [category]: 1 }));
       if (titles && titles.length > 0) {
         const visible = titles.filter(
           (t) => !hiddenTitleKeys.includes(`${t.media_type}-${t.tmdb_id}`)
         );
+        categoryCacheRef.current.set(category, visible);
         setCatalog(visible);
       }
     } finally {
-      setIsCatalogLoading(false);
+      if (activeCategoryRequestIdRef.current === requestId) {
+        setIsCatalogLoading(false);
+      }
     }
   };
 
   const loadMoreCatalog = async () => {
     if (isCatalogLoading) return;
-    const nextPage = (categoryPages[selectedCategory] || 1) + 1;
+    const currentCat = selectedCategory;
+    const currentPage = categoryPages[currentCat] || 1;
+    if (currentPage >= 5) return; // Cap pagination to 5 pages max to preserve mobile memory
+    const nextPage = currentPage + 1;
+
     setIsCatalogLoading(true);
 
     try {
-      const moreTitles = await fetchTmdbCategory(selectedCategory, nextPage, userTitles);
+      const moreTitles = await fetchTmdbCategory(currentCat, nextPage, userTitles);
+      // Ensure user hasn't switched categories while fetch was in flight
       if (moreTitles && moreTitles.length > 0) {
-        setCategoryPages((prev) => ({ ...prev, [selectedCategory]: nextPage }));
+        setCategoryPages((prev) => ({ ...prev, [currentCat]: nextPage }));
         setCatalog((prev) => {
           const map = new Map<number, MediaItem>();
           prev.forEach((item) => map.set(item.tmdb_id, item));
@@ -306,7 +337,9 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
               map.set(item.tmdb_id, item);
             }
           });
-          return Array.from(map.values());
+          const merged = Array.from(map.values());
+          categoryCacheRef.current.set(currentCat, merged);
+          return merged;
         });
       }
     } catch {
