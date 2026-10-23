@@ -49,6 +49,8 @@ function matchesGenres(itemGenres: string[], selected: string[], itemOverview = 
 }
 
 export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: WatchlistGridProps) {
+  const isWatchlistMode = mode === 'watchlist';
+
   const {
     catalog,
     userTitles,
@@ -63,15 +65,23 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     loadMoreCatalog,
     isCatalogLoading,
     triggerSearchFocus,
+    selectedGenres: contextGenres,
+    setSelectedGenres: setContextGenres,
+    selectedDecades: contextDecades,
+    setSelectedDecades: setContextDecades,
   } = useMedia();
 
   const [filter, setFilter] = useState<FilterType>('all');
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [watchlistGenres, setWatchlistGenres] = useState<string[]>([]);
+  const [watchlistDecades, setWatchlistDecades] = useState<string[]>([]);
   const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
-  const [selectedDecades, setSelectedDecades] = useState<string[]>([]);
   const [isDecadeModalOpen, setIsDecadeModalOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
-  const isWatchlistMode = mode === 'watchlist';
+
+  const selectedGenres = isWatchlistMode ? watchlistGenres : contextGenres;
+  const setSelectedGenres = isWatchlistMode ? setWatchlistGenres : setContextGenres;
+  const selectedDecades = isWatchlistMode ? watchlistDecades : contextDecades;
+  const setSelectedDecades = isWatchlistMode ? setWatchlistDecades : setContextDecades;
 
   const handleShareList = async () => {
     try {

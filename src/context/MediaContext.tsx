@@ -50,6 +50,12 @@ interface MediaContextType {
   loadMoreCatalog: () => Promise<void>;
   isCatalogLoading: boolean;
 
+  // Catalog Filters
+  selectedGenres: string[];
+  setSelectedGenres: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedDecades: string[];
+  setSelectedDecades: React.Dispatch<React.SetStateAction<string[]>>;
+
   // Subscribed Services Management
   subscribedServices: string[];
   toggleSubscribedService: (serviceName: string) => void;
@@ -94,6 +100,17 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   const categoryCacheRef = useRef<Map<string, MediaItem[]>>(new Map());
   const activeCategoryRequestIdRef = useRef<number>(0);
+  const hasCatalogMountedRef = useRef(false);
+
+  // Catalog Filters (Decades & Genres)
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedDecades, setSelectedDecades] = useState<string[]>([]);
+
+  const getCacheKey = (category: TmdbCategory, decades: string[] = [], genres: string[] = []) => {
+    const dKey = [...decades].sort().join(',');
+    const gKey = [...genres].sort().join(',');
+    return `${category}|${dKey}|${gKey}`;
+  };
   
   // Default subscribed services
   const [subscribedServices, setSubscribedServicesState] = useState<string[]>([
@@ -226,13 +243,14 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     }
 
     setIsCatalogLoading(true);
+    const initialKey = getCacheKey('trending', [], []);
     fetchTmdbCategory('trending', 1)
       .then((trendingTitles) => {
         if (trendingTitles && trendingTitles.length > 0) {
           const visible = trendingTitles.filter(
             (t) => !hiddenTitleKeys.includes(`${t.media_type}-${t.tmdb_id}`)
           );
-          categoryCacheRef.current.set('trending', visible);
+          categoryCacheRef.current.set(initialKey, visible);
           setCatalog(visible);
         } else {
           setCatalog(MOCK_CATALOG);
@@ -245,6 +263,60 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         setIsCatalogLoading(false);
       });
   }, []);
+
+  const fetchCategoryCatalog = async (
+    category: TmdbCategory,
+    decades: string[],
+    genres: string[]
+  ) => {
+    const requestId = ++activeCategoryRequestIdRef.current;
+    const cacheKey = getCacheKey(category, decades, genres);
+
+    // Instant switch (0ms) if category + active filters were previously cached
+    const cached = categoryCacheRef.current.get(cacheKey);
+    if (cached) {
+      setCatalog(cached);
+      setIsCatalogLoading(false);
+      return;
+    }
+
+    setIsCatalogLoading(true);
+    try {
+      const filterOpts = {
+        decades: decades.length > 0 ? decades : undefined,
+        genres: genres.length > 0 ? genres : undefined,
+      };
+      const titles = await fetchTmdbCategory(category, 1, userTitles, filterOpts);
+      if (activeCategoryRequestIdRef.current !== requestId) return; // Stale request, ignore
+
+      setCategoryPages((prev) => ({ ...prev, [cacheKey]: 1 }));
+      if (titles && titles.length > 0) {
+        const visible = titles.filter(
+          (t) => !hiddenTitleKeys.includes(`${t.media_type}-${t.tmdb_id}`)
+        );
+        categoryCacheRef.current.set(cacheKey, visible);
+        setCatalog(visible);
+      } else {
+        categoryCacheRef.current.set(cacheKey, []);
+        setCatalog([]);
+      }
+    } catch (err) {
+      console.error('Failed to load category catalog', err);
+    } finally {
+      if (activeCategoryRequestIdRef.current === requestId) {
+        setIsCatalogLoading(false);
+      }
+    }
+  };
+
+  // Re-fetch discovery or load from memory cache when category or active filters change
+  useEffect(() => {
+    if (!hasCatalogMountedRef.current) {
+      hasCatalogMountedRef.current = true;
+      return;
+    }
+    fetchCategoryCatalog(selectedCategory, selectedDecades, selectedGenres);
+  }, [selectedCategory, selectedDecades, selectedGenres]);
 
   const markNotInterested = (tmdbId: number, mediaType: MediaType) => {
     const key = `${mediaType}-${tmdbId}`;
@@ -282,52 +354,39 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const changeCategory = async (category: TmdbCategory) => {
-    setSelectedCategory(category);
-    const requestId = ++activeCategoryRequestIdRef.current;
-
-    // Instant switch (0ms) if category was previously fetched in this session
-    const cached = categoryCacheRef.current.get(category);
+  const changeCategory = (category: TmdbCategory) => {
+    if (category === selectedCategory) return;
+    const cacheKey = getCacheKey(category, selectedDecades, selectedGenres);
+    const cached = categoryCacheRef.current.get(cacheKey);
     if (cached && cached.length > 0) {
       setCatalog(cached);
       setIsCatalogLoading(false);
-      return;
     }
-
-    setIsCatalogLoading(true);
-    try {
-      const titles = await fetchTmdbCategory(category, 1, userTitles);
-      if (activeCategoryRequestIdRef.current !== requestId) return; // Stale request, ignore
-
-      setCategoryPages((prev) => ({ ...prev, [category]: 1 }));
-      if (titles && titles.length > 0) {
-        const visible = titles.filter(
-          (t) => !hiddenTitleKeys.includes(`${t.media_type}-${t.tmdb_id}`)
-        );
-        categoryCacheRef.current.set(category, visible);
-        setCatalog(visible);
-      }
-    } finally {
-      if (activeCategoryRequestIdRef.current === requestId) {
-        setIsCatalogLoading(false);
-      }
-    }
+    setSelectedCategory(category);
   };
 
   const loadMoreCatalog = async () => {
     if (isCatalogLoading) return;
     const currentCat = selectedCategory;
-    const currentPage = categoryPages[currentCat] || 1;
+    const currentDecades = selectedDecades;
+    const currentGenres = selectedGenres;
+    const cacheKey = getCacheKey(currentCat, currentDecades, currentGenres);
+    const currentPage = categoryPages[cacheKey] || 1;
     if (currentPage >= 5) return; // Cap pagination to 5 pages max to preserve mobile memory
     const nextPage = currentPage + 1;
 
     setIsCatalogLoading(true);
 
     try {
-      const moreTitles = await fetchTmdbCategory(currentCat, nextPage, userTitles);
-      // Ensure user hasn't switched categories while fetch was in flight
-      if (moreTitles && moreTitles.length > 0) {
-        setCategoryPages((prev) => ({ ...prev, [currentCat]: nextPage }));
+      const filterOpts = {
+        decades: currentDecades.length > 0 ? currentDecades : undefined,
+        genres: currentGenres.length > 0 ? currentGenres : undefined,
+      };
+      const moreTitles = await fetchTmdbCategory(currentCat, nextPage, userTitles, filterOpts);
+      // Ensure user hasn't switched categories or filters while fetch was in flight
+      const currentKeyNow = getCacheKey(selectedCategory, selectedDecades, selectedGenres);
+      if (currentKeyNow === cacheKey && moreTitles && moreTitles.length > 0) {
+        setCategoryPages((prev) => ({ ...prev, [cacheKey]: nextPage }));
         setCatalog((prev) => {
           const map = new Map<number, MediaItem>();
           prev.forEach((item) => map.set(item.tmdb_id, item));
@@ -338,7 +397,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
             }
           });
           const merged = Array.from(map.values());
-          categoryCacheRef.current.set(currentCat, merged);
+          categoryCacheRef.current.set(cacheKey, merged);
           return merged;
         });
       }
@@ -579,6 +638,10 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         changeCategory,
         loadMoreCatalog,
         isCatalogLoading,
+        selectedGenres,
+        setSelectedGenres,
+        selectedDecades,
+        setSelectedDecades,
         subscribedServices,
         toggleSubscribedService,
         setSubscribedServices,

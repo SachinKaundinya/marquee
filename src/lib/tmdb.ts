@@ -671,24 +671,189 @@ export async function fetchInTheatersTitles(page = 1): Promise<MediaItem[]> {
   }
 }
 
+export interface CategoryFilterOptions {
+  decades?: string[];
+  genres?: string[];
+}
+
+export const DECADE_YEAR_BOUNDS: Record<string, { start: number; end: number }> = {
+  '2020s': { start: 2020, end: 2099 },
+  '2010s': { start: 2010, end: 2019 },
+  '2000s': { start: 2000, end: 2009 },
+  '1990s': { start: 1990, end: 1999 },
+  '1980s': { start: 1980, end: 1989 },
+  '1970s': { start: 1970, end: 1979 },
+  '1960s': { start: 1960, end: 1969 },
+  '1950s': { start: 1950, end: 1959 },
+  'pre-1950': { start: 1880, end: 1949 },
+};
+
+export const TMDB_MOVIE_GENRE_ID_MAP: Record<string, number> = {
+  Action: 28,
+  Adventure: 12,
+  Animation: 16,
+  Biography: 36,
+  Comedy: 35,
+  Crime: 80,
+  Documentary: 99,
+  Drama: 18,
+  Family: 10751,
+  Fantasy: 14,
+  History: 36,
+  Horror: 27,
+  Music: 10402,
+  Musical: 10402,
+  Mystery: 9648,
+  Romance: 10749,
+  'Sci-Fi': 878,
+  ScienceFiction: 878,
+  Thriller: 53,
+  'True Crime': 80,
+  War: 10752,
+  Western: 37,
+};
+
+export const TMDB_TV_GENRE_ID_MAP: Record<string, number> = {
+  Action: 10759,
+  Adventure: 10759,
+  Animation: 16,
+  Comedy: 35,
+  Crime: 80,
+  Documentary: 99,
+  Drama: 18,
+  Family: 10751,
+  Fantasy: 10765,
+  Mystery: 9648,
+  'Sci-Fi': 10765,
+  ScienceFiction: 10765,
+  'True Crime': 80,
+  War: 10768,
+  Western: 37,
+};
+
+export const TMDB_GENRE_ID_MAP: Record<string, number> = TMDB_MOVIE_GENRE_ID_MAP;
+
 export async function fetchTmdbCategory(
   category: TmdbCategory,
   page = 1,
-  userTitles?: UserTitle[]
+  userTitles?: UserTitle[],
+  filterOptions?: CategoryFilterOptions
 ): Promise<MediaItem[]> {
-  if (category === 'taste_match') {
+  const hasActiveFilters = Boolean(
+    (filterOptions?.decades && filterOptions.decades.length > 0) ||
+    (filterOptions?.genres && filterOptions.genres.length > 0)
+  );
+
+  if (category === 'taste_match' && !hasActiveFilters) {
     return fetchTasteMatchRecommendations(userTitles || [], page);
   }
 
-  if (category === 'now_playing') {
+  if (category === 'now_playing' && !hasActiveFilters) {
     return fetchInTheatersTitles(page);
   }
 
-  if (category === 'international') {
+  if (category === 'international' && !hasActiveFilters) {
     return fetchInternationalTitles(page);
   }
 
   const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  const buildUrl = (ep: string, p: number) => {
+    const sep = ep.includes('?') ? '&' : '?';
+    const u = `${TMDB_BASE_URL}${ep}${sep}page=${p}`;
+    return token ? u : `${u}&api_key=${key}`;
+  };
+
+  // Targeted discovery when user chooses specific decades or genres
+  if (hasActiveFilters) {
+    try {
+      let dateParams = '';
+      if (filterOptions?.decades && filterOptions.decades.length > 0) {
+        let minYear = 9999;
+        let maxYear = 0;
+        filterOptions.decades.forEach((d) => {
+          const bounds = DECADE_YEAR_BOUNDS[d];
+          if (bounds) {
+            if (bounds.start < minYear) minYear = bounds.start;
+            if (bounds.end > maxYear) maxYear = bounds.end;
+          }
+        });
+        if (minYear <= maxYear) {
+          if (category === 'popular_tv') {
+            dateParams = `&first_air_date.gte=${minYear}-01-01&first_air_date.lte=${maxYear}-12-31`;
+          } else {
+            dateParams = `&primary_release_date.gte=${minYear}-01-01&primary_release_date.lte=${maxYear}-12-31`;
+          }
+        }
+      }
+
+      const isTv = category === 'popular_tv';
+      const defaultType: MediaType = isTv ? 'tv' : 'movie';
+
+      let genreParams = '';
+      if (filterOptions?.genres && filterOptions.genres.length > 0) {
+        const genreMap = isTv ? TMDB_TV_GENRE_ID_MAP : TMDB_MOVIE_GENRE_ID_MAP;
+        const ids = filterOptions.genres
+          .map((g) => genreMap[g])
+          .filter(Boolean);
+        if (ids.length > 0) {
+          genreParams = `&with_genres=${ids.join('|')}`;
+        }
+      }
+
+      let discoverEp = '';
+
+      if (isTv) {
+        discoverEp = `/discover/tv?sort_by=popularity.desc&vote_count.gte=30&with_original_language=en&without_genres=10763,10764,10767,10766,16${dateParams}${genreParams}`;
+      } else if (category === 'top_rated') {
+        discoverEp = `/discover/movie?sort_by=vote_average.desc&vote_count.gte=500&with_original_language=en${dateParams}${genreParams}`;
+      } else if (category === 'international') {
+        discoverEp = `/discover/movie?sort_by=popularity.desc&vote_count.gte=50&without_original_language=en${dateParams}${genreParams}`;
+      } else {
+        // popular_movies, trending, now_playing, taste_match
+        discoverEp = `/discover/movie?sort_by=popularity.desc&vote_count.gte=100&with_original_language=en${dateParams}${genreParams}`;
+      }
+
+      const pages = [(page - 1) * 2 + 1, (page - 1) * 2 + 2];
+      const pageResponses = await Promise.all(
+        pages.map(async (p) => {
+          try {
+            const r = await fetch(buildUrl(discoverEp, p), { headers });
+            if (!r.ok) return [];
+            const d = await r.json();
+            return d.results || [];
+          } catch {
+            return [];
+          }
+        })
+      );
+
+      const allResults = pageResponses.flat();
+      const seen = new Set<number>();
+      const items: MediaItem[] = [];
+      const allowNonEnglish = category === 'international';
+
+      allResults
+        .filter((item: any) => Boolean(item.poster_path) && !isAnimeItem(item) && (allowNonEnglish || !isNonEnglishItem(item)))
+        .forEach((item: any) => {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            item.media_type = defaultType;
+            items.push(formatTmdbItem(item));
+          }
+        });
+
+      await enrichMediaItemsBatch(items, 8);
+      return items;
+    } catch (err) {
+      console.error('Failed to discover TMDb category with active filters', err);
+      return [];
+    }
+  }
+
   let endpoint = '/trending/all/week';
   let defaultType: MediaType = 'movie';
 
@@ -711,15 +876,6 @@ export async function fetchTmdbCategory(
   }
 
   try {
-    const headers: Record<string, string> = token
-      ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-      : {};
-
-    const buildUrl = (ep: string, p: number) => {
-      const sep = ep.includes('?') ? '&' : '?';
-      const u = `${TMDB_BASE_URL}${ep}${sep}page=${p}`;
-      return token ? u : `${u}&api_key=${key}`;
-    };
 
     if (category === 'trending') {
       const trendingPages = [(page - 1) * 2 + 1, (page - 1) * 2 + 2];
