@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html, body {
+  background-color: #0A0B0D;
+}
+
 :root {
   --background: #0A0B0D;
   --foreground: #F3F4F6;
@@ -11,6 +15,15 @@
   --accent-gold: #E5A93C;
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-highlight: rgba(255, 255, 255, 0.06);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --header-content-h: 3.5rem;
+  --header-total-h: calc(var(--safe-top) + var(--header-content-h));
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-content-h: 4rem;
+  }
 }
 
 body {
@@ -38,9 +51,12 @@ body {
   background-color: var(--surface-hover);
 }
 
-/* Clean solid header with subpixel border */
+/* Clean solid header with subpixel border - explicitly disable any backdrop-filter or blur */
 .marquee-header {
-  background-color: #0A0B0D;
+  background-color: #0A0B0D !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
   border-bottom: 1px solid var(--border-subtle);
 }
 

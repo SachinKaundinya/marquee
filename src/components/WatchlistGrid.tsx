@@ -225,7 +225,10 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
   return (
     <section className="mb-12">
       {/* Sticky Frozen Filters Bar */}
-      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] sm:top-16 z-30 bg-[#0A0B0D] pt-2 pb-3 mb-6 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-white/[0.08] shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
+      <div
+        className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] sm:top-16 z-30 bg-[#0A0B0D] pt-2 pb-3 mb-6 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-white/[0.08] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+        style={{ WebkitBackdropFilter: 'none', backdropFilter: 'none' }}
+      >
         {/* Top Controls Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
           {/* Left Side: Genre Filter Button (replacing old switcher) in Popular, or Watchlist Title */}

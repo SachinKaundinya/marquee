@@ -8,6 +8,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: "#0A0B0D",
 };
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "black",
     title: "Mirar",
   },
   icons: {
@@ -38,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark h-full antialiased overflow-x-hidden">
+    <html lang="en" className="dark h-full antialiased overflow-x-hidden bg-[#0A0B0D]" style={{ backgroundColor: "#0A0B0D" }}>
       <body className="min-h-full flex flex-col bg-[#0A0B0D] text-[#F3F4F6] selection:bg-white/20 selection:text-white overflow-x-hidden w-full max-w-full">
         {children}
         <Toaster

@@ -66,7 +66,10 @@ export function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 marquee-header pt-[env(safe-area-inset-top,0px)]">
+    <header
+      className="sticky top-0 z-40 marquee-header bg-[#0A0B0D] pt-[env(safe-area-inset-top,0px)]"
+      style={{ WebkitBackdropFilter: 'none', backdropFilter: 'none' }}
+    >
       <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand / Logo */}
         <div className="flex items-center gap-4 sm:gap-6 shrink-0">
