@@ -101,6 +101,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   const categoryCacheRef = useRef<Map<string, MediaItem[]>>(new Map());
   const activeCategoryRequestIdRef = useRef<number>(0);
   const hasCatalogMountedRef = useRef(false);
+  const hasReachedEndRef = useRef<Set<string>>(new Set());
 
   // Catalog Filters (Decades & Genres)
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -371,8 +372,9 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     const currentDecades = selectedDecades;
     const currentGenres = selectedGenres;
     const cacheKey = getCacheKey(currentCat, currentDecades, currentGenres);
+    const hasReachedEnd = hasReachedEndRef.current.has(cacheKey);
     const currentPage = categoryPages[cacheKey] || 1;
-    if (currentPage >= 5) return; // Cap pagination to 5 pages max to preserve mobile memory
+    if (hasReachedEnd || currentPage >= 20) return; // Up to 40 TMDb pages (800 titles)
     const nextPage = currentPage + 1;
 
     setIsCatalogLoading(true);
@@ -400,6 +402,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
           categoryCacheRef.current.set(cacheKey, merged);
           return merged;
         });
+      } else if (currentKeyNow === cacheKey && (!moreTitles || moreTitles.length === 0)) {
+        hasReachedEndRef.current.add(cacheKey);
       }
     } catch {
       // Silently fail background pagination without interrupting the user experience

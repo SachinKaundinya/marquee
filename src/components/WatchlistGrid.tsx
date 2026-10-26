@@ -163,6 +163,9 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
 
   const sentinelRef = React.useRef<HTMLDivElement | null>(null);
   const isLoadingRef = React.useRef(isCatalogLoading);
+  const isPaginatingRef = React.useRef(false);
+  const lastPaginationTimeRef = React.useRef(0);
+
   React.useEffect(() => {
     isLoadingRef.current = isCatalogLoading;
   }, [isCatalogLoading]);
@@ -175,20 +178,29 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting) {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
           setVisibleCount((prev) => prev + 24);
-          // Only fetch more from TMDb if not currently loading and we have a full page already
-          if (!isLoadingRef.current && filteredItems.length >= 20) {
-            loadMoreCatalog();
-          }
+
+          const now = Date.now();
+          if (now - lastPaginationTimeRef.current < 800) return;
+          if (isLoadingRef.current || isPaginatingRef.current) return;
+
+          lastPaginationTimeRef.current = now;
+          isPaginatingRef.current = true;
+          loadMoreCatalog().finally(() => {
+            setTimeout(() => {
+              isPaginatingRef.current = false;
+            }, 300);
+          });
         }
       },
-      { rootMargin: '200px' }
+      { rootMargin: '300px' }
     );
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [isWatchlistMode, loadMoreCatalog, filteredItems.length]);
+  }, [isWatchlistMode, loadMoreCatalog]);
 
   function getRatingTier(voteAverage: number): number {
     if (voteAverage >= 8.0) return 3; // 8.0+
@@ -689,6 +701,16 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               );
             })}
           </div>
+
+          {/* Subtle loading spinner when fetching subsequent pages */}
+          {!isWatchlistMode && isCatalogLoading && items.length > 0 && (
+            <div className="flex justify-center items-center py-6">
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#14161B] border border-white/[0.08] text-xs text-[#8E93A0] shadow-sm">
+                <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                <span>Loading more titles...</span>
+              </div>
+            </div>
+          )}
 
           {/* Silent background pagination sentinel */}
           {!isWatchlistMode && (
