@@ -9,7 +9,7 @@ import { springTransition } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 
 export function DiaryFeed() {
-  const { diaryTitles, openQuickLog, triggerSearchFocus } = useMedia();
+  const { diaryTitles, openQuickLog, openDetailModal, triggerSearchFocus } = useMedia();
   const [category, setCategory] = React.useState<'all' | 'movies' | 'tv'>('all');
 
   const movieCount = diaryTitles.filter(
@@ -143,7 +143,7 @@ export function DiaryFeed() {
                 key={title.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                onClick={() => openQuickLog(media)}
+                onClick={() => openDetailModal(media)}
                 className="group relative cursor-pointer flex flex-col"
               >
                 {/* Poster Container */}
@@ -173,8 +173,8 @@ export function DiaryFeed() {
                     </div>
                   ) : media.vote_average ? (
                     <div className="absolute top-1.5 right-1.5 z-10">
-                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-white/90 border border-white/10 shadow-md backdrop-blur-sm">
-                        <Star className="w-2.5 h-2.5 fill-[#E5A93C] text-[#E5A93C]" />
+                      <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-white/90 border border-white/10 shadow-md backdrop-blur-sm">
+                        <span className="px-1 py-0.2 rounded text-[8px] font-black bg-[#F5C518] text-black leading-none">IMDb</span>
                         <span>{media.vote_average.toFixed(1)}</span>
                       </span>
                     </div>

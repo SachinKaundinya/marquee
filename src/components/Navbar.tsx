@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Upload, X, Database, LogOut, Tv } from 'lucide-react';
+import { Search, Upload, X, Database, LogOut, Tv, Sparkles } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MirarLogo } from '@/components/MirarLogo';
 import { useAuth } from '@/context/AuthContext';
@@ -23,6 +23,8 @@ export function Navbar({
 }: NavbarProps) {
   const {
     openQuickLog,
+    openDetailModal,
+    openTonightsPick,
     openServicesModal,
     watchlistTitles,
     searchFocusTrigger,
@@ -60,7 +62,7 @@ export function Navbar({
 
   const handleSelectResult = (item: MediaItem) => {
     searchInputRef.current?.blur();
-    openQuickLog(item);
+    openDetailModal(item);
     setSearchQuery('');
     setSearchResults([]);
   };
@@ -117,11 +119,28 @@ export function Navbar({
             >
               Diary
             </button>
+
+            {/* Tonight's Pick Decision Engine Trigger */}
+            <button
+              onClick={openTonightsPick}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#E5A93C]/15 to-[#F59E0B]/20 text-[#E5A93C] hover:text-white border border-[#E5A93C]/30 hover:border-[#E5A93C]/60 transition-all cursor-pointer shadow-sm active:scale-95 ml-1"
+            >
+              <Sparkles className="w-3.5 h-3.5 fill-current" />
+              <span>Tonight&apos;s Pick</span>
+            </button>
           </nav>
         </div>
 
         {/* Search & Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-1 justify-end min-w-0">
+          {/* Mobile Tonight's Pick Button */}
+          <button
+            onClick={openTonightsPick}
+            title="Tonight's Pick"
+            className="sm:hidden flex items-center justify-center p-2 rounded-lg bg-[#E5A93C]/15 border border-[#E5A93C]/30 text-[#E5A93C] active:scale-95 transition-all shrink-0"
+          >
+            <Sparkles className="w-4 h-4 fill-current" />
+          </button>
           {/* Quick Search */}
           <div className="relative flex-1 max-w-[190px] sm:max-w-xs md:max-w-sm">
             <div
@@ -193,9 +212,14 @@ export function Navbar({
                       <div className="text-sm font-semibold text-[#F3F4F6] truncate tracking-tight">
                         {item.title}
                       </div>
-                      <div className="text-xs text-[#9CA3AF] tabular-nums mt-0.5">
-                        {item.release_year}{' '}
-                        {item.media_type === 'movie' ? 'Movie' : 'TV Series'}
+                      <div className="flex items-center gap-2 text-xs text-[#9CA3AF] tabular-nums mt-0.5">
+                        <span>{item.release_year} {item.media_type === 'movie' ? 'Movie' : 'TV Series'}</span>
+                        {item.vote_average > 0 && (
+                          <span className="flex items-center gap-1 font-semibold text-white">
+                            <span className="px-1 py-0.2 rounded text-[8px] font-black bg-[#F5C518] text-black">IMDb</span>
+                            <span>{item.vote_average.toFixed(1)}</span>
+                          </span>
+                        )}
                       </div>
                       {item.stars && item.stars.length > 0 ? (
                         <div className="text-xs text-[#8E93A0] truncate mt-0.5">

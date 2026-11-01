@@ -55,6 +55,8 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     catalog,
     userTitles,
     openQuickLog,
+    openDetailModal,
+    openTonightsPick,
     getUserTitle,
     isItemOnMyServices,
     isServiceSubscribed,
@@ -263,6 +265,16 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                     My Watchlist
                   </h2>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={openTonightsPick}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#E5A93C]/15 border border-[#E5A93C]/35 text-[#E5A93C] hover:bg-[#E5A93C]/25 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer whitespace-nowrap shrink-0"
+                  title="Spin Tonight's Pick from your Watchlist"
+                >
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
+                  <span>Tonight&apos;s Pick</span>
+                </button>
 
                 <button
                   type="button"
@@ -634,7 +646,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                 <div
                   key={`${item.media_type}-${item.tmdb_id}`}
                   className="group flex flex-col cursor-pointer transition-transform duration-150 active:scale-[0.98]"
-                  onClick={() => openQuickLog(item)}
+                  onClick={() => openDetailModal(item)}
                 >
                   {/* Poster container with MediaPoster */}
                   <div className="relative aspect-[2/3] w-full rounded-md overflow-hidden bg-[#181A20] shadow-[0_4px_16px_rgba(0,0,0,0.4)] group-hover:border-white/20 transition-all">
@@ -691,8 +703,10 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                     </h4>
                     <div className="flex items-center justify-between mt-0.5 text-[11px] text-[#8E93A0]">
                       <span className="tabular-nums">{item.release_year}</span>
-                      <div className="flex items-center gap-1 font-medium tabular-nums">
-                        <Star className="w-3 h-3 fill-[#E5A93C] text-[#E5A93C]" />
+                      <div className="flex items-center gap-1 font-semibold tabular-nums text-[11px]">
+                        <span className="px-1 py-0.2 rounded text-[8px] font-black uppercase tracking-tight bg-[#F5C518] text-black leading-none font-sans shadow-sm">
+                          IMDb
+                        </span>
                         <span className="text-[#F3F4F6]">{item.vote_average.toFixed(1)}</span>
                       </div>
                     </div>

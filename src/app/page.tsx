@@ -9,6 +9,8 @@ import { NowWatchingShelf } from '@/components/NowWatchingShelf';
 import { WatchlistGrid } from '@/components/WatchlistGrid';
 import { DiaryFeed } from '@/components/DiaryFeed';
 import { QuickLogModal } from '@/components/QuickLogModal';
+import { CinematicDetailModal } from '@/components/CinematicDetailModal';
+import { TonightsPickModal } from '@/components/TonightsPickModal';
 import { CsvImportModal } from '@/components/CsvImportModal';
 import { ApiSettingsModal } from '@/components/ApiSettingsModal';
 import { ServicesModal } from '@/components/ServicesModal';
@@ -63,6 +65,8 @@ export default function Home() {
           />
 
           {/* Modals */}
+          <CinematicDetailModal />
+          <TonightsPickModal />
           <QuickLogModal />
           <CsvImportModal
             isOpen={isImportOpen}

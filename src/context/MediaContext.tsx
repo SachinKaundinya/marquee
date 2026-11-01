@@ -70,6 +70,16 @@ interface MediaContextType {
   searchFocusTrigger: number;
   searchFocusContext?: 'diary' | 'watchlist';
   triggerSearchFocus: (context?: 'diary' | 'watchlist') => void;
+
+  // Cinematic Detail Canvas Modal
+  selectedDetailItem: MediaItem | null;
+  openDetailModal: (item: MediaItem) => void;
+  closeDetailModal: () => void;
+
+  // Tonight's Pick Decision Engine
+  isTonightsPickOpen: boolean;
+  openTonightsPick: () => void;
+  closeTonightsPick: () => void;
 }
 
 const MediaContext = createContext<MediaContextType | undefined>(undefined);
@@ -125,6 +135,26 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   // Search Focus Trigger State
   const [searchFocusTrigger, setSearchFocusTrigger] = useState<number>(0);
   const [searchFocusContext, setSearchFocusContext] = useState<'diary' | 'watchlist' | undefined>();
+
+  // Cinematic Detail Canvas & Tonight's Pick State
+  const [selectedDetailItem, setSelectedDetailItem] = useState<MediaItem | null>(null);
+  const [isTonightsPickOpen, setIsTonightsPickOpen] = useState(false);
+
+  const openDetailModal = (item: MediaItem) => {
+    setSelectedDetailItem(item);
+  };
+
+  const closeDetailModal = () => {
+    setSelectedDetailItem(null);
+  };
+
+  const openTonightsPick = () => {
+    setIsTonightsPickOpen(true);
+  };
+
+  const closeTonightsPick = () => {
+    setIsTonightsPickOpen(false);
+  };
 
   const triggerSearchFocus = (context?: 'diary' | 'watchlist') => {
     setSearchFocusContext(context);
@@ -657,6 +687,12 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
         searchFocusTrigger,
         searchFocusContext,
         triggerSearchFocus,
+        selectedDetailItem,
+        openDetailModal,
+        closeDetailModal,
+        isTonightsPickOpen,
+        openTonightsPick,
+        closeTonightsPick,
       }}
     >
       {children}

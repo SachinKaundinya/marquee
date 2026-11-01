@@ -55,7 +55,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/eEJtzD1F05xDipFEDY98CTH5yZn.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/uoc358GH6Yl7TufbUKHkETPu64B.jpg",
       "release_year": 2021,
-      "vote_average": 7.8,
+      "vote_average": 6.9,
       "genres": [
         "Sci-Fi",
         "Drama",
@@ -90,7 +90,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/zdxQRP7mzczMJBwKnv8MCPRq7rQ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/anA2hEvG5SWrYETwcJ1SUPUfKDz.jpg",
       "release_year": 2007,
-      "vote_average": 7.0,
+      "vote_average": 7.1,
       "genres": [
         "Sci-Fi",
         "Thriller"
@@ -124,7 +124,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/xEoq2WmDzpzxhkHEsmOYOg6BPg6.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/blSQbKAreIqcu2AWGDNjR8k3fAy.jpg",
       "release_year": 2004,
-      "vote_average": 6.7,
+      "vote_average": 6.8,
       "genres": [
         "Sci-Fi",
         "Drama",
@@ -193,7 +193,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/duengnNbJdTdjR329SmAAJO4stC.jpg",
       "release_year": 2019,
-      "vote_average": 6.1,
+      "vote_average": 6.5,
       "genres": [
         "Sci-Fi",
         "Drama"
@@ -227,7 +227,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/5MwkWH9tYHv3mV9OdYTMR5qreIz.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/95qi5TJMIBI5VzWHia88Pbrye7Z.jpg",
       "release_year": 2004,
-      "vote_average": 8.1,
+      "vote_average": 8.3,
       "genres": [
         "Sci-Fi",
         "Drama",
@@ -261,7 +261,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/uAR0AWqhQL1hQa69UDEbb2rE5Wx.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/AdKA2F1SzYPhSZdEbjH1Zh75UVQ.jpg",
       "release_year": 1980,
-      "vote_average": 8.2,
+      "vote_average": 8.4,
       "genres": [
         "Horror",
         "Thriller"
@@ -294,7 +294,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc05nRBKddhBxO.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nLFxvLokHe3bQmrmAfljIfax2jQ.jpg",
       "release_year": 1971,
-      "vote_average": 8.2,
+      "vote_average": 8.3,
       "genres": [
         "Sci-Fi",
         "Crime"
@@ -327,7 +327,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/7oaie3ZBc9UuWZLF24crro1pone.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nJ0jz1J3zNja31UEMeklhgFeMw5.jpg",
       "release_year": 1999,
-      "vote_average": 7.1,
+      "vote_average": 7.0,
       "genres": [
         "Thriller",
         "Sci-Fi",
@@ -361,7 +361,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/tNPEGju4DpTdbhBphNmZoEi9Bd3.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/sWi4SSeVPii4NU365Df9vzX1yOX.jpg",
       "release_year": 1998,
-      "vote_average": 7.3,
+      "vote_average": 7.6,
       "genres": [
         "Mystery",
         "Sci-Fi"
@@ -394,7 +394,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/efwv6F2lGaghjPpBRSINHtoEiZB.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/jpFcZH2eyh6gcoxCa637TrGe4bT.jpg",
       "release_year": 2004,
-      "vote_average": 7.0,
+      "vote_average": 7.1,
       "genres": [
         "Action",
         "Sci-Fi"
@@ -427,7 +427,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/v3Z0Hbl0oe57njrrIPh0fJPFoo.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/AhxG7gHPFD5xbXRnjsVxM00K6yd.jpg",
       "release_year": 2009,
-      "vote_average": 6.2,
+      "vote_average": 6.1,
       "genres": [
         "Sci-Fi",
         "Action",
@@ -461,7 +461,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rY5BrDRcYAKE0BYmmT66YG6Uy5Q.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/zSFuvi6fIPT8CHpH1KMG25T2Iub.jpg",
       "release_year": 1995,
-      "vote_average": 7.0,
+      "vote_average": 7.2,
       "genres": [
         "Crime",
         "Sci-Fi",
@@ -495,7 +495,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/wVbeL6fkbTKSmNfalj4VoAUUqJv.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/x2wOlXuK4NzPDQ0OBZiJjNNOp6Y.jpg",
       "release_year": 1990,
-      "vote_average": 7.3,
+      "vote_average": 7.5,
       "genres": [
         "Action",
         "Adventure",
@@ -529,7 +529,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/1HpAwszXLsD8GeypDzK0me7fPFA.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/3r6e2CfNHvtQ1nlXmfwPV7JM3iN.jpg",
       "release_year": 2018,
-      "vote_average": 6.2,
+      "vote_average": 6.3,
       "genres": [
         "Sci-Fi"
       ],
@@ -595,7 +595,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/diAYqR4xdF9Hnj7qun6DEQhRrT2.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/hi3lxLd93iKwCmVAfhMV9m1k2jr.jpg",
       "release_year": 2004,
-      "vote_average": 7.5,
+      "vote_average": 7.6,
       "genres": [
         "Thriller",
         "Drama"
@@ -628,7 +628,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rrKH3VhHssGTCfPuaEQkxvEoElv.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/mQOUyqDybTqxl73hO5LujCZsM1o.jpg",
       "release_year": 2020,
-      "vote_average": 7.2,
+      "vote_average": 7.3,
       "genres": [
         "Action",
         "Thriller",
@@ -662,7 +662,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/gt3iyguaCIw8DpQZI1LIN5TohM2.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/mKIkGoyuR71qz6FdiEiOjxvBQcS.jpg",
       "release_year": 1995,
-      "vote_average": 7.6,
+      "vote_average": 8.0,
       "genres": [
         "Sci-Fi",
         "Thriller",
@@ -765,7 +765,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/dmJW8IAKHKxFNiUnoDR7JfsK7Rp.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/uqOuJ50EtTj7kkDIXP8LCg7G45D.jpg",
       "release_year": 2015,
-      "vote_average": 7.6,
+      "vote_average": 7.7,
       "genres": [
         "Drama",
         "Sci-Fi"
@@ -798,7 +798,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/eSKr5Fl1MEC7zpAXaLWBWSBjgJq.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/hPsCR1ny6GnctJkWqeJwihTDD7T.jpg",
       "release_year": 1997,
-      "vote_average": 7.6,
+      "vote_average": 7.7,
       "genres": [
         "Sci-Fi",
         "Drama"
@@ -831,7 +831,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/tuGlQkqLxnodDSk6mp5c2wvxUEd.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/jhM3wgWUrrOkz9r4xwV5cV5RhI4.jpg",
       "release_year": 2009,
-      "vote_average": 7.5,
+      "vote_average": 7.9,
       "genres": [
         "Sci-Fi"
       ],
@@ -863,7 +863,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/k9eLozCgCed5FGTSdHu0bBElAV8.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/vNPY4oCSUp7CxbHkKJNRx1fmCl0.jpg",
       "release_year": 2022,
-      "vote_average": 7.0,
+      "vote_average": 7.3,
       "genres": [
         "Comedy",
         "Drama"
@@ -896,7 +896,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/nTr0lvAzeQmUjgSgDEHTJpnrxTz.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/mDb4uku4zEElsITXDpbir4fR0HW.jpg",
       "release_year": 2011,
-      "vote_average": 7.3,
+      "vote_average": 7.5,
       "genres": [
         "Thriller",
         "Sci-Fi",
@@ -999,7 +999,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/35IU0Mq0zFsN1mYwDGts5mKc77n.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/mvUAo9ACgmLpS4Ofc2IwD4n7WCt.jpg",
       "release_year": 2009,
-      "vote_average": 7.6,
+      "vote_average": 7.8,
       "genres": [
         "Sci-Fi",
         "Drama"
@@ -1032,7 +1032,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/vP7Yd6couiAaw9jgMd5cjMRj3hQ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/hmZnqijPaaACjenDkrbWcCmcADI.jpg",
       "release_year": 2024,
-      "vote_average": 6.9,
+      "vote_average": 8.0,
       "genres": [
         "Drama"
       ],
@@ -1064,7 +1064,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/yaTFjMNh8D78dDHrglivOTv5YOx.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/fViElUGfdoZjtnVxvSpJX8TwxY6.jpg",
       "release_year": 2024,
-      "vote_average": 6.8,
+      "vote_average": 7.5,
       "genres": [
         "Comedy",
         "Drama"
@@ -1097,7 +1097,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/kZ2nZw8D681aphje8NJi8EfbL1U.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/a2n6bKD7qhCPCAEALgsAhWOAQcc.jpg",
       "release_year": 2013,
-      "vote_average": 7.2,
+      "vote_average": 7.7,
       "genres": [
         "Sci-Fi",
         "Thriller",
@@ -1131,7 +1131,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/wLx65gtGVnUFCxceHWGszcruCZj.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/jUqDBi02CDjqrroC3Zl8hroBbSr.jpg",
       "release_year": 2012,
-      "vote_average": 6.9,
+      "vote_average": 7.1,
       "genres": [
         "Action",
         "Sci-Fi"
@@ -1164,7 +1164,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/nBM9MMa2WCwvMG4IJ3eiGUdbPe6.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/4V1yIoAKPMRQwGBaSses8Bp2nsi.jpg",
       "release_year": 2014,
-      "vote_average": 7.6,
+      "vote_average": 7.9,
       "genres": [
         "Action",
         "Sci-Fi"
@@ -1230,7 +1230,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/pEzNVQfdzYDzVK0XqxERIw2x2se.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/8MUZz7oPXQftFTslZpRP3CVMOoq.jpg",
       "release_year": 2016,
-      "vote_average": 7.6,
+      "vote_average": 7.9,
       "genres": [
         "Drama",
         "Sci-Fi",
@@ -1265,7 +1265,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/eCOtqtfvn7mxGl6nfmq4b1exJRc.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/1YnZchmaGc8dchgRPDpR1KGrixA.jpg",
       "release_year": 2013,
-      "vote_average": 7.8,
+      "vote_average": 8.0,
       "genres": [
         "Romance",
         "Sci-Fi",
@@ -1299,7 +1299,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/gKY6q7SjCkAU6FqvqWybDYgUKIF.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/vL5LR6WdxWPjLPFRLe133jXWsh5.jpg",
       "release_year": 2009,
-      "vote_average": 7.6,
+      "vote_average": 7.9,
       "genres": [
         "Sci-Fi",
         "Action",
@@ -1333,7 +1333,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/3Mwj2sIONQckOZP3YwsUXF7U5I4.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/pxL08w7Eq0vKrQ3mJzYp0VHGaKG.jpg",
       "release_year": 2011,
-      "vote_average": 7.0,
+      "vote_average": 6.7,
       "genres": [
         "Action",
         "Thriller",
@@ -1368,7 +1368,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rLOk4z9zL1tTukIYV56P94aZXKk.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/H40nWdJngUc6gtytMAbElm9HOu.jpg",
       "release_year": 1992,
-      "vote_average": 7.6,
+      "vote_average": 7.7,
       "genres": [
         "Drama"
       ],
@@ -1400,7 +1400,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/2ZfUpDXEFQxEyXfzfxGFA9rcbP1.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/aTloiKdNs2c8vlstbx3wBWD6Thi.jpg",
       "release_year": 2014,
-      "vote_average": 6.8,
+      "vote_average": 7.2,
       "genres": [
         "Thriller",
         "Action",
@@ -1436,7 +1436,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/tYqk1u5d3eARg5gV8cF4RZFZKKQ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/3ubIRrPOmLg74gjgSUwXEXdHhSR.jpg",
       "release_year": 2010,
-      "vote_average": 6.4,
+      "vote_average": 6.7,
       "genres": [
         "Comedy",
         "Thriller",
@@ -1470,7 +1470,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/qNen8x5gaikjIg9CFihgxYcJwQe.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/mujUrk2diGe5vRCb3kdpHZeobRs.jpg",
       "release_year": 2007,
-      "vote_average": 7.3,
+      "vote_average": 7.2,
       "genres": [
         "Thriller"
       ],
@@ -1502,7 +1502,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/jGuobXsIJOV3FmM4gRlK4QQMIos.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/vORzDiWl5mxm6nuXQu9h5bhi6rb.jpg",
       "release_year": 2002,
-      "vote_average": 7.0,
+      "vote_average": 7.2,
       "genres": [
         "Drama",
         "Thriller",
@@ -1570,7 +1570,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/jbccmnqE4oAPI67bApgt2JiRPz8.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nkMgY1XFLWr91najzfvwie8LyYF.jpg",
       "release_year": 2000,
-      "vote_average": 7.1,
+      "vote_average": 7.6,
       "genres": [
         "Thriller",
         "Drama",
@@ -1604,7 +1604,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/bUeiwBQdupBLQthMCHKV7zv56uv.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nuO8o9ltxhI7AZQxePavEZ4TyHa.jpg",
       "release_year": 2001,
-      "vote_average": 7.5,
+      "vote_average": 7.7,
       "genres": [
         "Action",
         "Crime",
@@ -1638,7 +1638,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/gTZTCMmU7N0qTWJrSUOVBI70ZlA.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/fF5XLTGoZEsP84wcDF3HtGNp5zm.jpg",
       "release_year": 2013,
-      "vote_average": 6.3,
+      "vote_average": 6.4,
       "genres": [
         "Horror",
         "Thriller",
@@ -1672,7 +1672,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/uVHPBTLb6Sj1Eso9HzyBAOMRheM.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nvCMi8ZhH1Z8i9ZFHYrXBl8uBw0.jpg",
       "release_year": 2017,
-      "vote_average": 6.3,
+      "vote_average": 6.5,
       "genres": [
         "Sci-Fi",
         "Horror",
@@ -1706,7 +1706,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/x7A59t6ySylr1L7aubOQEA480vM.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/g9ClaS5EqU0Hk8WIbMNhld0Bk6f.jpg",
       "release_year": 2001,
-      "vote_average": 7.8,
+      "vote_average": 7.9,
       "genres": [
         "Thriller",
         "Drama",
@@ -1740,7 +1740,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/vkOfx5meJvFb4qmAJU7j6v8IIpZ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/h51DdjaDD2aPu1fLHsmpJaaJinS.jpg",
       "release_year": 2018,
-      "vote_average": 6.9,
+      "vote_average": 7.0,
       "genres": [
         "Crime",
         "Drama",
@@ -1774,7 +1774,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/fWPgbnt2LSqkQ6cdQc0SZN9CpLm.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nAxGnGHOsfzufThz20zgmRwKur3.jpg",
       "release_year": 2025,
-      "vote_average": 7.5,
+      "vote_average": 7.4,
       "genres": [
         "Horror",
         "Action",
@@ -1808,7 +1808,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rt7cpEr1uP6RTZykBFhBTcRaKvG.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/747dgDfL5d8esobk7h4odaOFhUq.jpg",
       "release_year": 1996,
-      "vote_average": 7.8,
+      "vote_average": 8.1,
       "genres": [
         "Crime",
         "Drama",
@@ -1842,7 +1842,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/bjuu5UceuVUNUjnOC2fBzL3hZKC.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/5K5oPo1NJrAVUeaPzcXFH13Xplo.jpg",
       "release_year": 1984,
-      "vote_average": 6.6,
+      "vote_average": 6.8,
       "genres": [
         "Comedy",
         "Sci-Fi"
@@ -1875,7 +1875,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/hCHVDbo6XJGj3r2i4hVjKhE0GKF.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/4ycpMe25LYpzGW42U9amyW9gM53.jpg",
       "release_year": 2003,
-      "vote_average": 7.7,
+      "vote_average": 7.9,
       "genres": [
         "Thriller",
         "Drama",
@@ -1910,7 +1910,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/ffMUgkDZICNiyaws1Jkv8qG8uFW.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/tOkSenL74N23O4S7wjJSUHz7Aeh.jpg",
       "release_year": 2006,
-      "vote_average": 7.4,
+      "vote_average": 7.6,
       "genres": [
         "Crime",
         "Drama",
@@ -1944,7 +1944,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/sWPKG1GX0woLNBuvDZkwZC8Q3Ub.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nUJk4UjWS9YvBJUepCWziQ1QYSf.jpg",
       "release_year": 2003,
-      "vote_average": 7.2,
+      "vote_average": 7.3,
       "genres": [
         "Crime",
         "Drama"
@@ -1977,7 +1977,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/sYgimsiBywqVwJI8H4sETke8m7v.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/iiPBXynI88EgnpunHoUlBCnLpSE.jpg",
       "release_year": 2003,
-      "vote_average": 7.2,
+      "vote_average": 7.3,
       "genres": [
         "Mystery",
         "Thriller"
@@ -2010,7 +2010,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/6XN1vxHc7kUSqNWtaQKN45J5x2v.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/eGljNfNCrPhFYG2RXXmmE0OKu5.jpg",
       "release_year": 2019,
-      "vote_average": 7.2,
+      "vote_average": 7.4,
       "genres": [
         "Drama",
         "Thriller",
@@ -2044,7 +2044,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/j9HrX8f7GbZQm1BrBiR40uFQZSb.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/bdI6U1mT0kCdTJ6TWtiFxQ42GSn.jpg",
       "release_year": 2014,
-      "vote_average": 7.7,
+      "vote_average": 7.8,
       "genres": [
         "Crime",
         "Drama",
@@ -2078,7 +2078,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/vtu6H4NWnQVqEp3aanUq3hNeeot.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/qbVCChwbGWDAgsCXKZxyjBrRiWx.jpg",
       "release_year": 2007,
-      "vote_average": 6.8,
+      "vote_average": 7.0,
       "genres": [
         "Action",
         "Thriller"
@@ -2111,7 +2111,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/lemqKtcCuAano5aqrzxYiKC8kkn.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/p8yXQse3IDZiwEjWRHda3EzDQjA.jpg",
       "release_year": 2002,
-      "vote_average": 7.3,
+      "vote_average": 7.5,
       "genres": [
         "Drama",
         "History",
@@ -2145,7 +2145,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/gziIkUSnYuj9ChCi8qOu2ZunpSC.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/iZGiMD0p1M2AOmzKknFo5bkuz94.jpg",
       "release_year": 1995,
-      "vote_average": 8.0,
+      "vote_average": 8.2,
       "genres": [
         "Crime",
         "Drama"
@@ -2178,7 +2178,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/xrwwSXFeW35wYsnobreXbGxHwUC.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/1acmRn1cnPnavQGQCrIJOERd6vX.jpg",
       "release_year": 2001,
-      "vote_average": 6.3,
+      "vote_average": 6.5,
       "genres": [
         "Action",
         "Crime",
@@ -2213,7 +2213,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/3K93GWotLXe4FqpErri0xkpLaD5.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/sPantp0oQ9idos7Jdwko2r6ZOIa.jpg",
       "release_year": 2014,
-      "vote_average": 7.3,
+      "vote_average": 7.4,
       "genres": [
         "Drama"
       ],
@@ -2245,7 +2245,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/6d5XOczc226jECq0LIX0siKtgHR.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/gddUsvfyySrM5k8B8wwJy2VRlBx.jpg",
       "release_year": 2007,
-      "vote_average": 8.0,
+      "vote_average": 8.2,
       "genres": [
         "Crime",
         "Thriller",
@@ -2279,7 +2279,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/oBgWY00bEFeZ9N25wWVyuQddbAo.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/61MrK5U4w4MVL1vfwoG12zYPJ8B.jpg",
       "release_year": 2021,
-      "vote_average": 7.9,
+      "vote_average": 7.4,
       "genres": [
         "Action",
         "Thriller"
@@ -2312,7 +2312,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/pUWIjaMMYJjeBm5bJyE3mIXdQ62.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/x6Dr9i6vhWICxs7hnX2BakcMtPd.jpg",
       "release_year": 2011,
-      "vote_average": 6.8,
+      "vote_average": 7.0,
       "genres": [
         "Thriller",
         "Sci-Fi",
@@ -2346,7 +2346,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/oCoTgC3UyWGfyQ9thE10ulWR7bn.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/sc1abgWNXc29wSBaerrjGBih06l.jpg",
       "release_year": 2025,
-      "vote_average": 7.0,
+      "vote_average": 7.1,
       "genres": [
         "Horror",
         "Sci-Fi",
@@ -2380,7 +2380,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/ejdD20cdHNFAYAN2DlqPToXKyzx.jpg",
       "release_year": 1972,
-      "vote_average": 8.7,
+      "vote_average": 9.2,
       "genres": [
         "Drama",
         "Crime"
@@ -2413,7 +2413,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/191nKfP0ehp3uIvWqgPbFmI4lv9.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/i5H7zusQGsysGQ8i6P361Vnr0n2.jpg",
       "release_year": 1995,
-      "vote_average": 8.4,
+      "vote_average": 8.6,
       "genres": [
         "Crime",
         "Mystery",
@@ -2481,7 +2481,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/sNjL6SqErDBE8OUZlrDLkexfsCj.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/4GPCnwvTbsDleH5QIOyDLMsK8a2.jpg",
       "release_year": 2012,
-      "vote_average": 6.9,
+      "vote_average": 7.4,
       "genres": [
         "Action",
         "Thriller",
@@ -2515,7 +2515,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/dwXmOYJVM1VIkkSXHY5zYSaLJLC.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/sYLzRuEcwSz0L1Z92wQNrETHU9O.jpg",
       "release_year": 2019,
-      "vote_average": 7.5,
+      "vote_average": 7.4,
       "genres": [
         "Drama",
         "Fantasy",
@@ -2583,7 +2583,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/aLbdKxgxuOPvs6CTlmzoOQ4Yg3j.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/i28c1bKsnl1O0uqy6HeRWtioOXl.jpg",
       "release_year": 2018,
-      "vote_average": 6.7,
+      "vote_average": 7.0,
       "genres": [
         "Drama",
         "Crime",
@@ -2617,7 +2617,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/mQrhrBaaHvRfBQq0Px3HtVbH9iE.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/eszmHIWJHAKdnJcE3KcvVzOb6Jd.jpg",
       "release_year": 2017,
-      "vote_average": 6.7,
+      "vote_average": 7.0,
       "genres": [
         "Comedy",
         "Crime"
@@ -2650,7 +2650,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rDOxXteqxALBaSa3V3zTjGJuyWB.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/fcAVJkXnvqxOrk7skr06CbWfgpQ.jpg",
       "release_year": 2004,
-      "vote_average": 6.9,
+      "vote_average": 7.3,
       "genres": [
         "Drama",
         "Thriller",
@@ -2684,7 +2684,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/cIWQzIoWOvx0piZM0UpiHMhzHWW.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/dewZeUnewFAZfia3rwGkx6c8kvM.jpg",
       "release_year": 2003,
-      "vote_average": 7.0,
+      "vote_average": 7.3,
       "genres": [
         "Comedy",
         "Drama",
@@ -2719,7 +2719,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/qENzVKfdyNBAwShcS0YhWeJe34M.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/8nbinRJQus4ohpQf0FyD3NKJllo.jpg",
       "release_year": 2007,
-      "vote_average": 6.8,
+      "vote_average": 6.7,
       "genres": [
         "Crime",
         "Drama",
@@ -2753,7 +2753,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/z6O1KDhfWDTm5ZBr6Ovr0eg8LqO.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/3r2G1vSDf4S3Pl5lJ9BDm9FTxe6.jpg",
       "release_year": 2013,
-      "vote_average": 6.9,
+      "vote_average": 7.2,
       "genres": [
         "Drama",
         "Crime"
@@ -2786,7 +2786,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/3NIzyXkfylsjflRKSz8Fts3lXzm.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/owAe5rRStnX7ibVAPmza3NCXjCy.jpg",
       "release_year": 2010,
-      "vote_average": 7.2,
+      "vote_average": 7.5,
       "genres": [
         "Crime",
         "Drama",
@@ -2820,7 +2820,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/xMKn6EQS7eR5ubhPJbw5pQSBZMw.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/3HvQ5PaxwQJEiRSZD5AyVuqEiNn.jpg",
       "release_year": 2007,
-      "vote_average": 7.1,
+      "vote_average": 7.5,
       "genres": [
         "Drama",
         "Western"
@@ -2853,7 +2853,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/hqDkO0W9uk4aiwzn3pTeLO7NPZD.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/8UOAYjhwSF3aPZhm6wgLuyHRyrR.jpg",
       "release_year": 2024,
-      "vote_average": 6.8,
+      "vote_average": 6.7,
       "genres": [
         "Western",
         "Drama"
@@ -2886,7 +2886,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/ezcS78TIjgr85pVdaPDd2rSPVNs.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/4qxZJRYe4ezA5J1sidnV7vuaYaz.jpg",
       "release_year": 2016,
-      "vote_average": 6.5,
+      "vote_average": 6.9,
       "genres": [
         "Adventure",
         "Action",
@@ -2920,7 +2920,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/eE1SL0QoDsvAMqQly56IkRtlN1W.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/1uCX0fpYOdvrTIYulFymWOP08HT.jpg",
       "release_year": 2021,
-      "vote_average": 7.3,
+      "vote_average": 7.2,
       "genres": [
         "Western",
         "Drama"
@@ -2953,7 +2953,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/fYQCgVRsQTEfUrP7cW5iAFVYOlh.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/oyBZyY5GdzZdofVVsDda49QmvFP.jpg",
       "release_year": 2020,
-      "vote_average": 6.9,
+      "vote_average": 6.8,
       "genres": [
         "Drama",
         "Western",
@@ -2987,7 +2987,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/tCrB8pcjadZjsDk7rleGJaIv78k.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/5dwlH8Krm2bsuc2Pubw2cBb03g5.jpg",
       "release_year": 2010,
-      "vote_average": 7.3,
+      "vote_average": 7.6,
       "genres": [
         "Drama",
         "Adventure",
@@ -3021,7 +3021,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/wTgomqYRTXT3BXQScnIo8uHDyWC.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/2cI0rmMgoZOqP78iQDZwQASkKT3.jpg",
       "release_year": 2018,
-      "vote_average": 6.8,
+      "vote_average": 6.9,
       "genres": [
         "Western",
         "Drama",
@@ -3055,7 +3055,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/ji3ecJphATlVgWNY0B0RVXZizdf.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/hEQYZq2CDB2LSJVxxlazdBOKeyW.jpg",
       "release_year": 2015,
-      "vote_average": 7.5,
+      "vote_average": 8.0,
       "genres": [
         "Western",
         "Drama",
@@ -3089,7 +3089,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/fTB6p9QwPRKIuK5LtB5CZXlkx5b.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/crVDxx9KgNW7Bm1wyXqBYpzG2TS.jpg",
       "release_year": 2016,
-      "vote_average": 6.8,
+      "vote_average": 6.9,
       "genres": [
         "Action",
         "Drama",
@@ -3124,7 +3124,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/yS41crZ1i0fFxCQbuL7I1Y1VBwm.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/8P3qur5Xh6dsH6xmZ1O2XS7vnc2.jpg",
       "release_year": 2020,
-      "vote_average": 7.0,
+      "vote_average": 7.1,
       "genres": [
         "Drama",
         "Western"
@@ -3157,7 +3157,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/4MmTHpn2Y8emqvBgvOjufImUmKZ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/orXMq2jZy8wFmePv7zXS2Kor7Ug.jpg",
       "release_year": 2015,
-      "vote_average": 6.9,
+      "vote_average": 7.1,
       "genres": [
         "Drama",
         "Horror",
@@ -3191,7 +3191,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rqoezyB51GfhiloOB5ZErg5HXas.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/vBSsIyWExRpe3Robi8SAnayrMq1.jpg",
       "release_year": 2017,
-      "vote_average": 7.0,
+      "vote_average": 7.2,
       "genres": [
         "Drama",
         "Western",
@@ -3226,7 +3226,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/bbSHSJuO5XjrIKMh6QXXLTg3Yzr.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/5ndWXHSKcdN6uYSPOLlxnSMuAEE.jpg",
       "release_year": 2005,
-      "vote_average": 7.0,
+      "vote_average": 7.3,
       "genres": [
         "Western",
         "Drama"
@@ -3259,7 +3259,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/8Vc5EOUEIF1EUXuX9eLFf7BvN3P.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/563sRDK3rZS31TXCdTY4lfcwrNK.jpg",
       "release_year": 2021,
-      "vote_average": 7.2,
+      "vote_average": 7.3,
       "genres": [
         "Drama"
       ],
@@ -3291,7 +3291,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/ljRRxqy2aXIkIBXLmOVifcOR021.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/kQVdpIPCqfpa24I8SQRiwOAbkLG.jpg",
       "release_year": 2016,
-      "vote_average": 7.3,
+      "vote_average": 7.6,
       "genres": [
         "Western",
         "Crime",
@@ -3325,7 +3325,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/pySivdR845Hom4u4T2WNkJxe6Ad.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/kQGxGXzYiCumY8kmXXpgbZyZQK8.jpg",
       "release_year": 2017,
-      "vote_average": 7.4,
+      "vote_average": 7.7,
       "genres": [
         "Crime",
         "Mystery",
@@ -3359,7 +3359,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/voxl654m7p36y8FLu8oQD7dfwwK.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/12RXkIWUXwOHXgAmlxJNIWRGrri.jpg",
       "release_year": 2018,
-      "vote_average": 7.1,
+      "vote_average": 7.3,
       "genres": [
         "Western",
         "Comedy",
@@ -3526,7 +3526,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/1Q3GlCXGYWELifxANYZ5OVMRVZl.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/2IIKts2A9vnUdM9tTC76B8tDmuZ.jpg",
       "release_year": 2025,
-      "vote_average": 7.3,
+      "vote_average": 7.2,
       "genres": [
         "Horror"
       ],
@@ -3558,7 +3558,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/zhG3vKWyDRaZYoaww1UVAi29T9h.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/qqHQsStV6exghCM7zbObuYBiYxw.jpg",
       "release_year": 1957,
-      "vote_average": 8.6,
+      "vote_average": 9.0,
       "genres": [
         "Drama"
       ],
@@ -3590,7 +3590,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/ve72VxNqjGM69Uky4WTo2bK6rfq.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/w5IDXtifKntw0ajv2co7jFlTQDM.jpg",
       "release_year": 1968,
-      "vote_average": 8.0,
+      "vote_average": 8.3,
       "genres": [
         "Sci-Fi",
         "Mystery",
@@ -3624,7 +3624,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/io2dfBJhasvGbgkCX9cCGVOiA99.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/off0xgvtfHY82l3MC4mDpCk1APY.jpg",
       "release_year": 2008,
-      "vote_average": 7.2,
+      "vote_average": 7.5,
       "genres": [
         "Drama",
         "Thriller",
@@ -3658,7 +3658,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/nV5316WUsVij8sVXLCF1g7TFitg.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/qVzmXKKOTtd3szkiCheCNrfa394.jpg",
       "release_year": 2004,
-      "vote_average": 7.2,
+      "vote_average": 7.5,
       "genres": [
         "Drama",
         "Crime",
@@ -3692,7 +3692,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/tpfC325Jk6S38VTe5dDWjWtoyxr.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/mFfyE5DPFDqoes4HIcElHc2a15y.jpg",
       "release_year": 1999,
-      "vote_average": 7.7,
+      "vote_average": 8.0,
       "genres": [
         "Drama"
       ],
@@ -3724,7 +3724,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/xNXYXJ3XNC9o5wxDF2ImZ9b2es.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/fIriCG54pJZoMGvoHHLCPn5y7Cx.jpg",
       "release_year": 2011,
-      "vote_average": 6.9,
+      "vote_average": 7.1,
       "genres": [
         "Thriller",
         "Drama"
@@ -3790,7 +3790,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/2hFvxCCWrTmCYwfy7yum0GKRi3Y.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/c0fB9xk7D1aVb3Bg2rk2SVJcGn.jpg",
       "release_year": 2002,
-      "vote_average": 8.4,
+      "vote_average": 8.5,
       "genres": [
         "Drama",
         "War"
@@ -3856,7 +3856,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/fnOMP6mjmOmZwmlC1n0K7ivrzt1.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/vDKRMZGFTKP9nQolzeSB1rB1w6p.jpg",
       "release_year": 2016,
-      "vote_average": 8.2,
+      "vote_average": 8.1,
       "genres": [
         "Drama",
         "History",
@@ -3923,7 +3923,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/8naVv2Xu3rWI5JKHz0vCujx6GaJ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/sFDntG0Z0Wjrsz26TVptfs5OSLT.jpg",
       "release_year": 2012,
-      "vote_average": 6.9,
+      "vote_average": 7.4,
       "genres": [
         "Drama",
         "Sci-Fi"
@@ -3956,7 +3956,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/cEziWNr1n1HKAuKhngF2n4engOR.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/pSCOyP2VKzEmwXmDCjWU0pL0WD7.jpg",
       "release_year": 2010,
-      "vote_average": 7.6,
+      "vote_average": 8.6,
       "genres": [
         "Documentary"
       ],
@@ -3988,7 +3988,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/r1cGlSbdDBRFWvS4Q33b4XLC5XN.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/8a7OtM7LUovKIzb0Mj2wsFFIibs.jpg",
       "release_year": 2025,
-      "vote_average": 8.2,
+      "vote_average": 8.4,
       "genres": [
         "Documentary"
       ],
@@ -4020,7 +4020,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/o5vQtRWFjpBLRPXgpGzoggCMEjQ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/crd7JeAFtMnHKlNLd84SN4YOmcr.jpg",
       "release_year": 2011,
-      "vote_average": 6.5,
+      "vote_average": 7.5,
       "genres": [
         "Drama",
         "Documentary"
@@ -4053,7 +4053,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/r5l50nw6E41OHcBZLNbjCudnei2.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/xrH9fuMYVtFmmpvdt2R7wjuw1Eh.jpg",
       "release_year": 2013,
-      "vote_average": 9.0,
+      "vote_average": 5.5,
       "genres": [
         "Drama"
       ],
@@ -4085,7 +4085,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/2ncPOmRNLB6RDx2orRjwfYtyKfY.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/w40PIZEHvVfhi6bSEVgRG0SH5Bi.jpg",
       "release_year": 1967,
-      "vote_average": 8.4,
+      "vote_average": 8.1,
       "genres": [
         "Drama"
       ],
@@ -4115,7 +4115,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/jspobwn8SDeDC00CTfWAv4fjZmb.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/oDNtE32GYBDtVGyxeigIoUa8XHq.jpg",
       "release_year": 2023,
-      "vote_average": 6.8,
+      "vote_average": 6.7,
       "genres": [
         "Crime",
         "Drama"
@@ -4148,7 +4148,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/1MccRnw41qQjREuZkovqP2UX1i3.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/2vAOdruqvx9GojXxKi3xVsZZvKU.jpg",
       "release_year": 2016,
-      "vote_average": 7.7,
+      "vote_average": 8.0,
       "genres": [
         "Drama",
         "Mystery",
@@ -4180,7 +4180,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/9JY9Gza4HQhXjIPXg9uSy8FeiSM.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/rp0f5vHNiAbe5EEIaw7XhJHQ7og.jpg",
       "release_year": 2023,
-      "vote_average": 7.3,
+      "vote_average": 7.4,
       "genres": [
         "Crime",
         "Drama"
@@ -4211,7 +4211,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/i8ORB1biusVy703lGxUi5Rle6zA.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nS5ZSmrX92lu1GYAlXZye1mkDfd.jpg",
       "release_year": 2006,
-      "vote_average": 8.2,
+      "vote_average": 8.6,
       "genres": [
         "Crime",
         "Drama",
@@ -4243,7 +4243,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rmibFGdqOe0kKKhPls0jVOdZCWw.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/lVWku9LX2qdJTtAbRzaCDhhWeTK.jpg",
       "release_year": 2017,
-      "vote_average": 7.5,
+      "vote_average": 7.9,
       "genres": [
         "Crime",
         "Drama"
@@ -4277,7 +4277,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/7pdeNK1CUqj1yuG9VMDeynnq9xK.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/cKsmzu5YpayNxc6Gs9KD8wyJV8M.jpg",
       "release_year": 2007,
-      "vote_average": 7.8,
+      "vote_average": 8.1,
       "genres": [
         "Drama",
         "Romance"
@@ -4308,7 +4308,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/tg9I5pOY4M9CKj8U0cxVBTsm5eh.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/7NNNXo0qG2SqH4JoG7GPvJ2hzes.jpg",
       "release_year": 2021,
-      "vote_average": 7.7,
+      "vote_average": 7.6,
       "genres": [
         "Sci-Fi & Fantasy",
         "Drama"
@@ -4339,7 +4339,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/dg3OindVAGZBjlT3xYKqIAdukPL.jpg",
       "release_year": 2011,
-      "vote_average": 8.3,
+      "vote_average": 8.7,
       "genres": [
         "Sci-Fi & Fantasy",
         "Drama",
@@ -4371,7 +4371,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/xhoDZbMNeyCA0BGPZQsdIiO43Dp.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/pLio7Lod6YoNMM7ybFVjIJjwIxe.jpg",
       "release_year": 2015,
-      "vote_average": 7.5,
+      "vote_average": 7.9,
       "genres": [
         "Sci-Fi & Fantasy",
         "Drama"
@@ -4404,7 +4404,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/fVTpkoTkl7LJSoVCnuoHRPJvS4o.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/z2Q4lX7E76BuZMOOZrq4trz91j8.jpg",
       "release_year": 2017,
-      "vote_average": 7.5,
+      "vote_average": 8.0,
       "genres": [
         "Sci-Fi & Fantasy",
         "Drama"
@@ -4435,7 +4435,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/h6Z2oogE4mJk2uffdtIlLhb0EHx.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/aY7zv2pfk9H0QxaaL3PBjvalbKQ.jpg",
       "release_year": 2021,
-      "vote_average": 7.7,
+      "vote_average": 7.5,
       "genres": [
         "Crime",
         "Drama",
@@ -4469,7 +4469,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/7uY4pCOxbEdv4M8jTE4uMPVoSIW.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/zAgcM7zwWAVOIT9dMMzQx7e4vdX.jpg",
       "release_year": 1959,
-      "vote_average": 8.5,
+      "vote_average": 9.1,
       "genres": [
         "Sci-Fi & Fantasy",
         "Mystery",
@@ -4501,7 +4501,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/8MfgyFHf7XEboZJPZXCIDqqiz6e.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/rX5hvSRB2k4YoIvRg6Zky52rWk0.jpg",
       "release_year": 2016,
-      "vote_average": 8.0,
+      "vote_average": 8.5,
       "genres": [
         "Sci-Fi & Fantasy",
         "Western"
@@ -4532,7 +4532,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/toVhyqMT3ICfahE7Ad8obJvZHpX.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/i50h4Gz6e9BMGak5l6gg5qfIjcv.jpg",
       "release_year": 2021,
-      "vote_average": 8.5,
+      "vote_average": 9.0,
       "genres": [
         "Reality",
         "Comedy"
@@ -4565,7 +4565,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/cuV2O5ZyDLHSOWzg3nLVljp1ubw.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/v8YFr8BbU9qsO8PYIulzTeM6Qk.jpg",
       "release_year": 2014,
-      "vote_average": 8.3,
+      "vote_average": 8.9,
       "genres": [
         "Drama",
         "Mystery"
@@ -4596,7 +4596,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/dzq83RHwQcnP6WGJ6YkenIqeaa5.jpg",
       "release_year": 2013,
-      "vote_average": 8.5,
+      "vote_average": 8.8,
       "genres": [
         "Drama",
         "Crime"
@@ -4627,7 +4627,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/sCgzLaVlFy8KxtxRPvt1V5MNTDb.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/5NOQNDMVXe8t5wIuY6r6b6iUXcc.jpg",
       "release_year": 2001,
-      "vote_average": 8.1,
+      "vote_average": 8.7,
       "genres": [
         "Drama"
       ],
@@ -4657,7 +4657,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/AfdZXqqlFsPUEfi6kWWWthxw7Nz.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/AuQGIa3ZarPdS0bhWjQWJR0mhJj.jpg",
       "release_year": 2002,
-      "vote_average": 8.2,
+      "vote_average": 8.7,
       "genres": [
         "Crime",
         "Drama",
@@ -4689,7 +4689,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/vtacLvdLgW3BNUj8DrC76X39Lfi.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/23S5oKZjlXehjNLEhMQuxjwbyuA.jpg",
       "release_year": 2015,
-      "vote_average": 7.9,
+      "vote_average": 8.5,
       "genres": [
         "Mystery",
         "Drama",
@@ -4721,7 +4721,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/pBAp7VfKVQKQIiLRJHZSMGtyXAB.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/5ZLEFPayOJr3KhXPoAnLWdVQJem.jpg",
       "release_year": 2012,
-      "vote_average": 8.2,
+      "vote_average": 8.7,
       "genres": [
         "Crime",
         "Drama",
@@ -4753,7 +4753,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/xuOz95tUuXclfnlOID7ejtREYqf.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/rReAn187hBmmk5YoWA7I3amfaUK.jpg",
       "release_year": 2005,
-      "vote_average": 8.1,
+      "vote_average": 8.7,
       "genres": [
         "Comedy"
       ],
@@ -4783,7 +4783,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/fWwxYAuqY4Na7fKI3Qq2nFWCwG8.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/31oYoyp69L8Bo6Vuz2ogB5JoipV.jpg",
       "release_year": 2004,
-      "vote_average": 8.1,
+      "vote_average": 8.6,
       "genres": [
         "Western",
         "Crime",
@@ -4849,7 +4849,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/1FkONly4j7hxi6Pz5CmuhRN1Ops.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/2INMEKxee4z0mVYpHCS4AdPxgOb.jpg",
       "release_year": 2018,
-      "vote_average": 8.3,
+      "vote_average": 8.7,
       "genres": [
         "Crime",
         "Drama"
@@ -4880,7 +4880,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/pOC3DmU47X98Sv5vaPnmgjG30eY.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/oNNdRpSQSdRIaWnSFejhw1qk51K.jpg",
       "release_year": 2012,
-      "vote_average": 8.1,
+      "vote_average": 8.6,
       "genres": [
         "Drama"
       ],
@@ -4910,7 +4910,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/y9x2R87yt2U616736NJrP0d56dt.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/uMsTtNaUEWOE2q64m8zthBIMgen.jpg",
       "release_year": 2019,
-      "vote_average": 7.7,
+      "vote_average": 8.2,
       "genres": [
         "Drama"
       ],
@@ -4940,7 +4940,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/suX3F5e8XN9emrb52CQSwt2mRwx.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/2qhLtfvE4wlBxTVECT90xxYCX8d.jpg",
       "release_year": 2013,
-      "vote_average": 8.1,
+      "vote_average": 8.6,
       "genres": [
         "Crime",
         "Drama",
@@ -4974,7 +4974,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/qtxL0ZLAZN1nd0kOpcu8V32bsU4.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/erljE3cOZ4eyISQunUYmKZ0q7cu.jpg",
       "release_year": 2006,
-      "vote_average": 8.2,
+      "vote_average": 8.5,
       "genres": [
         "Comedy"
       ],
@@ -5004,7 +5004,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/5BCQaZ8HrLjq6diLsIQxZuzXqiK.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/AcwI0dQaPEiU4a4l3kQqUI1070.jpg",
       "release_year": 2014,
-      "vote_average": 8.2,
+      "vote_average": 8.6,
       "genres": [
         "Comedy"
       ],
@@ -5034,7 +5034,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/yPLkf4EiCkR0NOvMfmpHMA2zfN3.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/mcgZDwhMlrFsfpbvCeg5RY5mhiu.jpg",
       "release_year": 2008,
-      "vote_average": 8.4,
+      "vote_average": 8.6,
       "genres": [
         "Crime",
         "Drama"
@@ -5065,7 +5065,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/nIcIwVTYcZnW1BDzexGfFO7KmX1.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/4RttvRiea7C5BaD1YJXpny6nGSx.jpg",
       "release_year": 2001,
-      "vote_average": 7.8,
+      "vote_average": 8.6,
       "genres": [
         "Comedy"
       ],
@@ -5095,7 +5095,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/4e9CraVtGY00jLP2YGwsuEtaIjR.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/efbDkbMBPcHAfnsvJ9SXCdHgMBw.jpg",
       "release_year": 2025,
-      "vote_average": 7.0,
+      "vote_average": 7.2,
       "genres": [
         "Drama",
         "Crime"
@@ -5158,7 +5158,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/x9Y1IMFdY8Ma222KcQadFEau0EB.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/nWfpVLgioDXQsAbfL6UJxYz6d3d.jpg",
       "release_year": 2010,
-      "vote_average": 7.8,
+      "vote_average": 8.3,
       "genres": [
         "Drama",
         "Action & Adventure",
@@ -5190,7 +5190,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/wnmNPaLvhnMeOqnWlhNkYCZxtda.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/n3Brk7roueE9HOwVmYlJx5j462g.jpg",
       "release_year": 2005,
-      "vote_average": 8.1,
+      "vote_average": 8.3,
       "genres": [
         "Action & Adventure",
         "Crime",
@@ -5222,7 +5222,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/1M876KPjulVwppEpldhdc8V4o68.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/8VXhcrl5z2I1zEU9X3pkkNrZlD.jpg",
       "release_year": 2016,
-      "vote_average": 8.2,
+      "vote_average": 8.6,
       "genres": [
         "Drama"
       ],
@@ -5254,7 +5254,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/2IpjdDLbvDZg2EO3DDqqa01QknQ.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/Ap6qkRyJWJl7QCKRuLUleDybnBn.jpg",
       "release_year": 2022,
-      "vote_average": 3.6,
+      "vote_average": 7.5,
       "genres": [
         "Mystery",
         "War & Politics",
@@ -5287,7 +5287,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/c15BtJxCXMrISLVmysdsnZUPQft.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/coaPCIqQBPUZsOnJcWZxhaORcDT.jpg",
       "release_year": 2024,
-      "vote_average": 8.1,
+      "vote_average": 8.4,
       "genres": [
         "Action & Adventure",
         "Sci-Fi & Fantasy",
@@ -5321,7 +5321,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/2DPmTlv8F0V1TQBPmlsGOVOhtWk.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/wFEAy4xRes1eeclsu7Z73Vzz7ET.jpg",
       "release_year": 2024,
-      "vote_average": 7.8,
+      "vote_average": 7.7,
       "genres": [
         "Sci-Fi & Fantasy",
         "Drama"
@@ -5387,7 +5387,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/6GAvS2e6VIRsms9FpVt33PsCoEW.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/391ixi0wVbFtFLQnOy8ZncWv2io.jpg",
       "release_year": 2011,
-      "vote_average": 7.6,
+      "vote_average": 8.3,
       "genres": [
         "Drama",
         "War & Politics",
@@ -5419,7 +5419,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/5lcxWLVAEICkFpuAiV1aMy7ZZj3.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/yx0sfeYOoXol2fjT22SXo9YyviI.jpg",
       "release_year": 2026,
-      "vote_average": 8.0,
+      "vote_average": 8.4,
       "genres": [
         "Drama",
         "Comedy",
@@ -5451,7 +5451,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/JP3DItWMbrrLiKR5AYUfpsNf2b.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/9OQ5BIITkJwRJo9JA6AlCfJIGBQ.jpg",
       "release_year": 2019,
-      "vote_average": 7.7,
+      "vote_average": 8.1,
       "genres": [
         "Drama",
         "Sci-Fi & Fantasy",
@@ -5483,7 +5483,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/r2QXomqKjkKHVtYGGtkf2l2Y7go.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/4XccmjsOmQZw8S2iW1wvlvmb5v1.jpg",
       "release_year": 2023,
-      "vote_average": 8.2,
+      "vote_average": 8.1,
       "genres": [
         "Sci-Fi & Fantasy",
         "Drama"
@@ -5514,7 +5514,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/rTc7ZXdroqjkKivFPvCPX0Ru7uw.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/lNpkvX2s8LGB0mjGODMT4o6Up7j.jpg",
       "release_year": 1999,
-      "vote_average": 8.7,
+      "vote_average": 9.2,
       "genres": [
         "Crime",
         "Drama"
@@ -5545,7 +5545,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/z7Nga7Q9IGFWs5OEduY2gGFxnX3.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/ulm1ex4JFYJByyaPyqTr47MFyEQ.jpg",
       "release_year": 2025,
-      "vote_average": 7.9,
+      "vote_average": 8.8,
       "genres": [
         "Drama",
         "Sci-Fi & Fantasy"
@@ -5576,7 +5576,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/4lbclFySvugI51fwsyxBTOm4DqK.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/aQTtua5pG490fMfeKgtYg5B853e.jpg",
       "release_year": 2002,
-      "vote_average": 8.6,
+      "vote_average": 9.3,
       "genres": [
         "Crime",
         "Drama"
@@ -5607,7 +5607,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/eLdcio9HBKzsdIJGeD80oObDfkr.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/2yDV0xLyqW88dn5qE7YCRnoYmfy.jpg",
       "release_year": 2001,
-      "vote_average": 8.6,
+      "vote_average": 9.4,
       "genres": [
         "Drama",
         "War & Politics"
@@ -5638,7 +5638,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/hKWxWjFwnMvkWQawbhvC0Y7ygQ8.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/zoAxfThy7ntyCutBeNgdaKhRoSX.jpg",
       "release_year": 2013,
-      "vote_average": 8.0,
+      "vote_average": 8.6,
       "genres": [
         "Drama"
       ],
@@ -5668,7 +5668,7 @@ export const SACHIN_PERSONAL_TITLES: UserTitle[] = [
       "poster_path": "https://image.tmdb.org/t/p/w500/5vQlVWkIMPhZ88OWchJsgwGEK9.jpg",
       "backdrop_path": "https://image.tmdb.org/t/p/w1280/eVwD4s4dBOK5Jn7CzOLBTo0vXNH.jpg",
       "release_year": 2015,
-      "vote_average": 8.1,
+      "vote_average": 8.5,
       "genres": [
         "Drama",
         "Mystery",

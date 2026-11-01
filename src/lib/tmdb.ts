@@ -1452,3 +1452,103 @@ export async function fetchCreditsAndDetails(
 
   return {};
 }
+
+export interface FullMediaDetails {
+  runtime?: number;
+  tagline?: string;
+  trailerKey?: string;
+  creator?: string;
+  stars?: string[];
+  backdrop_path?: string;
+  poster_path?: string;
+  overview?: string;
+  release_year?: number;
+  genres?: string[];
+  streaming_sources?: string[];
+  primary_source?: string;
+  vote_average?: number;
+}
+
+export async function fetchFullMediaDetails(
+  mediaType: MediaType,
+  tmdbId: number,
+  fallbackTitle?: string
+): Promise<FullMediaDetails> {
+  const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  try {
+    const url = `${TMDB_BASE_URL}/${mediaType}/${tmdbId}?append_to_response=credits,videos,external_ids`;
+    const finalUrl = token ? url : `${url}&api_key=${key}`;
+    const res = await fetch(finalUrl, { headers });
+
+    if (res.ok) {
+      const data = await res.json();
+      const crew: any[] = data.credits?.crew || [];
+      const cast: any[] = data.credits?.cast || [];
+      const videos: any[] = data.videos?.results || [];
+
+      // Find official trailer or teaser from YouTube
+      const trailer =
+        videos.find(
+          (v: any) =>
+            v.site === 'YouTube' &&
+            v.type === 'Trailer' &&
+            v.official
+        ) ||
+        videos.find(
+          (v: any) =>
+            v.site === 'YouTube' &&
+            (v.type === 'Trailer' || v.type === 'Teaser')
+        ) ||
+        videos.find((v: any) => v.site === 'YouTube');
+
+      let creator = '';
+      if (mediaType === 'tv') {
+        const createdBy = (data.created_by || []).map((c: any) => c.name).filter(Boolean);
+        if (createdBy.length > 0) {
+          creator = createdBy.join(', ');
+        } else {
+          const c = crew.find((item: any) => item.job === 'Creator' || item.job === 'Executive Producer');
+          if (c?.name) creator = c.name;
+        }
+      } else {
+        const dirs = crew.filter((c: any) => c.job === 'Director').map((c: any) => c.name).filter(Boolean);
+        if (dirs.length > 0) creator = dirs.join(', ');
+      }
+
+      const stars = cast.slice(0, 6).map((c: any) => c.name).filter(Boolean);
+      const runtime =
+        mediaType === 'movie'
+          ? data.runtime
+          : Array.isArray(data.episode_run_time) && data.episode_run_time.length > 0
+          ? data.episode_run_time[0]
+          : undefined;
+
+      const rawYear =
+        mediaType === 'movie'
+          ? data.release_date?.slice(0, 4)
+          : data.first_air_date?.slice(0, 4);
+
+      return {
+        runtime: runtime || undefined,
+        tagline: data.tagline || undefined,
+        trailerKey: trailer?.key || undefined,
+        creator: creator || undefined,
+        stars: stars.length > 0 ? stars : undefined,
+        backdrop_path: data.backdrop_path
+          ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`
+          : undefined,
+        overview: data.overview || undefined,
+        release_year: rawYear ? parseInt(rawYear, 10) : undefined,
+        genres: (data.genres || []).map((g: any) => g.name).filter(Boolean),
+      };
+    }
+  } catch {
+    // Network / parse fallback
+  }
+
+  return {};
+}

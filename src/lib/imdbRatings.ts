@@ -15,11 +15,9 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   "schindler's list": 9.0,
   'the lord of the rings: the return of the king': 9.0,
   'pulp fiction': 8.9,
-  'the lord of the rings: the fellowship of the ring': 8.9,
   'the good, the bad and the ugly': 8.8,
   'forrest gump': 8.8,
   'fight club': 8.8,
-  'the lord of the rings: the two towers': 8.8,
   'inception': 8.8,
   'star wars: episode v - the empire strikes back': 8.7,
   'the matrix': 8.7,
@@ -34,7 +32,6 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   'city of god': 8.6,
   'life is beautiful': 8.6,
   'the green mile': 8.6,
-  'star wars: episode iv - a new hope': 8.6,
   'star wars': 8.6,
   'terminator 2: judgment day': 8.6,
   'back to the future': 8.5,
@@ -75,7 +72,6 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   'aliens': 8.4,
   'the dark knight rises': 8.4,
   'coco': 8.4,
-  'avengers: endgame': 8.4,
   'american beauty': 8.3,
   'braveheart': 8.3,
   'amadeus': 8.3,
@@ -117,7 +113,6 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   'logan': 8.1,
   'ford v ferrari': 8.1,
   'kill bill: vol. 1': 8.2,
-  'kill bill: vol. 2': 8.0,
   'pan\'s labyrinth': 8.2,
   'the social network': 8.1,
   'catch me if you can': 8.1,
@@ -297,6 +292,90 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   'silo': 8.1,
   'for all mankind': 8.1,
   'the tudors': 8.1,
+  // Additional Top & Trending Titles
+  'gladiator ii': 6.7,
+  'gladiator 2': 6.7,
+  'wicked': 7.5,
+  'nosferatu': 7.4,
+  'heretic': 7.1,
+  'alien: romulus': 7.2,
+  'alien romulus': 7.2,
+  'deadpool & wolverine': 7.7,
+  'deadpool and wolverine': 7.7,
+  'beetlejuice beetlejuice': 6.7,
+  'smile 2': 6.6,
+  'the substance': 7.3,
+  'substance': 7.3,
+  'civil war': 7.1,
+  'challengers': 7.2,
+  'monkey man': 6.9,
+  'furiosa: a mad max saga': 7.5,
+  'furiosa a mad max saga': 7.5,
+  'furiosa': 7.5,
+  'twisters': 6.6,
+  'longlegs': 6.7,
+  'blink twice': 6.6,
+  'the wild robot': 8.2,
+  'wild robot': 8.2,
+  'inside out 2': 7.6,
+  'flow': 8.1,
+  'memoir of a snail': 7.9,
+  'babygirl': 6.1,
+  'emilia perez': 7.1,
+  'september 5': 7.3,
+  'nickel boys': 7.1,
+  'sing sing': 7.8,
+  'blitz': 6.5,
+  'hard truths': 7.2,
+  'maria': 6.4,
+  'the order': 6.7,
+  'carry-on': 6.4,
+  'carry on': 6.4,
+  'nightbitch': 6.0,
+  'better man': 7.3,
+  'the penguin': 8.7,
+  'penguin': 8.7,
+  'slow horses': 8.3,
+  'arcane': 9.0,
+  'squid game': 8.0,
+  'baby reindeer': 7.8,
+  'presumed innocent': 7.7,
+  'bad monkey': 7.4,
+  'kaos': 7.3,
+  'nobody wants this': 7.9,
+  'the diplomat': 8.0,
+  'diplomat': 8.0,
+  'from': 7.7,
+  'lioness': 7.7,
+  'landman': 7.9,
+  'dune prophecy': 7.2,
+  'yellowstone': 8.7,
+  'mayor of kingstown': 8.2,
+  'tulsa king': 8.0,
+
+  // Personal Titles & Niche Classics
+  'the accountant²': 7.1,
+  'accountant 2': 7.1,
+  'upgrade': 7.5,
+  'horizon: an american saga - chapter 1': 6.7,
+  'horizon an american saga chapter 1': 6.7,
+  'through the wormhole': 8.6,
+  'the americas': 8.4,
+  'americas': 8.4,
+  'dreams of a life': 7.5,
+  'the crash': 5.5,
+  'crash': 5.5,
+  'copenhagen cowboy': 6.7,
+  'the man in the high castle': 7.9,
+  'lupin': 7.5,
+  'carnivàle': 8.4,
+  'detectorists': 8.6,
+  'black rabbit': 7.2,
+  'los cronocrimenes': 7.1,
+  'machinist': 7.6,
+  'thirteenth floor': 7.0,
+  'the three-body problem': 7.5,
+  'the three body problem': 7.5,
   'the forsyte saga': 8.1,
   'dexter': 8.6,
   'the night manager': 8.0,
@@ -310,7 +389,6 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   'foundation': 7.6,
   'the peripheral': 7.6,
   '3 body problem': 7.5,
-  'the three body problem': 7.5,
   'the gold': 7.4,
   'the sinner': 7.9,
   'sinner': 7.9,
@@ -339,10 +417,32 @@ export const IMDB_RATINGS_BY_ID: Record<number, number> = {
   278: 9.3,     // The Shawshank Redemption
 };
 
+// Client-side and in-memory persistent cache for dynamically resolved IMDb ratings
+const LIVE_IMDB_CACHE: Record<string, number> = {};
+const CACHE_STORAGE_KEY = 'mirar_imdb_ratings_cache_v1';
+
+if (typeof window !== 'undefined') {
+  try {
+    const raw = localStorage.getItem(CACHE_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        Object.assign(LIVE_IMDB_CACHE, parsed);
+      }
+    }
+  } catch {
+    // Ignore storage parse error
+  }
+}
+
 export function normalizeTitleKey(title: string): string {
   if (!title) return '';
   return title
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove accents (e.g. è, é, à -> e, e, a)
+    .replace(/²/g, ' 2')
+    .replace(/³/g, ' 3')
     .replace(/[^\w\s]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
@@ -364,5 +464,59 @@ export function getImdbRating(title: string, tmdbId?: number): number | undefine
     return IMDB_RATINGS_MAP[normalized];
   }
 
+  // Strip leading articles (the, a, an) for match
+  const withoutArticle = normalized.replace(/^(the|a|an)\s+/, '');
+  if (withoutArticle && IMDB_RATINGS_MAP[withoutArticle] !== undefined) {
+    return IMDB_RATINGS_MAP[withoutArticle];
+  }
+
+  // Check live cache
+  if (tmdbId && LIVE_IMDB_CACHE[`id_${tmdbId}`] !== undefined) {
+    return LIVE_IMDB_CACHE[`id_${tmdbId}`];
+  }
+  if (LIVE_IMDB_CACHE[normalized] !== undefined) {
+    return LIVE_IMDB_CACHE[normalized];
+  }
+
   return undefined;
+}
+
+export async function fetchLiveImdbRating(
+  title: string,
+  year?: number,
+  tmdbId?: number
+): Promise<number | null> {
+  const existing = getImdbRating(title, tmdbId);
+  if (existing !== undefined) return existing;
+  if (!title || typeof window === 'undefined') return null;
+
+  try {
+    const apiKey =
+      localStorage.getItem('marquee_omdb_key') ||
+      process.env.NEXT_PUBLIC_OMDB_API_KEY ||
+      '44535897';
+    const yearParam = year ? `&y=${year}` : '';
+    const res = await fetch(
+      `https://www.omdbapi.com/?t=${encodeURIComponent(title)}${yearParam}&apikey=${apiKey}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.Response === 'True' && data.imdbRating && data.imdbRating !== 'N/A') {
+      const score = parseFloat(data.imdbRating);
+      if (!isNaN(score) && score > 0) {
+        const norm = normalizeTitleKey(title);
+        LIVE_IMDB_CACHE[norm] = score;
+        if (tmdbId) LIVE_IMDB_CACHE[`id_${tmdbId}`] = score;
+        try {
+          localStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(LIVE_IMDB_CACHE));
+        } catch {
+          // LocalStorage quota safety
+        }
+        return score;
+      }
+    }
+  } catch {
+    // Network error
+  }
+  return null;
 }

@@ -9,7 +9,7 @@ import { springTransition, tapScale } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
 
 export function NowWatchingShelf() {
-  const { nowWatchingTitles, updateStatus, openQuickLog, isServiceSubscribed } = useMedia();
+  const { nowWatchingTitles, updateStatus, openQuickLog, openDetailModal, isServiceSubscribed } = useMedia();
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [exitingId, setExitingId] = useState<string | null>(null);
 
@@ -86,7 +86,10 @@ export function NowWatchingShelf() {
                   className="relative group rounded-xl bg-[#14161B] border border-white/[0.08] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] p-3.5 flex gap-4 transition-colors hover:bg-[#1C1F26]"
                 >
                   {/* Poster (Strict 2:3 Aspect Ratio using MediaPoster) */}
-                  <div className="w-20 shrink-0">
+                  <div
+                    onClick={() => openDetailModal(media)}
+                    className="w-20 shrink-0 cursor-pointer"
+                  >
                     <MediaPoster
                       src={media.poster_path}
                       title={media.title}
@@ -100,13 +103,22 @@ export function NowWatchingShelf() {
                     <div>
                       {/* Top Bar with Context Menu */}
                       <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <h3 className="text-base font-medium text-[#F3F4F6] truncate tracking-tight">
+                        <div
+                          onClick={() => openDetailModal(media)}
+                          className="min-w-0 cursor-pointer group/title"
+                        >
+                          <h3 className="text-base font-medium text-[#F3F4F6] truncate tracking-tight group-hover/title:text-white transition-colors">
                             {media.title}
                           </h3>
-                          <p className="text-xs text-[#8E93A0] truncate mt-0.5">
-                            {media.release_year} • {media.genres.slice(0, 2).join(' / ')}
-                          </p>
+                          <div className="flex items-center gap-2 text-xs text-[#8E93A0] truncate mt-0.5">
+                            <span>{media.release_year} • {media.genres.slice(0, 2).join(' / ')}</span>
+                            {media.vote_average > 0 && (
+                              <span className="flex items-center gap-1 font-semibold text-white">
+                                <span className="px-1 py-0.2 rounded text-[8px] font-black bg-[#F5C518] text-black leading-none">IMDb</span>
+                                <span>{media.vote_average.toFixed(1)}</span>
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                         {/* Menu Dropdown Toggle */}
