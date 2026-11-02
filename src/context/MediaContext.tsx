@@ -34,8 +34,14 @@ interface MediaContextType {
   openQuickLog: (item: MediaItem, initialStatus?: TrackingStatus) => void;
   closeQuickLog: () => void;
   saveLog: (log: QuickLogInput) => void;
-  updateStatus: (tmdbId: number, mediaType: MediaType, status: TrackingStatus, fallbackMedia?: MediaItem) => void;
-  removeTitle: (tmdbId: number, mediaType: MediaType) => void;
+  updateStatus: (
+    tmdbId: number,
+    mediaType: MediaType,
+    status: TrackingStatus,
+    fallbackMedia?: MediaItem,
+    options?: { silent?: boolean }
+  ) => void;
+  removeTitle: (tmdbId: number, mediaType: MediaType, options?: { silent?: boolean }) => void;
   nowWatchingTitles: UserTitle[];
   watchlistTitles: UserTitle[];
   diaryTitles: UserTitle[];
@@ -551,7 +557,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     tmdbId: number,
     mediaType: MediaType,
     status: TrackingStatus,
-    fallbackMedia?: MediaItem
+    fallbackMedia?: MediaItem,
+    options?: { silent?: boolean }
   ) => {
     const existingIndex = userTitles.findIndex(
       (t) => t.tmdb_id === tmdbId && t.media_type === mediaType
@@ -585,18 +592,20 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       persistTitles([newEntry, ...userTitles]);
     }
 
-    const readableStatus =
-      status === 'want_to_watch'
-        ? 'Added to Watchlist'
-        : status === 'watching'
-        ? 'Moved to Now Watching'
-        : status === 'watched'
-        ? 'Logged to Diary'
-        : 'Shelved / Dropped';
+    if (!options?.silent) {
+      const readableStatus =
+        status === 'want_to_watch'
+          ? 'Added to Watchlist'
+          : status === 'watching'
+          ? 'Moved to Now Watching'
+          : status === 'watched'
+          ? 'Logged to Diary'
+          : 'Shelved / Dropped';
 
-    toast.success(readableStatus, {
-      description: media?.title || 'Title updated',
-    });
+      toast.success(readableStatus, {
+        description: media?.title || 'Title updated',
+      });
+    }
   };
 
   const saveLog = (log: QuickLogInput) => {
@@ -655,12 +664,18 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const removeTitle = (tmdbId: number, mediaType: MediaType) => {
+  const removeTitle = (
+    tmdbId: number,
+    mediaType: MediaType,
+    options?: { silent?: boolean }
+  ) => {
     const filtered = userTitles.filter(
       (t) => !(t.tmdb_id === tmdbId && t.media_type === mediaType)
     );
     persistTitles(filtered);
-    toast.info('Title removed from tracker');
+    if (!options?.silent) {
+      toast.info('Title removed from tracker');
+    }
   };
 
   const importTitles = (newTitles: UserTitle[]) => {

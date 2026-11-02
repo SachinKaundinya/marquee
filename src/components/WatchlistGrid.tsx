@@ -83,6 +83,8 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
   const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
   const [isDecadeModalOpen, setIsDecadeModalOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
+  const [glowingKeys, setGlowingKeys] = useState<Set<string>>(new Set());
+  const [sessionAddedKeys, setSessionAddedKeys] = useState<Set<string>>(new Set());
 
   const selectedGenres = isWatchlistMode ? watchlistGenres : contextGenres;
   const setSelectedGenres = isWatchlistMode ? setWatchlistGenres : setContextGenres;
@@ -131,11 +133,12 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     [watchlistItems]
   );
 
-  // In Popular mode, immediately exclude any title added to Watchlist or Diary, and exclude Anime
+  // In Popular mode, exclude tracked titles but preserve titles added in current session so user sees the green confirmation
   const baseItems = isWatchlistMode
     ? watchlistItems
     : catalog.filter((item) => {
         const key = `${item.media_type}-${item.tmdb_id}`;
+        if (sessionAddedKeys.has(key)) return true;
         if (userTrackedKeys.has(key)) return false;
         if (isAnimeItem(item)) return false;
         if (selectedCategory !== 'international' && isNonEnglishItem(item)) return false;
@@ -721,27 +724,50 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (isSpotlightInWatchlist) {
-                          removeTitle(spotlightItem.tmdb_id, spotlightItem.media_type);
-                          toast.info(`Removed "${spotlightItem.title}" from Watchlist`);
-                        } else {
-                          updateStatus(spotlightItem.tmdb_id, spotlightItem.media_type, 'want_to_watch', spotlightItem);
-                          toast.success(`Added "${spotlightItem.title}" to Watchlist`, {
-                            action: {
-                              label: 'Undo',
-                              onClick: () => removeTitle(spotlightItem.tmdb_id, spotlightItem.media_type),
-                            },
+                        if (!spotlightItem) return;
+                        const sKey = `${spotlightItem.media_type}-${spotlightItem.tmdb_id}`;
+                        const isSpotlightGlowing = glowingKeys.has(sKey);
+                        const isSpotlightSaved = isSpotlightInWatchlist || isSpotlightGlowing;
+
+                        if (isSpotlightSaved) {
+                          removeTitle(spotlightItem.tmdb_id, spotlightItem.media_type, { silent: true });
+                          setSessionAddedKeys((prev) => {
+                            const next = new Set(prev);
+                            next.delete(sKey);
+                            return next;
                           });
+                          setGlowingKeys((prev) => {
+                            const next = new Set(prev);
+                            next.delete(sKey);
+                            return next;
+                          });
+                        } else {
+                          setGlowingKeys((prev) => new Set(prev).add(sKey));
+                          setSessionAddedKeys((prev) => new Set(prev).add(sKey));
+                          updateStatus(spotlightItem.tmdb_id, spotlightItem.media_type, 'want_to_watch', spotlightItem, { silent: true });
+                          setTimeout(() => {
+                            setGlowingKeys((prev) => {
+                              const next = new Set(prev);
+                              next.delete(sKey);
+                              return next;
+                            });
+                          }, 1200);
                         }
                       }}
-                      className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 backdrop-blur-md active:scale-95 cursor-pointer ${
-                        isSpotlightInWatchlist
-                          ? 'bg-white text-black shadow-sm'
+                      className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-1.5 backdrop-blur-md active:scale-95 cursor-pointer ${
+                        spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`)
+                          ? 'bg-emerald-400 text-black shadow-[0_0_20px_rgba(52,211,153,1)] ring-2 ring-emerald-300 scale-105'
+                          : isSpotlightInWatchlist || (spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`))
+                          ? 'bg-emerald-500 text-black shadow-[0_0_12px_rgba(16,185,129,0.5)]'
                           : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
                       }`}
                     >
-                      <Bookmark className={`w-3.5 h-3.5 ${isSpotlightInWatchlist ? 'fill-black' : ''}`} />
-                      <span>{isSpotlightInWatchlist ? 'In Watchlist' : 'Watchlist'}</span>
+                      {spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`) ? (
+                        <Check className="w-3.5 h-3.5 stroke-[3] text-black" />
+                      ) : (
+                        <Bookmark className={`w-3.5 h-3.5 ${isSpotlightInWatchlist ? 'fill-black' : ''}`} />
+                      )}
+                      <span>{isSpotlightInWatchlist || (spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`)) ? 'In Watchlist' : 'Watchlist'}</span>
                     </button>
 
                     <button
@@ -814,52 +840,76 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                     )}
 
                     {/* 1A: One-Tap Quick Action Button (Top Right) */}
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (isWatchlist) {
-                          removeTitle(item.tmdb_id, item.media_type);
-                          toast.info(`Removed "${item.title}" from Watchlist`);
-                        } else {
-                          updateStatus(item.tmdb_id, item.media_type, 'want_to_watch', item);
-                          toast.success(`Added "${item.title}" to Watchlist`, {
-                            action: {
-                              label: 'Undo',
-                              onClick: () => removeTitle(item.tmdb_id, item.media_type),
-                            },
-                          });
-                        }
-                      }}
-                      className={`absolute top-1.5 right-1.5 w-7 h-7 rounded-full flex items-center justify-center transition-all z-20 shadow-md cursor-pointer ${
-                        isWatchlist
-                          ? 'bg-white text-black ring-2 ring-white/50'
-                          : isWatched
-                          ? 'bg-emerald-500 text-black'
-                          : isWatching
-                          ? 'bg-sky-500 text-white'
-                          : 'bg-black/60 hover:bg-black/90 text-white/90 hover:text-white border border-white/20 hover:scale-110 active:scale-95'
-                      }`}
-                      title={
-                        isWatchlist
-                          ? 'Remove from Watchlist'
-                          : isWatched
-                          ? 'Watched'
-                          : isWatching
-                          ? 'Watching'
-                          : 'Quick Add to Watchlist'
-                      }
-                    >
-                      {isWatchlist ? (
-                        <Bookmark className="w-3.5 h-3.5 fill-current stroke-current" />
-                      ) : isWatched ? (
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      ) : isWatching ? (
-                        <Film className="w-3.5 h-3.5" />
-                      ) : (
-                        <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                      )}
-                    </button>
+                    {(() => {
+                      const itemKey = `${item.media_type}-${item.tmdb_id}`;
+                      const isItemGlowing = glowingKeys.has(itemKey);
+                      const isItemSaved = isWatchlist || isItemGlowing;
+
+                      return (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isItemSaved) {
+                              removeTitle(item.tmdb_id, item.media_type, { silent: true });
+                              setSessionAddedKeys((prev) => {
+                                const next = new Set(prev);
+                                next.delete(itemKey);
+                                return next;
+                              });
+                              setGlowingKeys((prev) => {
+                                const next = new Set(prev);
+                                next.delete(itemKey);
+                                return next;
+                              });
+                            } else {
+                              setGlowingKeys((prev) => new Set(prev).add(itemKey));
+                              setSessionAddedKeys((prev) => new Set(prev).add(itemKey));
+                              updateStatus(item.tmdb_id, item.media_type, 'want_to_watch', item, { silent: true });
+                              setTimeout(() => {
+                                setGlowingKeys((prev) => {
+                                  const next = new Set(prev);
+                                  next.delete(itemKey);
+                                  return next;
+                                });
+                              }, 1200);
+                            }
+                          }}
+                          className={`absolute top-1.5 right-1.5 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 z-20 shadow-md cursor-pointer ${
+                            isItemGlowing
+                              ? 'bg-emerald-400 text-black ring-4 ring-emerald-400/80 shadow-[0_0_20px_rgba(52,211,153,1)] scale-125'
+                              : isItemSaved
+                              ? 'bg-emerald-500 text-black ring-2 ring-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
+                              : isWatched
+                              ? 'bg-emerald-600 text-black'
+                              : isWatching
+                              ? 'bg-sky-500 text-white'
+                              : 'bg-black/60 hover:bg-black/90 text-white/90 hover:text-white border border-white/20 hover:scale-110 active:scale-95'
+                          }`}
+                          title={
+                            isItemSaved
+                              ? 'Remove from Watchlist'
+                              : isWatched
+                              ? 'Watched'
+                              : isWatching
+                              ? 'Watching'
+                              : 'Quick Add to Watchlist'
+                          }
+                        >
+                          {isItemGlowing ? (
+                            <Check className="w-4 h-4 stroke-[3.5] text-black" />
+                          ) : isItemSaved ? (
+                            <Bookmark className="w-3.5 h-3.5 fill-current stroke-current" />
+                          ) : isWatched ? (
+                            <Check className="w-3.5 h-3.5 stroke-[3]" />
+                          ) : isWatching ? (
+                            <Film className="w-3.5 h-3.5" />
+                          ) : (
+                            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                          )}
+                        </button>
+                      );
+                    })()}
 
                     {/* Quick-action overlay button on hover */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 z-10 pointer-events-none">
