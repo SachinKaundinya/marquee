@@ -37,8 +37,8 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#0E1015] border-t border-white/[0.08] sm:hidden pb-[max(env(safe-area-inset-bottom,0px),4px)] pt-1 shadow-[0_-4px_16px_rgba(0,0,0,0.5)]">
-      <div className="grid grid-cols-4 max-w-md mx-auto">
+    <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#0E1015] border-t border-white/[0.08] sm:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.5)] pb-[env(safe-area-inset-bottom,0px)]">
+      <div className="grid grid-cols-4 max-w-md mx-auto h-14 items-center">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -49,7 +49,7 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
                 setActiveTab(item.id);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className={`flex flex-col items-center justify-center py-0.5 px-2 relative transition-all cursor-pointer ${
+              className={`flex flex-col items-center justify-center h-full relative transition-all cursor-pointer ${
                 isActive ? 'text-white' : 'text-[#8E93A0] hover:text-[#C5C8D0]'
               }`}
             >
@@ -67,7 +67,7 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
                 )}
               </div>
               <span
-                className={`text-[10px] leading-tight mt-0.5 tracking-tight transition-colors ${
+                className={`text-[10px] leading-tight mt-1 tracking-tight transition-colors ${
                   isActive ? 'font-semibold text-white' : 'font-normal text-[#8E93A0]'
                 }`}
               >

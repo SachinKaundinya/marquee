@@ -19,7 +19,7 @@ import { getServiceUrl } from '@/components/CinematicDetailModal';
 import { drawerTransition } from '@/tokens/motion';
 
 type PoolSource = 'watchlist' | 'catalog';
-type RuntimeBudget = 'any' | 'short' | 'standard' | 'epic' | 'series';
+type FormatType = 'any' | 'movie' | 'tv';
 type VibeType = 'any' | 'mind_bender' | 'adrenaline' | 'comedy' | 'dark' | 'chills' | 'acclaimed' | 'true_crime';
 
 interface VibeOption {
@@ -54,7 +54,8 @@ export function TonightsPickModal() {
   const [poolSource, setPoolSource] = useState<PoolSource>(
     watchlistTitles.length > 0 ? 'watchlist' : 'catalog'
   );
-  const [runtimeBudget, setRuntimeBudget] = useState<RuntimeBudget>('any');
+  const [selectedFormat, setSelectedFormat] = useState<FormatType>('any');
+  const [selectedLength, setSelectedLength] = useState<string>('any');
   const [selectedVibe, setSelectedVibe] = useState<VibeType>('any');
   const [onlySubscribed, setOnlySubscribed] = useState(true);
 
@@ -85,13 +86,43 @@ export function TonightsPickModal() {
         return false;
       }
 
-      // 2. Format / Runtime check
-      if (runtimeBudget === 'series' && item.media_type !== 'tv') return false;
-      if (runtimeBudget !== 'any' && runtimeBudget !== 'series' && item.media_type === 'tv') {
-        return false;
+      // 2. Format check
+      if (selectedFormat === 'movie' && item.media_type !== 'movie') return false;
+      if (selectedFormat === 'tv' && item.media_type !== 'tv') return false;
+
+      // 3. Length check
+      if (selectedLength !== 'any') {
+        const runtime = item.runtime;
+
+        if (selectedFormat === 'movie' || item.media_type === 'movie') {
+          if (runtime && runtime > 0) {
+            if (selectedLength === 'short' && runtime >= 100) return false;
+            if (selectedLength === 'standard' && (runtime < 100 || runtime > 140)) return false;
+            if (selectedLength === 'epic' && runtime <= 140) return false;
+          }
+        } else if (selectedFormat === 'tv' || item.media_type === 'tv') {
+          if (runtime && runtime > 0) {
+            if (selectedLength === 'tv_short' && runtime >= 35) return false;
+            if (selectedLength === 'tv_standard' && (runtime < 30 || runtime > 55)) return false;
+            if (selectedLength === 'tv_long' && runtime <= 45) return false;
+          } else {
+            const isComedyOrAnim = (item.genres || []).some(
+              (g) => g.toLowerCase().includes('comedy') || g.toLowerCase().includes('animation')
+            );
+            if (selectedLength === 'tv_short' && !isComedyOrAnim) return false;
+            if (selectedLength === 'tv_long' && isComedyOrAnim) return false;
+          }
+        } else {
+          if (runtime && runtime > 0) {
+            if (selectedLength === 'any_short' && runtime >= 45) return false;
+            if (selectedLength === 'any_med' && (runtime < 40 || runtime > 90)) return false;
+            if (selectedLength === 'any_long' && (runtime < 90 || runtime > 130)) return false;
+            if (selectedLength === 'any_epic' && runtime <= 130) return false;
+          }
+        }
       }
 
-      // 3. Vibe check
+      // 4. Vibe check
       const genres = (item.genres || []).map((g) => g.toLowerCase());
       const overview = (item.overview || '').toLowerCase();
 
@@ -130,7 +161,7 @@ export function TonightsPickModal() {
 
       return true;
     });
-  }, [poolSource, watchlistTitles, catalog, onlySubscribed, runtimeBudget, selectedVibe, isItemOnMyServices]);
+  }, [poolSource, watchlistTitles, catalog, onlySubscribed, selectedFormat, selectedLength, selectedVibe, isItemOnMyServices]);
 
   const handleRoll = () => {
     if (eligibleItems.length === 0) return;
@@ -247,39 +278,40 @@ export function TonightsPickModal() {
             </p>
           )}
 
-          <div className="mt-4 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2">
+          {/* Action Row - Strict Single Line (No Wrapping) */}
+          <div className="mt-3.5 pt-2.5 border-t border-white/[0.08] flex items-center gap-1.5 sm:gap-2 w-full">
             {item.primary_source ? (
               <a
                 href={getServiceUrl(item.primary_source, item.title)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 text-black font-bold text-xs shadow-md hover:bg-emerald-400 transition-colors"
+                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg bg-emerald-500 text-black font-bold text-xs shadow-md hover:bg-emerald-400 transition-colors whitespace-nowrap"
               >
-                <Play className="w-3.5 h-3.5 fill-black" />
-                <span>Stream on {item.primary_source}</span>
-                <ExternalLink className="w-3 h-3 stroke-[2.5]" />
+                <Play className="w-3.5 h-3.5 fill-black shrink-0" />
+                <span className="truncate">Stream on {item.primary_source}</span>
+                <ExternalLink className="w-3 h-3 stroke-[2.5] shrink-0" />
               </a>
-            ) : <div />}
+            ) : (
+              <div className="flex-1" />
+            )}
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleMarkWatchedAndReroll(item)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/30 border border-white/[0.08] text-xs text-white/90 font-medium transition-all active:scale-95 cursor-pointer"
-                title="Mark as watched and roll new title"
-              >
-                <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
-                <span>Watched</span>
-              </button>
+            <button
+              type="button"
+              onClick={() => handleMarkWatchedAndReroll(item)}
+              className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/30 border border-white/[0.08] text-xs text-white/90 font-medium transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+              title="Mark as watched and roll new title"
+            >
+              <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5] shrink-0" />
+              <span>Watched</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={() => openDetailModal(item)}
-                className="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer"
-              >
-                Details
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => openDetailModal(item)}
+              className="shrink-0 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer whitespace-nowrap"
+            >
+              Details
+            </button>
           </div>
         </div>
       </motion.div>
@@ -379,43 +411,135 @@ export function TonightsPickModal() {
               </div>
             </div>
 
-            {/* 2. Format & Length */}
+            {/* 2. Format */}
             <div>
               <label className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-1.5 block">
-                2. Format & Length
+                2. Format
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {[
-                  { id: 'any', label: 'Any Format' },
-                  { id: 'short', label: '< 100m' },
-                  { id: 'standard', label: '100–140m' },
-                  { id: 'epic', label: '140m+' },
-                  { id: 'series', label: 'Series' },
-                ].map((budget) => (
+                  { id: 'any' as const, label: 'Any Format' },
+                  { id: 'movie' as const, label: 'Movie' },
+                  { id: 'tv' as const, label: 'TV Series' },
+                ].map((fmt) => (
                   <button
-                    key={budget.id}
+                    key={fmt.id}
                     type="button"
                     onClick={() => {
-                      setRuntimeBudget(budget.id as RuntimeBudget);
+                      setSelectedFormat(fmt.id);
+                      setSelectedLength('any');
                       setPickedItem(null);
                       setShowThreePicks(false);
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
-                      runtimeBudget === budget.id
+                    className={`px-3 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                      selectedFormat === fmt.id
                         ? 'bg-white text-black font-semibold border-white shadow-sm'
                         : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
                     }`}
                   >
-                    {budget.label}
+                    {fmt.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* 3. Mood & Vibe Chips */}
+            {/* 3. Length */}
             <div>
               <label className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-1.5 block">
-                3. Mood & Vibe
+                3. Length
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {selectedFormat === 'movie' && (
+                  <>
+                    {[
+                      { id: 'any', label: 'Any Length' },
+                      { id: 'short', label: '< 100 min' },
+                      { id: 'standard', label: '100–140 min' },
+                      { id: 'epic', label: '140+ min' },
+                    ].map((len) => (
+                      <button
+                        key={len.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedLength(len.id);
+                          setPickedItem(null);
+                          setShowThreePicks(false);
+                        }}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                          selectedLength === len.id
+                            ? 'bg-white text-black font-semibold border-white shadow-sm'
+                            : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        {len.label}
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {selectedFormat === 'tv' && (
+                  <>
+                    {[
+                      { id: 'any', label: 'Any Length' },
+                      { id: 'tv_short', label: '< 30 min / ep' },
+                      { id: 'tv_standard', label: '30–50 min / ep' },
+                      { id: 'tv_long', label: '50+ min / ep' },
+                    ].map((len) => (
+                      <button
+                        key={len.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedLength(len.id);
+                          setPickedItem(null);
+                          setShowThreePicks(false);
+                        }}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                          selectedLength === len.id
+                            ? 'bg-white text-black font-semibold border-white shadow-sm'
+                            : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        {len.label}
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {selectedFormat === 'any' && (
+                  <>
+                    {[
+                      { id: 'any', label: 'Any Length' },
+                      { id: 'any_short', label: '< 45 min' },
+                      { id: 'any_med', label: '45–90 min' },
+                      { id: 'any_long', label: '90–130 min' },
+                      { id: 'any_epic', label: '130+ min' },
+                    ].map((len) => (
+                      <button
+                        key={len.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedLength(len.id);
+                          setPickedItem(null);
+                          setShowThreePicks(false);
+                        }}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                          selectedLength === len.id
+                            ? 'bg-white text-black font-semibold border-white shadow-sm'
+                            : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
+                        }`}
+                      >
+                        {len.label}
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* 4. Mood & Vibe Chips */}
+            <div>
+              <label className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-1.5 block">
+                4. Mood & Vibe
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {VIBE_OPTIONS.map((vibe) => (
@@ -440,7 +564,7 @@ export function TonightsPickModal() {
               </div>
             </div>
 
-            {/* 4. Streaming Now Toggle */}
+            {/* Streaming Now Toggle */}
             <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-[#16181F] border border-white/[0.06]">
               <div className="text-xs font-semibold text-white">Streaming Now</div>
               <button
