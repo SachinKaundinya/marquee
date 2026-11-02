@@ -34,7 +34,10 @@ export function Navbar({
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MediaItem[]>([]);
   const [isSearchHighlighted, setIsSearchHighlighted] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  const isGreenActive = isSearchHighlighted || isSearchFocused;
 
   React.useEffect(() => {
     if (searchFocusTrigger > 0) {
@@ -151,14 +154,14 @@ export function Navbar({
           <div className="relative flex-1 max-w-[190px] sm:max-w-xs md:max-w-sm">
             <div
               className={`relative flex items-center transition-all duration-300 rounded-lg ${
-                isSearchHighlighted
+                isGreenActive
                   ? 'ring-2 ring-emerald-400 border border-emerald-400 scale-[1.04] shadow-[0_0_24px_rgba(52,211,153,0.35)]'
                   : 'border border-white/[0.08]'
               }`}
             >
               <Search
                 className={`w-3.5 h-3.5 absolute left-3 pointer-events-none transition-colors ${
-                  isSearchHighlighted ? 'text-emerald-400' : 'text-[#8E93A0]'
+                  isGreenActive ? 'text-emerald-400' : 'text-[#8E93A0]'
                 }`}
               />
               <input
@@ -166,6 +169,8 @@ export function Navbar({
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
                 placeholder={
                   searchFocusContext === 'watchlist'
                     ? 'Search to add to Watchlist...'
