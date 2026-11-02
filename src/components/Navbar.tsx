@@ -69,7 +69,7 @@ export function Navbar({
 
   return (
     <header
-      className="sticky top-0 z-40 marquee-header bg-[#0A0B0D] pt-[env(safe-area-inset-top,0px)]"
+      className="sticky top-0 z-40 marquee-header bg-[#0A0B0D] pt-[calc(env(safe-area-inset-top,0px)+10px)]"
       style={{ WebkitBackdropFilter: 'none', backdropFilter: 'none' }}
     >
       <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
@@ -171,7 +171,7 @@ export function Navbar({
                     ? 'Search to add to Watchlist...'
                     : searchFocusContext === 'diary'
                     ? 'Search to add to Diary...'
-                    : 'Search film or TV...'
+                    : 'Search Titles'
                 }
                 className="w-full bg-[#14161B] text-base sm:text-xs text-[#F3F4F6] pl-8 pr-7 py-1.5 rounded-lg focus:outline-none focus:border-white/25 placeholder-[#636875] transition-colors"
               />
