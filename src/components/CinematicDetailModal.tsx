@@ -67,6 +67,7 @@ export function CinematicDetailModal() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPlayingTrailer, setIsPlayingTrailer] = useState(false);
   const [liveRating, setLiveRating] = useState<number | null>(null);
+  const [ratingSource, setRatingSource] = useState<'imdb' | 'tmdb'>('imdb');
 
   const item = selectedDetailItem;
   const userTitle = item ? getUserTitle(item.tmdb_id, item.media_type) : undefined;
@@ -77,6 +78,7 @@ export function CinematicDetailModal() {
       setDetails(null);
       setIsPlayingTrailer(false);
       setLiveRating(null);
+      setRatingSource('imdb');
       return;
     }
 
@@ -87,11 +89,16 @@ export function CinematicDetailModal() {
     const syncRating = getImdbRating(item.title, item.tmdb_id);
     if (syncRating !== undefined) {
       setLiveRating(syncRating);
+      setRatingSource('imdb');
     } else {
       setLiveRating(item.vote_average);
+      setRatingSource(item.rating_source || 'tmdb');
       // Attempt live async OMDb lookup
-      fetchLiveImdbRating(item.title, item.release_year, item.tmdb_id).then((score) => {
-        if (score) setLiveRating(score);
+      fetchLiveImdbRating(item.title, item.release_year, item.tmdb_id).then((res) => {
+        if (res?.rating) {
+          setLiveRating(res.rating);
+          setRatingSource('imdb');
+        }
       });
     }
 
@@ -99,6 +106,14 @@ export function CinematicDetailModal() {
     fetchFullMediaDetails(item.media_type, item.tmdb_id, item.title)
       .then((data) => {
         setDetails(data);
+        if (data.imdb_id) {
+          fetchLiveImdbRating(item.title, item.release_year, item.tmdb_id, data.imdb_id).then((res) => {
+            if (res?.rating) {
+              setLiveRating(res.rating);
+              setRatingSource('imdb');
+            }
+          });
+        }
       })
       .catch(() => {
         setDetails(null);
@@ -294,11 +309,17 @@ export function CinematicDetailModal() {
 
             {/* Ratings & Metadata Bar */}
             <div className="flex flex-wrap items-center gap-3 py-2 px-3 rounded-xl bg-[#14161B] border border-white/[0.06]">
-              {/* Official IMDb Score Badge */}
+              {/* Official IMDb or TMDb Score Badge */}
               <div className="flex items-center gap-1.5">
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-black tracking-tight bg-[#F5C518] text-black font-sans shadow-sm">
-                  IMDb
-                </span>
+                {ratingSource === 'imdb' ? (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-black tracking-tight bg-[#F5C518] text-black font-sans shadow-sm">
+                    IMDb
+                  </span>
+                ) : (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold tracking-tight bg-sky-950/80 text-sky-300 border border-sky-500/30 font-sans shadow-sm">
+                    TMDb
+                  </span>
+                )}
                 <span className="text-sm font-bold text-[#F3F4F6] tabular-nums">
                   {displayRating ? displayRating.toFixed(1) : '7.5'}
                 </span>

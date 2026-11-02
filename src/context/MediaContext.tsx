@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { getInitialDeepCatalog, fetchTmdbCategory, TmdbCategory } from '@/lib/tmdb';
 import { useAuth } from '@/context/AuthContext';
 import { SACHIN_PERSONAL_TITLES } from '@/data/sachinPersonalTitles';
-import { getImdbRating } from '@/lib/imdbRatings';
+import { getImdbRating, fetchLiveImdbRating } from '@/lib/imdbRatings';
 
 export const ALL_SERVICES = [
   'Apple TV+',
@@ -348,6 +348,43 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     }
     fetchCategoryCatalog(selectedCategory, selectedDecades, selectedGenres);
   }, [selectedCategory, selectedDecades, selectedGenres]);
+
+  // Asynchronously enrich active catalog titles with live IMDb scores
+  useEffect(() => {
+    if (!catalog || catalog.length === 0) return;
+
+    let isCancelled = false;
+    const unenriched = catalog.filter((item) => item.rating_source !== 'imdb');
+    if (unenriched.length === 0) return;
+
+    // Batch enrich up to 15 items concurrently
+    const batch = unenriched.slice(0, 15);
+    batch.forEach(async (item) => {
+      try {
+        const live = await fetchLiveImdbRating(item.title, item.release_year, item.tmdb_id);
+        if (isCancelled || !live) return;
+
+        setCatalog((prev) =>
+          prev.map((c) =>
+            c.tmdb_id === item.tmdb_id && c.media_type === item.media_type
+              ? {
+                  ...c,
+                  vote_average: live.rating,
+                  rating_source: 'imdb',
+                  imdb_id: live.imdbId,
+                }
+              : c
+          )
+        );
+      } catch {
+        // Ignore network error
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [catalog]);
 
   const markNotInterested = (tmdbId: number, mediaType: MediaType) => {
     const key = `${mediaType}-${tmdbId}`;

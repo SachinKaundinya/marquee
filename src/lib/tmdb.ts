@@ -1349,7 +1349,8 @@ function formatTmdbItem(item: any): MediaItem {
   // Rating resolution: Prefer verified IMDb score, fallback to TMDb vote_average
   const imdbScore = getImdbRating(rawTitle, item.id);
   const rawTmdbScore = typeof item.vote_average === 'number' ? item.vote_average : 0;
-  const rating = imdbScore !== undefined ? imdbScore : Number(rawTmdbScore.toFixed(1));
+  const hasVerifiedImdb = imdbScore !== undefined;
+  const rating = hasVerifiedImdb ? imdbScore : Number(rawTmdbScore.toFixed(1));
 
   return {
     id: item.id,
@@ -1364,6 +1365,7 @@ function formatTmdbItem(item: any): MediaItem {
       : undefined,
     release_year: year || 2024,
     vote_average: rating,
+    rating_source: hasVerifiedImdb ? ('imdb' as const) : ('tmdb' as const),
     genres: genres.length > 0 ? genres : ['Drama'],
     overview: item.overview,
     streaming_sources: sources,
@@ -1467,6 +1469,8 @@ export interface FullMediaDetails {
   streaming_sources?: string[];
   primary_source?: string;
   vote_average?: number;
+  rating_source?: 'imdb' | 'tmdb';
+  imdb_id?: string;
 }
 
 export async function fetchFullMediaDetails(
@@ -1544,6 +1548,7 @@ export async function fetchFullMediaDetails(
         overview: data.overview || undefined,
         release_year: rawYear ? parseInt(rawYear, 10) : undefined,
         genres: (data.genres || []).map((g: any) => g.name).filter(Boolean),
+        imdb_id: data.external_ids?.imdb_id || undefined,
       };
     }
   } catch {

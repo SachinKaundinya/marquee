@@ -39,6 +39,8 @@ export interface MediaItem {
   origin_country?: string[];
   genre_ids?: number[];
   is_international?: boolean;
+  rating_source?: 'imdb' | 'tmdb';
+  imdb_id?: string;
 }
 
 export interface UserTitle {

@@ -393,10 +393,12 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   'the sinner': 7.9,
   'sinner': 7.9,
   'dark matter': 7.7,
+  'crystal lake': 7.6,
 };
 
 export const IMDB_RATINGS_BY_ID: Record<number, number> = {
   1765072: 9.3, // You Can See Everything (TMDb 7.4/7.6 -> IMDb 9.3)
+  213562: 7.6,  // Crystal Lake
   95557: 8.7,   // Severance
   111803: 8.0,  // The White Lotus
   693134: 8.5,  // Dune: Part Two
@@ -484,21 +486,26 @@ export function getImdbRating(title: string, tmdbId?: number): number | undefine
 export async function fetchLiveImdbRating(
   title: string,
   year?: number,
-  tmdbId?: number
-): Promise<number | null> {
+  tmdbId?: number,
+  imdbId?: string
+): Promise<{ rating: number; imdbId?: string } | null> {
   const existing = getImdbRating(title, tmdbId);
-  if (existing !== undefined) return existing;
-  if (!title || typeof window === 'undefined') return null;
+  if (existing !== undefined) {
+    return { rating: existing, imdbId };
+  }
+  if ((!title && !imdbId) || typeof window === 'undefined') return null;
 
   try {
     const apiKey =
       localStorage.getItem('marquee_omdb_key') ||
       process.env.NEXT_PUBLIC_OMDB_API_KEY ||
       '44535897';
-    const yearParam = year ? `&y=${year}` : '';
-    const res = await fetch(
-      `https://www.omdbapi.com/?t=${encodeURIComponent(title)}${yearParam}&apikey=${apiKey}`
-    );
+    
+    const queryParam = imdbId
+      ? `i=${encodeURIComponent(imdbId)}`
+      : `t=${encodeURIComponent(title)}${year ? `&y=${year}` : ''}`;
+
+    const res = await fetch(`https://www.omdbapi.com/?${queryParam}&apikey=${apiKey}`);
     if (!res.ok) return null;
     const data = await res.json();
     if (data.Response === 'True' && data.imdbRating && data.imdbRating !== 'N/A') {
@@ -512,7 +519,7 @@ export async function fetchLiveImdbRating(
         } catch {
           // LocalStorage quota safety
         }
-        return score;
+        return { rating: score, imdbId: data.imdbID };
       }
     }
   } catch {

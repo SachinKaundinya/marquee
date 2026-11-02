@@ -704,9 +704,15 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                     <div className="flex items-center justify-between mt-0.5 text-[11px] text-[#8E93A0]">
                       <span className="tabular-nums">{item.release_year}</span>
                       <div className="flex items-center gap-1 font-semibold tabular-nums text-[11px]">
-                        <span className="px-1 py-0.2 rounded text-[8px] font-black uppercase tracking-tight bg-[#F5C518] text-black leading-none font-sans shadow-sm">
-                          IMDb
-                        </span>
+                        {item.rating_source === 'tmdb' ? (
+                          <span className="px-1 py-0.2 rounded text-[8px] font-bold uppercase tracking-tight bg-sky-950/80 text-sky-300 border border-sky-500/30 leading-none font-sans">
+                            TMDb
+                          </span>
+                        ) : (
+                          <span className="px-1 py-0.2 rounded text-[8px] font-black uppercase tracking-tight bg-[#F5C518] text-black leading-none font-sans shadow-sm">
+                            IMDb
+                          </span>
+                        )}
                         <span className="text-[#F3F4F6]">{item.vote_average.toFixed(1)}</span>
                       </div>
                     </div>
