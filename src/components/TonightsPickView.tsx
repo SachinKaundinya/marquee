@@ -416,9 +416,9 @@ export function TonightsPickView() {
         {/* 3. Length */}
         <div>
           <label className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-1.5 block">
-            3. Length
+            {selectedFormat === 'tv' ? '3. Episode Length' : selectedFormat === 'movie' ? '3. Movie Runtime' : '3. Length'}
           </label>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 w-full">
             {selectedFormat === 'movie' && (
               <>
                 {[
@@ -435,7 +435,7 @@ export function TonightsPickView() {
                       setPickedItem(null);
                       setShowThreePicks(false);
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                    className={`flex-1 py-1 px-1 sm:px-2 rounded-lg text-[10px] sm:text-xs font-medium border transition-all text-center whitespace-nowrap cursor-pointer ${
                       selectedLength === len.id
                         ? 'bg-white text-black font-semibold border-white shadow-sm'
                         : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
@@ -451,9 +451,9 @@ export function TonightsPickView() {
               <>
                 {[
                   { id: 'any', label: 'Any Length' },
-                  { id: 'tv_short', label: '< 30 min / ep' },
-                  { id: 'tv_standard', label: '30–50 min / ep' },
-                  { id: 'tv_long', label: '50+ min / ep' },
+                  { id: 'tv_short', label: '< 30 min' },
+                  { id: 'tv_standard', label: '30–50 min' },
+                  { id: 'tv_long', label: '50+ min' },
                 ].map((len) => (
                   <button
                     key={len.id}
@@ -463,7 +463,7 @@ export function TonightsPickView() {
                       setPickedItem(null);
                       setShowThreePicks(false);
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                    className={`flex-1 py-1 px-1 sm:px-2 rounded-lg text-[10px] sm:text-xs font-medium border transition-all text-center whitespace-nowrap cursor-pointer ${
                       selectedLength === len.id
                         ? 'bg-white text-black font-semibold border-white shadow-sm'
                         : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
@@ -478,11 +478,11 @@ export function TonightsPickView() {
             {selectedFormat === 'any' && (
               <>
                 {[
-                  { id: 'any', label: 'Any Length' },
-                  { id: 'any_short', label: '< 45 min' },
-                  { id: 'any_med', label: '45–90 min' },
-                  { id: 'any_long', label: '90–130 min' },
-                  { id: 'any_epic', label: '130+ min' },
+                  { id: 'any', label: 'Any' },
+                  { id: 'any_short', label: '< 45m' },
+                  { id: 'any_med', label: '45–90m' },
+                  { id: 'any_long', label: '90–130m' },
+                  { id: 'any_epic', label: '130m+' },
                 ].map((len) => (
                   <button
                     key={len.id}
@@ -492,7 +492,7 @@ export function TonightsPickView() {
                       setPickedItem(null);
                       setShowThreePicks(false);
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                    className={`flex-1 py-1 px-0.5 sm:px-1.5 rounded-lg text-[10px] sm:text-xs font-medium border transition-all text-center whitespace-nowrap cursor-pointer ${
                       selectedLength === len.id
                         ? 'bg-white text-black font-semibold border-white shadow-sm'
                         : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
