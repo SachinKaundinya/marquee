@@ -9,8 +9,10 @@ import {
   Play,
   Film,
   ExternalLink,
-  Bookmark
+  Bookmark,
+  Check
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
 import { getServiceUrl } from '@/components/CinematicDetailModal';
@@ -46,6 +48,7 @@ export function TonightsPickModal() {
     catalog,
     isItemOnMyServices,
     openDetailModal,
+    updateStatus,
   } = useMedia();
 
   const [poolSource, setPoolSource] = useState<PoolSource>(
@@ -155,6 +158,36 @@ export function TonightsPickModal() {
     }, 380);
   };
 
+  const handleMarkWatchedAndReroll = (watchedItem: MediaItem) => {
+    updateStatus(watchedItem.tmdb_id, watchedItem.media_type, 'watched');
+    toast.success('Logged as watched', { description: watchedItem.title });
+
+    if (showThreePicks) {
+      const currentIds = new Set(threePicks.map((p) => p.tmdb_id));
+      currentIds.add(watchedItem.tmdb_id);
+
+      const remainingCandidates = eligibleItems.filter((i) => !currentIds.has(i.tmdb_id));
+      const replacement =
+        remainingCandidates.length > 0
+          ? remainingCandidates[Math.floor(Math.random() * remainingCandidates.length)]
+          : eligibleItems.find((i) => i.tmdb_id !== watchedItem.tmdb_id);
+
+      if (replacement) {
+        setThreePicks((prev) =>
+          prev.map((item) => (item.tmdb_id === watchedItem.tmdb_id ? replacement : item))
+        );
+      } else {
+        setThreePicks((prev) => prev.filter((item) => item.tmdb_id !== watchedItem.tmdb_id));
+      }
+    } else {
+      const remaining = eligibleItems.filter((i) => i.tmdb_id !== watchedItem.tmdb_id);
+      if (remaining.length > 0) {
+        const next = remaining[Math.floor(Math.random() * remaining.length)];
+        setPickedItem(next);
+      }
+    }
+  };
+
   const renderMovieCard = (item: MediaItem, index?: number) => {
     const coverImage = item.backdrop_path || item.poster_path;
 
@@ -228,13 +261,25 @@ export function TonightsPickModal() {
               </a>
             ) : <div />}
 
-            <button
-              type="button"
-              onClick={() => openDetailModal(item)}
-              className="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer"
-            >
-              Details
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleMarkWatchedAndReroll(item)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/30 border border-white/[0.08] text-xs text-white/90 font-medium transition-all active:scale-95 cursor-pointer"
+                title="Mark as watched and roll new title"
+              >
+                <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+                <span>Watched</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => openDetailModal(item)}
+                className="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer"
+              >
+                Details
+              </button>
+            </div>
           </div>
         </div>
       </motion.div>
