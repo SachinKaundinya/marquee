@@ -34,7 +34,7 @@ interface MediaContextType {
   openQuickLog: (item: MediaItem, initialStatus?: TrackingStatus) => void;
   closeQuickLog: () => void;
   saveLog: (log: QuickLogInput) => void;
-  updateStatus: (tmdbId: number, mediaType: MediaType, status: TrackingStatus) => void;
+  updateStatus: (tmdbId: number, mediaType: MediaType, status: TrackingStatus, fallbackMedia?: MediaItem) => void;
   removeTitle: (tmdbId: number, mediaType: MediaType) => void;
   nowWatchingTitles: UserTitle[];
   watchlistTitles: UserTitle[];
@@ -547,13 +547,19 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     return userTitles.find((t) => t.tmdb_id === tmdbId && t.media_type === mediaType);
   };
 
-  const updateStatus = (tmdbId: number, mediaType: MediaType, status: TrackingStatus) => {
+  const updateStatus = (
+    tmdbId: number,
+    mediaType: MediaType,
+    status: TrackingStatus,
+    fallbackMedia?: MediaItem
+  ) => {
     const existingIndex = userTitles.findIndex(
       (t) => t.tmdb_id === tmdbId && t.media_type === mediaType
     );
 
     const media =
       catalog.find((c) => c.tmdb_id === tmdbId && c.media_type === mediaType) ||
+      fallbackMedia ||
       userTitles[existingIndex]?.media;
 
     if (existingIndex >= 0) {

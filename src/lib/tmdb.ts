@@ -1557,3 +1557,146 @@ export async function fetchFullMediaDetails(
 
   return {};
 }
+
+const tonightsPickCache = new Map<string, MediaItem[]>();
+
+export async function fetchTonightsPickPool(
+  format: 'any' | 'movie' | 'tv',
+  vibe: string
+): Promise<MediaItem[]> {
+  const cacheKey = `${format}_${vibe}`;
+  if (tonightsPickCache.has(cacheKey)) {
+    return tonightsPickCache.get(cacheKey)!;
+  }
+
+  const { token, key } = getTmdbCredentials();
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : {};
+
+  const buildUrl = (ep: string, p: number) => {
+    const sep = ep.includes('?') ? '&' : '?';
+    const u = `${TMDB_BASE_URL}${ep}${sep}page=${p}`;
+    return token ? u : `${u}&api_key=${key}`;
+  };
+
+  if (vibe === 'true_crime') {
+    try {
+      const items = await fetchTrueCrimeTitles(1);
+      const filtered = items.filter((it) => {
+        if (format === 'movie' && it.media_type !== 'movie') return false;
+        if (format === 'tv' && it.media_type !== 'tv') return false;
+        return true;
+      });
+      await enrichMediaItemsBatch(filtered, 8);
+      if (filtered.length > 0) tonightsPickCache.set(cacheKey, filtered);
+      return filtered;
+    } catch {
+      // Fallback
+    }
+  }
+
+  // Determine discover params for vibe
+  let movieGenres = '';
+  let tvGenres = '';
+  let sortBy = 'popularity.desc';
+  let minMovieVoteCount = 100;
+  let minTvVoteCount = 40;
+  let minVoteAvg = 6.2;
+
+  switch (vibe) {
+    case 'comedy':
+      movieGenres = '&with_genres=35';
+      tvGenres = '&with_genres=35';
+      minVoteAvg = 6.3;
+      break;
+    case 'mind_bender':
+      movieGenres = '&with_genres=878|9648|53';
+      tvGenres = '&with_genres=10765|9648';
+      minVoteAvg = 6.8;
+      break;
+    case 'adrenaline':
+      movieGenres = '&with_genres=28|12|80';
+      tvGenres = '&with_genres=10759|80';
+      minVoteAvg = 6.4;
+      break;
+    case 'dark':
+      movieGenres = '&with_genres=18|80|53';
+      tvGenres = '&with_genres=18|80';
+      minVoteAvg = 6.8;
+      break;
+    case 'chills':
+      movieGenres = '&with_genres=27|9648';
+      tvGenres = '&with_genres=9648';
+      minVoteAvg = 6.0;
+      break;
+    case 'acclaimed':
+      sortBy = 'vote_average.desc';
+      minMovieVoteCount = 400;
+      minTvVoteCount = 120;
+      minVoteAvg = 7.9;
+      break;
+    case 'any':
+    default:
+      minVoteAvg = 6.6;
+      minMovieVoteCount = 150;
+      minTvVoteCount = 50;
+      break;
+  }
+
+  const fetchMovies = format === 'any' || format === 'movie';
+  const fetchTv = format === 'any' || format === 'tv';
+
+  const requests: Promise<any[]>[] = [];
+
+  if (fetchMovies) {
+    const movieEp = `/discover/movie?sort_by=${sortBy}&vote_count.gte=${minMovieVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en${movieGenres}`;
+    requests.push(
+      fetch(buildUrl(movieEp, 1), { headers }).then((r) =>
+        r.ok ? r.json().then((d) => (d.results || []).map((m: any) => ({ ...m, media_type: 'movie' }))) : []
+      ),
+      fetch(buildUrl(movieEp, 2), { headers }).then((r) =>
+        r.ok ? r.json().then((d) => (d.results || []).map((m: any) => ({ ...m, media_type: 'movie' }))) : []
+      )
+    );
+  }
+
+  if (fetchTv) {
+    const tvEp = `/discover/tv?sort_by=${sortBy}&vote_count.gte=${minTvVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en&without_genres=10763,10764,10767,10766,16${tvGenres}`;
+    requests.push(
+      fetch(buildUrl(tvEp, 1), { headers }).then((r) =>
+        r.ok ? r.json().then((d) => (d.results || []).map((t: any) => ({ ...t, media_type: 'tv' }))) : []
+      ),
+      fetch(buildUrl(tvEp, 2), { headers }).then((r) =>
+        r.ok ? r.json().then((d) => (d.results || []).map((t: any) => ({ ...t, media_type: 'tv' }))) : []
+      )
+    );
+  }
+
+  try {
+    const rawArrays = await Promise.all(requests);
+    const combined = rawArrays.flat();
+
+    const seen = new Set<number>();
+    const formattedList: MediaItem[] = [];
+
+    for (const item of combined) {
+      if (!item.poster_path || isAnimeItem(item) || isNonEnglishItem(item)) continue;
+      if (seen.has(item.id)) continue;
+      seen.add(item.id);
+      formattedList.push(formatTmdbItem(item));
+    }
+
+    // Enrich batch with streaming providers
+    await enrichMediaItemsBatch(formattedList, 8);
+
+    if (formattedList.length > 0) {
+      tonightsPickCache.set(cacheKey, formattedList);
+    }
+    return formattedList;
+  } catch (err) {
+    console.error("Failed to fetch Tonight's Pick pool:", err);
+    return [];
+  }
+}
+

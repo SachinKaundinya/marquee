@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -17,6 +17,7 @@ import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
 import { getServiceUrl } from '@/components/CinematicDetailModal';
 import { drawerTransition } from '@/tokens/motion';
+import { fetchTonightsPickPool } from '@/lib/tmdb';
 
 type PoolSource = 'watchlist' | 'catalog';
 type FormatType = 'any' | 'movie' | 'tv';
@@ -59,6 +60,33 @@ export function TonightsPickModal() {
   const [selectedVibe, setSelectedVibe] = useState<VibeType>('any');
   const [onlySubscribed, setOnlySubscribed] = useState(true);
 
+  // Dynamic discovery pool for "Curated by Mirar"
+  const [curatedPool, setCuratedPool] = useState<MediaItem[]>([]);
+  const [isPoolLoading, setIsPoolLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isTonightsPickOpen || poolSource !== 'catalog') return;
+    let isCancelled = false;
+    setIsPoolLoading(true);
+
+    fetchTonightsPickPool(selectedFormat, selectedVibe)
+      .then((items) => {
+        if (!isCancelled && items && items.length > 0) {
+          setCuratedPool(items);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load Tonight's Pick pool", err);
+      })
+      .finally(() => {
+        if (!isCancelled) setIsPoolLoading(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isTonightsPickOpen, poolSource, selectedFormat, selectedVibe]);
+
   // Shuffling / Result State
   const [isSpinning, setIsSpinning] = useState(false);
   const [pickedItem, setPickedItem] = useState<MediaItem | null>(null);
@@ -78,6 +106,8 @@ export function TonightsPickModal() {
     const rawList: MediaItem[] =
       poolSource === 'watchlist'
         ? (watchlistTitles.map((t) => t.media).filter(Boolean) as MediaItem[])
+        : curatedPool.length > 0
+        ? curatedPool
         : catalog;
 
     return rawList.filter((item) => {
@@ -190,7 +220,7 @@ export function TonightsPickModal() {
   };
 
   const handleMarkWatchedAndReroll = (watchedItem: MediaItem) => {
-    updateStatus(watchedItem.tmdb_id, watchedItem.media_type, 'watched');
+    updateStatus(watchedItem.tmdb_id, watchedItem.media_type, 'watched', watchedItem);
     toast.success('Logged as watched', { description: watchedItem.title });
 
     if (showThreePicks) {
@@ -584,8 +614,12 @@ export function TonightsPickModal() {
 
             {/* Candidate Count */}
             <div className="flex items-center justify-between text-[11px] text-[#8E93A0] px-0.5">
-              <span>{eligibleItems.length} candidate titles available</span>
-              {eligibleItems.length === 0 && (
+              <span>
+                {isPoolLoading && eligibleItems.length === 0
+                  ? 'Finding candidate titles...'
+                  : `${eligibleItems.length} candidate titles available`}
+              </span>
+              {!isPoolLoading && eligibleItems.length === 0 && (
                 <span className="text-amber-400 font-medium">Broaden filters</span>
               )}
             </div>
@@ -594,7 +628,7 @@ export function TonightsPickModal() {
             <div className="flex items-center gap-2 pt-0.5">
               <button
                 type="button"
-                disabled={eligibleItems.length === 0 || isSpinning}
+                disabled={eligibleItems.length === 0 || isSpinning || (isPoolLoading && eligibleItems.length === 0)}
                 onClick={handleRoll}
                 className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 rounded-xl bg-white text-black font-bold text-xs sm:text-sm hover:bg-neutral-200 transition-all active:scale-98 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
@@ -604,7 +638,7 @@ export function TonightsPickModal() {
 
               <button
                 type="button"
-                disabled={eligibleItems.length === 0 || isSpinning}
+                disabled={eligibleItems.length === 0 || isSpinning || (isPoolLoading && eligibleItems.length === 0)}
                 onClick={handlePickThree}
                 className="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white font-semibold text-xs border border-white/[0.1] transition-all cursor-pointer whitespace-nowrap"
               >
