@@ -1,25 +1,18 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
   Dice5,
   Play,
   Film,
-  Tv,
-  Clock,
-  Check,
   ExternalLink,
-  ChevronRight,
-  Flame,
-  Clapperboard,
   Bookmark
 } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
-import { MediaItem, MediaType } from '@/types/media';
-import { MediaPoster } from '@/components/MediaPoster';
-import { getServiceUrl, formatRuntime } from '@/components/CinematicDetailModal';
+import { MediaItem } from '@/types/media';
+import { getServiceUrl } from '@/components/CinematicDetailModal';
 
 type PoolSource = 'watchlist' | 'catalog';
 type RuntimeBudget = 'any' | 'short' | 'standard' | 'epic' | 'series';
@@ -34,12 +27,12 @@ interface VibeOption {
 
 const VIBE_OPTIONS: VibeOption[] = [
   { id: 'any', label: 'Surprise Me', emoji: '✨', description: 'Any mood or genre' },
-  { id: 'mind_bender', label: 'Mind-Bender', emoji: '🌀', description: 'Sci-Fi, Mystery & Twists' },
-  { id: 'adrenaline', label: 'Pure Adrenaline', emoji: '⚡', description: 'High-stakes Action & Crime' },
+  { id: 'mind_bender', label: 'Mind-Bender', emoji: '🌀', description: 'Sci-Fi & Mystery' },
+  { id: 'adrenaline', label: 'Pure Adrenaline', emoji: '⚡', description: 'Action & Crime' },
   { id: 'comedy', label: 'Laugh & Unwind', emoji: '🍿', description: 'Feel-good & Comedy' },
   { id: 'dark', label: 'Dark & Gripping', emoji: '🍷', description: 'Prestige Drama & Noir' },
   { id: 'chills', label: 'Spine-Chilling', emoji: '🕯️', description: 'Horror & Psychological' },
-  { id: 'true_crime', label: 'True Crime', emoji: '🔍', description: 'Real cases & investigations' },
+  { id: 'true_crime', label: 'True Crime', emoji: '🔍', description: 'Real cases & mysteries' },
   { id: 'acclaimed', label: 'Top Shelf (8.0+)', emoji: '🏆', description: 'Universally acclaimed' },
 ];
 
@@ -63,6 +56,14 @@ export function TonightsPickView() {
   const [pickedItem, setPickedItem] = useState<MediaItem | null>(null);
   const [showThreePicks, setShowThreePicks] = useState(false);
   const [threePicks, setThreePicks] = useState<MediaItem[]>([]);
+
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToResults = () => {
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+  };
 
   // Filter pool candidates
   const eligibleItems = useMemo(() => {
@@ -129,12 +130,12 @@ export function TonightsPickView() {
     setIsSpinning(true);
     setShowThreePicks(false);
 
-    // Dynamic shuffle duration
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * eligibleItems.length);
       setPickedItem(eligibleItems[randomIndex]);
       setIsSpinning(false);
-    }, 450);
+      scrollToResults();
+    }, 380);
   };
 
   const handlePickThree = () => {
@@ -146,36 +147,129 @@ export function TonightsPickView() {
       setShowThreePicks(true);
       setPickedItem(null);
       setIsSpinning(false);
-    }, 400);
+      scrollToResults();
+    }, 380);
+  };
+
+  // Reusable Movie Card matching Details layout with landscape cover picture
+  const renderMovieCard = (item: MediaItem, index?: number) => {
+    const coverImage = item.backdrop_path || item.poster_path;
+
+    return (
+      <motion.div
+        key={item.id || `${item.media_type}-${item.tmdb_id}-${index}`}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -16 }}
+        transition={{ duration: 0.25, delay: (index ?? 0) * 0.08 }}
+        className="rounded-2xl bg-[#16181F] border border-[#E5A93C]/35 overflow-hidden shadow-2xl relative"
+      >
+        {/* Landscape Style Cover Picture (Akin to Details view) */}
+        <div
+          onClick={() => openDetailModal(item)}
+          className="relative aspect-[16/8] sm:aspect-[21/9] w-full bg-[#14161B] overflow-hidden cursor-pointer group"
+        >
+          {coverImage ? (
+            <img
+              src={coverImage}
+              alt={item.title}
+              className="w-full h-full object-cover object-center opacity-85 group-hover:scale-105 group-hover:opacity-100 transition-all duration-300"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-neutral-900 to-[#14161B]" />
+          )}
+          {/* Subtle bottom fade */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#16181F] via-[#16181F]/20 to-black/30" />
+        </div>
+
+        {/* Card Content */}
+        <div className="p-4 sm:p-5 pt-3">
+          {/* Metadata Row */}
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="px-1.5 py-0.2 rounded text-[10px] font-black bg-[#F5C518] text-black">
+              IMDb
+            </span>
+            <span className="text-xs font-bold text-white tabular-nums">
+              {item.vote_average.toFixed(1)}
+            </span>
+            <span className="text-xs text-[#8E93A0]">•</span>
+            <span className="text-xs text-[#8E93A0]">{item.release_year}</span>
+            <span className="text-xs text-[#8E93A0]">•</span>
+            <span className="text-[10px] uppercase font-semibold text-white/60">
+              {item.media_type === 'tv' ? 'Series' : 'Movie'}
+            </span>
+          </div>
+
+          {/* Clickable Title */}
+          <h3
+            onClick={() => openDetailModal(item)}
+            className="text-base sm:text-lg font-bold text-white tracking-tight leading-snug cursor-pointer hover:text-[#E5A93C] transition-colors"
+          >
+            {item.title}
+          </h3>
+
+          {/* Overview */}
+          {item.overview && (
+            <p className="text-xs text-[#D1D5DB] line-clamp-3 mt-1.5 leading-relaxed">
+              {item.overview}
+            </p>
+          )}
+
+          {/* Stream On & Launch Actions */}
+          <div className="mt-4 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2">
+            {item.primary_source ? (
+              <a
+                href={getServiceUrl(item.primary_source, item.title)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 text-black font-bold text-xs shadow-md hover:bg-emerald-400 transition-colors"
+              >
+                <Play className="w-3.5 h-3.5 fill-black" />
+                <span>Stream on {item.primary_source}</span>
+                <ExternalLink className="w-3 h-3 stroke-[2.5]" />
+              </a>
+            ) : <div />}
+
+            <button
+              type="button"
+              onClick={() => openDetailModal(item)}
+              className="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer"
+            >
+              Details
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
   };
 
   return (
     <div className="max-w-2xl mx-auto w-full pb-10">
       {/* Header Container */}
-      <div className="mb-6 pb-4 border-b border-white/[0.08] flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#E5A93C]/10 border border-[#E5A93C]/25 flex items-center justify-center text-[#E5A93C]">
-            <Sparkles className="w-5 h-5 fill-current" />
+      <div className="mb-3 sm:mb-5 pb-2.5 sm:pb-3 border-b border-white/[0.08] flex items-center justify-between">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#E5A93C]/10 border border-[#E5A93C]/25 flex items-center justify-center text-[#E5A93C]">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-white tracking-tight">
+            <h1 className="text-base sm:text-lg font-bold text-white tracking-tight leading-tight">
               Tonight&apos;s Pick
             </h1>
-            <p className="text-xs text-[#8E93A0]">
-              Cure streaming paralysis. Dial your mood & roll.
+            <p className="text-[11px] sm:text-xs text-[#8E93A0]">
+              Dial your mood & roll.
             </p>
           </div>
         </div>
       </div>
 
       {/* Main Controls Card */}
-      <div className="bg-[#111317] border border-white/[0.08] rounded-2xl p-4 sm:p-6 space-y-6 shadow-xl">
-        {/* 1. Pool Source Toggle */}
+      <div className="bg-[#111317] border border-white/[0.08] rounded-2xl p-3.5 sm:p-5 space-y-3 sm:space-y-4 shadow-xl">
+        {/* 1. Select Pool */}
         <div>
-          <label className="text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-2 block">
+          <label className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-1.5 block">
             1. Select Pool
           </label>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={() => {
@@ -183,19 +277,14 @@ export function TonightsPickView() {
                 setPickedItem(null);
                 setShowThreePicks(false);
               }}
-              className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+              className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                 poolSource === 'watchlist'
                   ? 'bg-white/10 border-white/30 text-white shadow-sm'
                   : 'bg-[#16181F] border-white/[0.06] text-[#8E93A0] hover:text-white hover:bg-white/[0.04]'
               }`}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-semibold text-white">My Watchlist</span>
-                <Bookmark className="w-3.5 h-3.5 opacity-70" />
-              </div>
-              <span className="text-[11px] text-[#8E93A0]">
-                From your {watchlistTitles.length} saved titles
-              </span>
+              <span className="text-xs font-semibold">From My Watchlist</span>
+              <Bookmark className="w-3.5 h-3.5 opacity-70 shrink-0" />
             </button>
 
             <button
@@ -205,35 +294,30 @@ export function TonightsPickView() {
                 setPickedItem(null);
                 setShowThreePicks(false);
               }}
-              className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+              className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                 poolSource === 'catalog'
                   ? 'bg-white/10 border-white/30 text-white shadow-sm'
                   : 'bg-[#16181F] border-white/[0.06] text-[#8E93A0] hover:text-white hover:bg-white/[0.04]'
               }`}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-semibold text-white">Mirar Curated</span>
-                <Film className="w-3.5 h-3.5 opacity-70" />
-              </div>
-              <span className="text-[11px] text-[#8E93A0]">
-                Trending & highest-rated library
-              </span>
+              <span className="text-xs font-semibold">Curated by Mirar</span>
+              <Film className="w-3.5 h-3.5 opacity-70 shrink-0" />
             </button>
           </div>
         </div>
 
         {/* 2. Format & Length */}
         <div>
-          <label className="text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-2 block">
+          <label className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-1.5 block">
             2. Format & Length
           </label>
           <div className="flex flex-wrap gap-1.5">
             {[
               { id: 'any', label: 'Any Format' },
-              { id: 'short', label: 'Quick Movie (< 100m)' },
-              { id: 'standard', label: 'Feature (100–140m)' },
-              { id: 'epic', label: 'Epic (140m+)' },
-              { id: 'series', label: 'TV Series' },
+              { id: 'short', label: '< 100m' },
+              { id: 'standard', label: '100–140m' },
+              { id: 'epic', label: '140m+' },
+              { id: 'series', label: 'Series' },
             ].map((budget) => (
               <button
                 key={budget.id}
@@ -243,7 +327,7 @@ export function TonightsPickView() {
                   setPickedItem(null);
                   setShowThreePicks(false);
                 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
                   runtimeBudget === budget.id
                     ? 'bg-white text-black font-semibold border-white shadow-sm'
                     : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
@@ -255,12 +339,12 @@ export function TonightsPickView() {
           </div>
         </div>
 
-        {/* 3. Vibe Pills */}
+        {/* 3. Mood & Vibe Chips */}
         <div>
-          <label className="text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-2 block">
+          <label className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#8E93A0] mb-1.5 block">
             3. Mood & Vibe
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
             {VIBE_OPTIONS.map((vibe) => (
               <button
                 key={vibe.id}
@@ -270,219 +354,88 @@ export function TonightsPickView() {
                   setPickedItem(null);
                   setShowThreePicks(false);
                 }}
-                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                className={`py-1.5 px-2.5 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-1.5 ${
                   selectedVibe === vibe.id
                     ? 'bg-[#E5A93C]/15 border-[#E5A93C]/40 text-white shadow-sm'
                     : 'bg-[#16181F] border-white/[0.06] text-[#8E93A0] hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
-                <div className="flex items-center gap-1.5 text-xs font-medium text-white">
-                  <span>{vibe.emoji}</span>
-                  <span>{vibe.label}</span>
-                </div>
-                <div className="text-[10px] text-[#8E93A0] mt-0.5 truncate">
-                  {vibe.description}
-                </div>
+                <span className="text-xs shrink-0">{vibe.emoji}</span>
+                <span className="text-[11px] font-medium text-white truncate">{vibe.label}</span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* 4. Streaming Subscriptions Filter Switch */}
-        <div className="flex items-center justify-between p-3 rounded-xl bg-[#16181F] border border-white/[0.06]">
+        {/* 4. Streaming Now Toggle */}
+        <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-[#16181F] border border-white/[0.06]">
           <div className="text-xs font-semibold text-white">Streaming Now</div>
           <button
             type="button"
             onClick={() => setOnlySubscribed(!onlySubscribed)}
-            className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+            className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${
               onlySubscribed ? 'bg-emerald-500' : 'bg-white/20'
             }`}
           >
             <div
-              className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${
-                onlySubscribed ? 'right-1' : 'left-1'
+              className={`w-3.5 h-3.5 rounded-full bg-white absolute top-0.5 transition-transform ${
+                onlySubscribed ? 'right-0.5' : 'left-0.5'
               }`}
             />
           </button>
         </div>
 
-        {/* Candidate Count Banner */}
-        <div className="flex items-center justify-between text-xs text-[#8E93A0] px-1">
-          <span>{eligibleItems.length} matching candidate titles available</span>
+        {/* Candidate Count */}
+        <div className="flex items-center justify-between text-[11px] text-[#8E93A0] px-0.5">
+          <span>{eligibleItems.length} candidate titles available</span>
           {eligibleItems.length === 0 && (
-            <span className="text-amber-400 font-medium">Try broadening your filters</span>
+            <span className="text-amber-400 font-medium">Broaden filters</span>
           )}
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2.5 pt-1">
+        <div className="flex items-center gap-2 pt-0.5">
           <button
             type="button"
             disabled={eligibleItems.length === 0 || isSpinning}
             onClick={handleRoll}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-white text-black font-bold text-xs sm:text-sm hover:bg-neutral-200 transition-all active:scale-98 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 rounded-xl bg-white text-black font-bold text-xs sm:text-sm hover:bg-neutral-200 transition-all active:scale-98 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <Dice5 className={`w-4 h-4 ${isSpinning ? 'animate-spin' : ''}`} />
-            <span>{isSpinning ? 'Rolling the reel...' : "Roll Tonight's Pick"}</span>
+            <span>{isSpinning ? 'Rolling...' : "Roll Tonight's Pick"}</span>
           </button>
 
           <button
             type="button"
             disabled={eligibleItems.length === 0 || isSpinning}
             onClick={handlePickThree}
-            className="px-4 py-3.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white font-semibold text-xs border border-white/[0.1] transition-all cursor-pointer whitespace-nowrap"
+            className="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white font-semibold text-xs border border-white/[0.1] transition-all cursor-pointer whitespace-nowrap"
           >
             Give Me 3 Choices
           </button>
         </div>
 
-        {/* RESULT: SINGLE PICK */}
-        <AnimatePresence mode="wait">
-          {pickedItem && !showThreePicks && (
-            <motion.div
-              key={pickedItem.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              className="rounded-2xl bg-[#16181F] border border-[#E5A93C]/35 p-4 sm:p-5 shadow-2xl relative overflow-hidden"
-            >
-              <div className="flex flex-col sm:flex-row gap-4">
-                {/* Poster */}
-                <div className="w-24 sm:w-28 shrink-0 rounded-lg overflow-hidden border border-white/10 shadow-lg">
-                  <MediaPoster
-                    src={pickedItem.poster_path}
-                    title={pickedItem.title}
-                    mediaType={pickedItem.media_type}
-                    year={pickedItem.release_year}
-                  />
+        {/* RESULTS CONTAINER - Auto centered via scrollIntoView */}
+        <div ref={resultsRef} className="pt-2">
+          {/* RESULT: SINGLE PICK */}
+          <AnimatePresence mode="wait">
+            {pickedItem && !showThreePicks && renderMovieCard(pickedItem)}
+          </AnimatePresence>
+
+          {/* RESULT: 3 CHOICES COMPARISON */}
+          <AnimatePresence mode="wait">
+            {showThreePicks && threePicks.length > 0 && (
+              <div className="space-y-4 pt-1">
+                <div className="text-xs font-semibold text-white/80">
+                  Pick from your top 3 curated matches:
                 </div>
-
-                {/* Metadata & Synopsis */}
-                <div className="flex-1 flex flex-col justify-between min-w-0">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-black bg-[#F5C518] text-black">
-                        IMDb
-                      </span>
-                      <span className="text-xs font-bold text-white tabular-nums">
-                        {pickedItem.vote_average.toFixed(1)}
-                      </span>
-                      <span className="text-xs text-[#8E93A0]">•</span>
-                      <span className="text-xs text-[#8E93A0]">{pickedItem.release_year}</span>
-                      <span className="text-xs text-[#8E93A0]">•</span>
-                      <span className="text-[10px] uppercase font-semibold text-white/60">
-                        {pickedItem.media_type === 'tv' ? 'Series' : 'Movie'}
-                      </span>
-                    </div>
-
-                    <h3 className="text-base sm:text-lg font-bold text-white tracking-tight leading-snug">
-                      {pickedItem.title}
-                    </h3>
-
-                    <p className="text-xs text-[#D1D5DB] line-clamp-3 mt-1.5 leading-relaxed">
-                      {pickedItem.overview}
-                    </p>
-                  </div>
-
-                  {/* Stream On & Launch Actions */}
-                  <div className="mt-4 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2">
-                    {pickedItem.primary_source && (
-                      <a
-                        href={getServiceUrl(pickedItem.primary_source, pickedItem.title)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 text-black font-bold text-xs shadow-md hover:bg-emerald-400 transition-colors"
-                      >
-                        <Play className="w-3.5 h-3.5 fill-black" />
-                        <span>Stream on {pickedItem.primary_source}</span>
-                        <ExternalLink className="w-3 h-3 stroke-[2.5]" />
-                      </a>
-                    )}
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openDetailModal(pickedItem)}
-                        className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer"
-                      >
-                        Details
-                      </button>
-                    </div>
-                  </div>
+                <div className="flex flex-col gap-4">
+                  {threePicks.map((pick, i) => renderMovieCard(pick, i))}
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* RESULT: 3 CHOICES COMPARISON */}
-        <AnimatePresence mode="wait">
-          {showThreePicks && threePicks.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              className="space-y-3 pt-2"
-            >
-              <div className="text-xs font-semibold text-white/80">
-                Pick from your top 3 curated matches:
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {threePicks.map((pick) => (
-                  <div
-                    key={pick.id}
-                    className="p-3 rounded-xl bg-[#16181F] border border-white/[0.08] hover:border-white/20 transition-all flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="aspect-[2/3] w-full rounded-md overflow-hidden mb-2.5">
-                        <MediaPoster
-                          src={pick.poster_path}
-                          title={pick.title}
-                          mediaType={pick.media_type}
-                          year={pick.release_year}
-                        />
-                      </div>
-                      <div className="flex items-center gap-1.5 mb-1 text-[11px]">
-                        <span className="px-1 py-0.2 rounded text-[9px] font-black bg-[#F5C518] text-black">
-                          IMDb
-                        </span>
-                        <span className="font-bold text-white">{pick.vote_average.toFixed(1)}</span>
-                        <span className="text-[#8E93A0]">({pick.release_year})</span>
-                      </div>
-                      <h4 className="text-xs font-bold text-white line-clamp-1 mb-1">
-                        {pick.title}
-                      </h4>
-                      <p className="text-[11px] text-[#8E93A0] line-clamp-2">
-                        {pick.overview}
-                      </p>
-                    </div>
-
-                    <div className="mt-3 pt-2 border-t border-white/[0.06] flex items-center justify-between gap-1">
-                      <button
-                        type="button"
-                        onClick={() => openDetailModal(pick)}
-                        className="flex-1 py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-medium text-white transition-colors text-center cursor-pointer"
-                      >
-                        Details
-                      </button>
-                      {pick.primary_source && (
-                        <a
-                          href={getServiceUrl(pick.primary_source, pick.title)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="py-1.5 px-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-[11px] font-semibold transition-colors flex items-center gap-1"
-                        >
-                          <span>Watch</span>
-                          <ExternalLink className="w-2.5 h-2.5" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

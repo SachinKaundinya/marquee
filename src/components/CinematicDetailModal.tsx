@@ -202,23 +202,15 @@ export function CinematicDetailModal() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F1115] via-[#0F1115]/50 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0F1115]/70 via-transparent to-transparent hidden sm:block" />
 
-            {/* Top Bar Actions (Close & Share) */}
+            {/* Top Bar Actions (Close) */}
             <div className="absolute top-3 right-3 z-30 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleShare}
-                aria-label="Share Title"
-                className="p-2 rounded-full bg-[#181A20]/90 hover:bg-black text-white/80 hover:text-white border border-white/10 transition-colors"
-              >
-                <Share2 className="w-4 h-4" />
-              </button>
               <button
                 type="button"
                 onClick={closeDetailModal}
                 aria-label="Close"
-                className="p-2 rounded-full bg-[#181A20]/90 hover:bg-black text-white/80 hover:text-white border border-white/10 transition-colors"
+                className="p-2.5 sm:p-3 rounded-full bg-black/70 hover:bg-black text-white border border-white/20 transition-all active:scale-95 cursor-pointer shadow-lg"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
               </button>
             </div>
 
