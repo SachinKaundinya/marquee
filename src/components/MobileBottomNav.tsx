@@ -37,8 +37,8 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#0E1015] border-t border-white/[0.08] sm:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.5)] pb-[env(safe-area-inset-bottom,0px)]">
-      <div className="grid grid-cols-4 max-w-md mx-auto h-14 items-center">
+    <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#0E1015] border-t border-white/[0.08] sm:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.5)] h-14">
+      <div className="grid grid-cols-4 max-w-md mx-auto h-full items-center">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
