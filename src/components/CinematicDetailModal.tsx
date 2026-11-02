@@ -456,7 +456,7 @@ export function CinematicDetailModal() {
               }`}
             >
               <Check className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
-              <span className="whitespace-nowrap truncate">{currentStatus === 'watched' ? 'Watched' : 'Log'}</span>
+              <span className="whitespace-nowrap truncate">Watched</span>
             </button>
 
             {/* Not Interested / Hide */}
