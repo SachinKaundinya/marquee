@@ -288,7 +288,7 @@ export function TonightsPickModal() {
                 className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg bg-emerald-500 text-black font-bold text-xs shadow-md hover:bg-emerald-400 transition-colors whitespace-nowrap"
               >
                 <Play className="w-3.5 h-3.5 fill-black shrink-0" />
-                <span className="truncate">Stream on {item.primary_source}</span>
+                <span className="truncate">{item.primary_source}</span>
                 <ExternalLink className="w-3 h-3 stroke-[2.5] shrink-0" />
               </a>
             ) : (
