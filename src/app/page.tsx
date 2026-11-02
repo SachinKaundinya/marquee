@@ -15,9 +15,10 @@ import { CsvImportModal } from '@/components/CsvImportModal';
 import { ApiSettingsModal } from '@/components/ApiSettingsModal';
 import { ServicesModal } from '@/components/ServicesModal';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
+import { TonightsPickView } from '@/components/TonightsPickView';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'popular' | 'diary' | 'watchlist'>('popular');
+  const [activeTab, setActiveTab] = useState<'tonight' | 'popular' | 'diary' | 'watchlist'>('tonight');
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isApiSettingsOpen, setIsApiSettingsOpen] = useState(false);
 
@@ -36,6 +37,10 @@ export default function Home() {
 
           {/* Main Content Area */}
           <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 pb-16 sm:pb-12">
+            {activeTab === 'tonight' && (
+              <TonightsPickView />
+            )}
+
             {activeTab === 'popular' && (
               <WatchlistGrid mode="popular" />
             )}

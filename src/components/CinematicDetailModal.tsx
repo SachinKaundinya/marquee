@@ -167,14 +167,15 @@ export function CinematicDetailModal() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
-        {/* Backdrop Backdrop Overlay */}
+      <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+        {/* Backdrop Overlay */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeDetailModal}
-          className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
+          className="fixed inset-0 bg-black/85 transition-opacity"
+          style={{ WebkitBackdropFilter: 'none', backdropFilter: 'none' }}
         />
 
         {/* Modal Window */}
@@ -207,7 +208,7 @@ export function CinematicDetailModal() {
                 type="button"
                 onClick={handleShare}
                 aria-label="Share Title"
-                className="p-2 rounded-full bg-black/60 hover:bg-black/90 text-white/80 hover:text-white border border-white/10 transition-colors backdrop-blur-md"
+                className="p-2 rounded-full bg-[#181A20]/90 hover:bg-black text-white/80 hover:text-white border border-white/10 transition-colors"
               >
                 <Share2 className="w-4 h-4" />
               </button>
@@ -215,7 +216,7 @@ export function CinematicDetailModal() {
                 type="button"
                 onClick={closeDetailModal}
                 aria-label="Close"
-                className="p-2 rounded-full bg-black/60 hover:bg-black/90 text-white/80 hover:text-white border border-white/10 transition-colors backdrop-blur-md"
+                className="p-2 rounded-full bg-[#181A20]/90 hover:bg-black text-white/80 hover:text-white border border-white/10 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -423,47 +424,47 @@ export function CinematicDetailModal() {
           </div>
 
           {/* Sticky Bottom Action Dock */}
-          <div className="border-t border-white/[0.08] bg-[#0A0B0D] p-3 sm:p-4 flex items-center justify-between gap-2 shrink-0">
+          <div className="border-t border-white/[0.08] bg-[#0A0B0D] p-2.5 sm:p-4 flex items-center justify-between gap-1.5 sm:gap-2 shrink-0">
             {/* Quick Watchlist Toggle */}
             <button
               type="button"
               onClick={() => handleStatusToggle('want_to_watch')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex-1 min-w-0 flex items-center justify-center gap-1 sm:gap-1.5 py-2.5 px-2 sm:px-3 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 currentStatus === 'want_to_watch'
                   ? 'bg-white text-black shadow-md'
                   : 'bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/[0.1]'
               }`}
             >
-              <Bookmark className="w-4 h-4 fill-current" />
-              <span>{currentStatus === 'want_to_watch' ? 'In Watchlist' : 'Watchlist'}</span>
+              <Bookmark className="w-3.5 h-3.5 shrink-0 fill-current" />
+              <span className="whitespace-nowrap truncate">{currentStatus === 'want_to_watch' ? 'Saved' : 'Watchlist'}</span>
             </button>
 
             {/* Now Watching Toggle (For Series & Movies) */}
             <button
               type="button"
               onClick={() => handleStatusToggle('watching')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex-1 min-w-0 flex items-center justify-center gap-1 sm:gap-1.5 py-2.5 px-2 sm:px-3 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 currentStatus === 'watching'
                   ? 'bg-[#E5A93C] text-black shadow-md font-bold'
                   : 'bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/[0.1]'
               }`}
             >
-              <Play className="w-4 h-4 fill-current" />
-              <span>{currentStatus === 'watching' ? 'Now Watching' : 'Watching'}</span>
+              <Play className="w-3.5 h-3.5 shrink-0 fill-current" />
+              <span className="whitespace-nowrap truncate">Watching</span>
             </button>
 
             {/* Log as Watched */}
             <button
               type="button"
               onClick={() => handleStatusToggle('watched')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex-1 min-w-0 flex items-center justify-center gap-1 sm:gap-1.5 py-2.5 px-2 sm:px-3 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 currentStatus === 'watched'
                   ? 'bg-emerald-500 text-black shadow-md font-bold'
                   : 'bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/[0.1]'
               }`}
             >
-              <Check className="w-4 h-4 stroke-[2.5]" />
-              <span>{currentStatus === 'watched' ? 'Watched' : 'Log Watched'}</span>
+              <Check className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
+              <span className="whitespace-nowrap truncate">{currentStatus === 'watched' ? 'Watched' : 'Log'}</span>
             </button>
 
             {/* Not Interested / Hide */}
@@ -475,9 +476,9 @@ export function CinematicDetailModal() {
                 toast.info('Title hidden from recommendations');
               }}
               title="Not Interested"
-              className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-red-500/10 hover:text-red-400 text-[#8E93A0] border border-white/[0.06] transition-colors"
+              className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-red-500/10 hover:text-red-400 text-[#8E93A0] border border-white/[0.06] transition-colors shrink-0"
             >
-              <EyeOff className="w-4 h-4" />
+              <EyeOff className="w-3.5 h-3.5" />
             </button>
           </div>
         </motion.div>

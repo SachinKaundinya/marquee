@@ -27,7 +27,7 @@ import { drawerTransition, springTransition } from '@/tokens/motion';
 
 type PoolSource = 'watchlist' | 'catalog';
 type RuntimeBudget = 'any' | 'short' | 'standard' | 'epic' | 'series';
-type VibeType = 'any' | 'mind_bender' | 'adrenaline' | 'comedy' | 'dark' | 'chills' | 'acclaimed';
+type VibeType = 'any' | 'mind_bender' | 'adrenaline' | 'comedy' | 'dark' | 'chills' | 'acclaimed' | 'true_crime';
 
 interface VibeOption {
   id: VibeType;
@@ -43,6 +43,7 @@ const VIBE_OPTIONS: VibeOption[] = [
   { id: 'comedy', label: 'Laugh & Unwind', emoji: '🍿', description: 'Feel-good & Comedy' },
   { id: 'dark', label: 'Dark & Gripping', emoji: '🍷', description: 'Prestige Drama & Noir' },
   { id: 'chills', label: 'Spine-Chilling', emoji: '🕯️', description: 'Horror & Psychological' },
+  { id: 'true_crime', label: 'True Crime', emoji: '🔍', description: 'Real cases & investigations' },
   { id: 'acclaimed', label: 'Top Shelf (8.0+)', emoji: '🏆', description: 'Universally acclaimed' },
 ];
 
@@ -111,6 +112,18 @@ export function TonightsPickModal() {
       } else if (selectedVibe === 'chills') {
         const matches = genres.some((g) => g.includes('horror') || g.includes('supernatural'));
         if (!matches) return false;
+      } else if (selectedVibe === 'true_crime') {
+        const matches =
+          genres.some((g) => g.includes('crime') || g.includes('doc') || g.includes('biography') || g.includes('history')) ||
+          overview.includes('murder') ||
+          overview.includes('serial killer') ||
+          overview.includes('investigation') ||
+          overview.includes('true story') ||
+          overview.includes('real-life') ||
+          overview.includes('fbi') ||
+          overview.includes('police') ||
+          overview.includes('detective');
+        if (!matches) return false;
       } else if (selectedVibe === 'acclaimed') {
         if (item.vote_average < 7.9) return false;
       }
@@ -155,7 +168,8 @@ export function TonightsPickModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeTonightsPick}
-          className="fixed inset-0 bg-black/80 backdrop-blur-md"
+          className="fixed inset-0 bg-black/85"
+          style={{ WebkitBackdropFilter: 'none', backdropFilter: 'none' }}
         />
 
         {/* Modal Card */}
@@ -167,17 +181,17 @@ export function TonightsPickModal() {
           className="relative w-full max-w-2xl bg-[#0F1115] border border-white/[0.09] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col my-auto max-h-[90vh]"
         >
           {/* Header */}
-          <div className="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between bg-[#14161B]/60 backdrop-blur-md shrink-0">
+          <div
+            className="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between bg-[#14161B] shrink-0"
+            style={{ WebkitBackdropFilter: 'none', backdropFilter: 'none' }}
+          >
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-[#E5A93C]/10 border border-[#E5A93C]/20 flex items-center justify-center text-[#E5A93C]">
                 <Sparkles className="w-4 h-4 fill-current" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-                  <span>Tonight&apos;s Pick</span>
-                  <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.2 rounded bg-white/10 text-white/70">
-                    Decision Engine
-                  </span>
+                <h2 className="text-sm font-bold text-white tracking-tight">
+                  Tonight&apos;s Pick
                 </h2>
                 <p className="text-[11px] text-[#8E93A0]">
                   Cure streaming paralysis. Dial your mood & roll.
@@ -316,12 +330,7 @@ export function TonightsPickModal() {
 
             {/* 4. Streaming Subscriptions Filter Switch */}
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#14161B] border border-white/[0.06]">
-              <div>
-                <div className="text-xs font-semibold text-white">Only Subscribed Services</div>
-                <div className="text-[11px] text-[#8E93A0]">
-                  Strictly show titles available on your connected streaming platforms
-                </div>
-              </div>
+              <div className="text-xs font-semibold text-white">Streaming Now</div>
               <button
                 type="button"
                 onClick={() => setOnlySubscribed(!onlySubscribed)}
@@ -434,21 +443,11 @@ export function TonightsPickModal() {
                           <button
                             type="button"
                             onClick={() => {
-                              closeTonightsPick();
                               openDetailModal(pickedItem);
                             }}
-                            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors"
+                            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer"
                           >
-                            Full Details
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={handleRoll}
-                            title="Roll Again"
-                            className="p-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-[#8E93A0] hover:text-white transition-colors"
-                          >
-                            <RotateCcw className="w-3.5 h-3.5" />
+                            Details
                           </button>
                         </div>
                       </div>
@@ -504,10 +503,9 @@ export function TonightsPickModal() {
                           <button
                             type="button"
                             onClick={() => {
-                              closeTonightsPick();
                               openDetailModal(pick);
                             }}
-                            className="flex-1 py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-medium text-white transition-colors text-center"
+                            className="flex-1 py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] font-medium text-white transition-colors text-center cursor-pointer"
                           >
                             Details
                           </button>

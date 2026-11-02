@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Flame, BookOpen, Bookmark } from 'lucide-react';
+import { Flame, BookOpen, Bookmark, Sparkles } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 
 interface MobileBottomNavProps {
-  activeTab: 'popular' | 'diary' | 'watchlist';
-  setActiveTab: (tab: 'popular' | 'diary' | 'watchlist') => void;
+  activeTab: 'tonight' | 'popular' | 'diary' | 'watchlist';
+  setActiveTab: (tab: 'tonight' | 'popular' | 'diary' | 'watchlist') => void;
 }
 
 export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProps) {
@@ -14,13 +14,18 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
 
   const navItems = [
     {
+      id: 'tonight' as const,
+      label: 'Tonight',
+      icon: Sparkles,
+    },
+    {
       id: 'popular' as const,
       label: 'Recs',
       icon: Flame,
     },
     {
       id: 'watchlist' as const,
-      label: 'My Watchlist',
+      label: 'Watchlist',
       icon: Bookmark,
       badge: watchlistTitles.length > 0 ? watchlistTitles.length : null,
     },
@@ -33,7 +38,7 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 bg-[#0E1015] border-t border-white/[0.08] sm:hidden pb-[max(env(safe-area-inset-bottom,0px),4px)] pt-1 shadow-[0_-4px_16px_rgba(0,0,0,0.5)]">
-      <div className="grid grid-cols-3 max-w-md mx-auto">
+      <div className="grid grid-cols-4 max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;

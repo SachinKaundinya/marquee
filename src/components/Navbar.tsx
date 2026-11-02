@@ -9,8 +9,8 @@ import { searchTitles } from '@/lib/tmdb';
 import { MediaItem } from '@/types/media';
 
 interface NavbarProps {
-  activeTab: 'popular' | 'diary' | 'watchlist';
-  setActiveTab: (tab: 'popular' | 'diary' | 'watchlist') => void;
+  activeTab: 'tonight' | 'popular' | 'diary' | 'watchlist';
+  setActiveTab: (tab: 'tonight' | 'popular' | 'diary' | 'watchlist') => void;
   onOpenImport: () => void;
   onOpenApiSettings: () => void;
 }
@@ -76,7 +76,7 @@ export function Navbar({
         {/* Brand / Logo */}
         <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           <div
-            onClick={() => setActiveTab('popular')}
+            onClick={() => setActiveTab('tonight')}
             className="cursor-pointer select-none group py-0.5 shrink-0"
           >
             <MirarLogo size="md" showText={true} />
@@ -84,6 +84,17 @@ export function Navbar({
 
           {/* Navigation Tabs (Desktop) */}
           <nav className="hidden sm:flex items-center gap-1">
+            <button
+              onClick={() => setActiveTab('tonight')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'tonight'
+                  ? 'bg-white/10 text-white font-semibold'
+                  : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#E5A93C]" />
+              <span>Tonight</span>
+            </button>
             <button
               onClick={() => setActiveTab('popular')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
@@ -119,15 +130,6 @@ export function Navbar({
             >
               Diary
             </button>
-
-            {/* Tonight's Pick Decision Engine Trigger */}
-            <button
-              onClick={openTonightsPick}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#E5A93C]/15 to-[#F59E0B]/20 text-[#E5A93C] hover:text-white border border-[#E5A93C]/30 hover:border-[#E5A93C]/60 transition-all cursor-pointer shadow-sm active:scale-95 ml-1"
-            >
-              <Sparkles className="w-3.5 h-3.5 fill-current" />
-              <span>Tonight&apos;s Pick</span>
-            </button>
           </nav>
         </div>
 
@@ -135,9 +137,13 @@ export function Navbar({
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-1 justify-end min-w-0">
           {/* Mobile Tonight's Pick Button */}
           <button
-            onClick={openTonightsPick}
+            onClick={() => setActiveTab('tonight')}
             title="Tonight's Pick"
-            className="sm:hidden flex items-center justify-center p-2 rounded-lg bg-[#E5A93C]/15 border border-[#E5A93C]/30 text-[#E5A93C] active:scale-95 transition-all shrink-0"
+            className={`sm:hidden flex items-center justify-center p-2 rounded-lg transition-all shrink-0 ${
+              activeTab === 'tonight'
+                ? 'bg-[#E5A93C]/20 border border-[#E5A93C]/40 text-[#E5A93C]'
+                : 'bg-white/[0.06] border border-white/[0.08] text-[#8E93A0] active:scale-95'
+            }`}
           >
             <Sparkles className="w-4 h-4 fill-current" />
           </button>
