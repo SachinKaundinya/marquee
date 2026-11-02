@@ -83,14 +83,6 @@ export function TonightsPickView() {
     };
   }, [poolSource, selectedFormat, selectedVibe]);
 
-  useEffect(() => {
-    // Preload top vibes in background so switching is instant
-    fetchTonightsPickPool('movie', 'comedy');
-    fetchTonightsPickPool('any', 'any');
-    fetchTonightsPickPool('movie', 'mind_bender');
-    fetchTonightsPickPool('tv', 'comedy');
-  }, []);
-
   // Shuffling / Result State
   const [isSpinning, setIsSpinning] = useState(false);
   const [pickedItem, setPickedItem] = useState<MediaItem | null>(null);
@@ -195,7 +187,7 @@ export function TonightsPickView() {
 
       return true;
     });
-  }, [poolSource, watchlistTitles, catalog, onlySubscribed, selectedFormat, selectedLength, selectedVibe, isItemOnMyServices]);
+  }, [poolSource, watchlistTitles, catalog, curatedPool, onlySubscribed, selectedFormat, selectedLength, selectedVibe, isItemOnMyServices]);
 
   const handleRoll = () => {
     if (eligibleItems.length === 0) return;
@@ -291,10 +283,10 @@ export function TonightsPickView() {
               IMDb
             </span>
             <span className="text-xs font-bold text-white tabular-nums">
-              {item.vote_average.toFixed(1)}
+              {(typeof item.vote_average === 'number' ? item.vote_average : 0).toFixed(1)}
             </span>
             <span className="text-xs text-[#8E93A0]">•</span>
-            <span className="text-xs text-[#8E93A0]">{item.release_year}</span>
+            <span className="text-xs text-[#8E93A0]">{item.release_year || ''}</span>
             <span className="text-xs text-[#8E93A0]">•</span>
             <span className="text-[10px] uppercase font-semibold text-white/60">
               {item.media_type === 'tv' ? 'Series' : 'Movie'}

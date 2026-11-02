@@ -1652,24 +1652,22 @@ export async function fetchTonightsPickPool(
   if (fetchMovies) {
     const movieEp = `/discover/movie?sort_by=${sortBy}&vote_count.gte=${minMovieVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en${movieGenres}`;
     requests.push(
-      fetch(buildUrl(movieEp, 1), { headers }).then((r) =>
-        r.ok ? r.json().then((d) => (d.results || []).map((m: any) => ({ ...m, media_type: 'movie' }))) : []
-      ),
-      fetch(buildUrl(movieEp, 2), { headers }).then((r) =>
-        r.ok ? r.json().then((d) => (d.results || []).map((m: any) => ({ ...m, media_type: 'movie' }))) : []
-      )
+      fetch(buildUrl(movieEp, 1), { headers })
+        .then((r) =>
+          r.ok ? r.json().then((d) => (d.results || []).map((m: any) => ({ ...m, media_type: 'movie' }))) : []
+        )
+        .catch(() => [])
     );
   }
 
   if (fetchTv) {
     const tvEp = `/discover/tv?sort_by=${sortBy}&vote_count.gte=${minTvVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en&without_genres=10763,10764,10767,10766,16${tvGenres}`;
     requests.push(
-      fetch(buildUrl(tvEp, 1), { headers }).then((r) =>
-        r.ok ? r.json().then((d) => (d.results || []).map((t: any) => ({ ...t, media_type: 'tv' }))) : []
-      ),
-      fetch(buildUrl(tvEp, 2), { headers }).then((r) =>
-        r.ok ? r.json().then((d) => (d.results || []).map((t: any) => ({ ...t, media_type: 'tv' }))) : []
-      )
+      fetch(buildUrl(tvEp, 1), { headers })
+        .then((r) =>
+          r.ok ? r.json().then((d) => (d.results || []).map((t: any) => ({ ...t, media_type: 'tv' }))) : []
+        )
+        .catch(() => [])
     );
   }
 
@@ -1687,13 +1685,14 @@ export async function fetchTonightsPickPool(
       formattedList.push(formatTmdbItem(item));
     }
 
-    // Enrich batch with streaming providers
-    await enrichMediaItemsBatch(formattedList, 8);
+    // Limit candidate enrichment to top 24 to preserve fast mobile networking
+    const candidates = formattedList.slice(0, 24);
+    await enrichMediaItemsBatch(candidates, 6);
 
-    if (formattedList.length > 0) {
-      tonightsPickCache.set(cacheKey, formattedList);
+    if (candidates.length > 0) {
+      tonightsPickCache.set(cacheKey, candidates);
     }
-    return formattedList;
+    return candidates;
   } catch (err) {
     console.error("Failed to fetch Tonight's Pick pool:", err);
     return [];

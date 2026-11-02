@@ -713,7 +713,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                             IMDb
                           </span>
                         )}
-                        <span className="text-[#F3F4F6]">{item.vote_average.toFixed(1)}</span>
+                        <span className="text-[#F3F4F6]">{(typeof item.vote_average === 'number' ? item.vote_average : 0).toFixed(1)}</span>
                       </div>
                     </div>
                   </div>
