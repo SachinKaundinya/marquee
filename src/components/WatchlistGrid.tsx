@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Bookmark, Check, SlidersHorizontal, Flame, Film, Tv, Trophy, Sparkles, Filter, X, ChevronDown, Plus, Share2, Clapperboard, Calendar, Globe } from 'lucide-react';
 import { useMedia } from '@/context/MediaContext';
 import { MediaItem } from '@/types/media';
 import { TmdbCategory, isAnimeItem, isNonEnglishItem } from '@/lib/tmdb';
 import { springTransition } from '@/tokens/motion';
 import { MediaPoster } from '@/components/MediaPoster';
-import { GenreFilterModal } from '@/components/GenreFilterModal';
-import { DecadeFilterModal, DECADE_OPTIONS, matchesDecades } from '@/components/DecadeFilterModal';
+import { UnifiedFilterModal } from '@/components/UnifiedFilterModal';
+import { DECADE_OPTIONS, matchesDecades } from '@/components/DecadeFilterModal';
 import { getServiceUrl } from '@/components/CinematicDetailModal';
 import { toast } from 'sonner';
 
@@ -80,8 +80,8 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
   const [onlyStreamingNow, setOnlyStreamingNow] = useState(false);
   const [watchlistGenres, setWatchlistGenres] = useState<string[]>([]);
   const [watchlistDecades, setWatchlistDecades] = useState<string[]>([]);
-  const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
-  const [isDecadeModalOpen, setIsDecadeModalOpen] = useState(false);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
   const [glowingKeys, setGlowingKeys] = useState<Set<string>>(new Set());
   const [sessionAddedKeys, setSessionAddedKeys] = useState<Set<string>>(new Set());
@@ -265,10 +265,12 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
     { id: 'trending', label: 'Trending', icon: Flame },
     { id: 'top_rated', label: 'Top Rated', icon: Trophy },
     { id: 'now_playing', label: 'In Theaters', icon: Clapperboard },
-    { id: 'popular_movies', label: 'Popular Movies', icon: Film },
-    { id: 'popular_tv', label: 'Popular TV', icon: Tv },
     { id: 'international', label: 'International', icon: Globe },
   ];
+
+  const currentCategory = categories.find((c) => c.id === selectedCategory) || categories[0];
+  const CurrentCategoryIcon = currentCategory.icon;
+  const activeFilterCount = selectedGenres.length + selectedDecades.length;
 
   // Spotlight metadata calculation
   const spotlightUserTitle = spotlightItem ? getUserTitle(spotlightItem.tmdb_id, spotlightItem.media_type) : null;
@@ -299,7 +301,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
         className="sticky top-[calc(3.5rem+env(safe-area-inset-top,0px))] sm:top-16 z-30 bg-[#0A0B0D] pt-2 pb-3 mb-6 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-white/[0.08] shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
         style={{ WebkitBackdropFilter: 'none', backdropFilter: 'none' }}
       >
-        {/* Row 1: Watchlist Header OR Recs Category Horizontal Bar */}
+        {/* Row 1: Watchlist Header OR Recs Category Dropdown */}
         {isWatchlistMode ? (
           <div className="flex items-center justify-between w-full gap-3 mb-2.5">
             <div className="flex items-center gap-2.5">
@@ -341,51 +343,88 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-2 scrollbar-none">
-            {categories.map((cat) => {
-              const Icon = cat.icon;
-              const isSelected = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => changeCategory(cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer shrink-0 ${
-                    isSelected
-                      ? 'bg-white text-black font-semibold shadow-sm'
-                      : 'bg-[#14161B] text-[#8E93A0] hover:text-white border border-white/[0.06] hover:bg-white/[0.04]'
+          <div className="flex items-center justify-between w-full mb-2.5">
+            {/* C: Native / Sleek Category Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#14161B] hover:bg-white/[0.06] border border-white/[0.08] text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+              >
+                <CurrentCategoryIcon className="w-4 h-4 text-amber-400" />
+                <span>{currentCategory.label}</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-[#8E93A0] transition-transform duration-200 ${
+                    isCategoryMenuOpen ? 'rotate-180' : ''
                   }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-black' : 'text-[#8E93A0]'}`} />
-                  <span>{cat.label}</span>
-                  {isSelected && isCatalogLoading && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-black/70 animate-pulse ml-0.5" />
-                  )}
-                </button>
-              );
-            })}
+                />
+                {isCatalogLoading && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse ml-0.5" />
+                )}
+              </button>
+
+              <AnimatePresence>
+                {isCategoryMenuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setIsCategoryMenuOpen(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full left-0 mt-1.5 w-56 bg-[#121418] border border-white/[0.1] rounded-xl shadow-[0_16px_40px_rgba(0,0,0,0.85)] p-1.5 z-50 backdrop-blur-xl"
+                    >
+                      {categories.map((cat) => {
+                        const Icon = cat.icon;
+                        const isSelected = selectedCategory === cat.id;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              changeCategory(cat.id);
+                              setIsCategoryMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-white text-black font-semibold shadow-sm'
+                                : 'text-[#D1D5DB] hover:text-white hover:bg-white/[0.06]'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-black' : 'text-[#8E93A0]'}`} />
+                              <span>{cat.label}</span>
+                            </div>
+                            {isSelected && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+                          </button>
+                        );
+                      })}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         )}
 
-        {/* Row 2: Format Filter Segmented Controls + Streaming Now + Genre + Decades (Identical in both Recs & Watchlist) */}
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <div className="flex items-center gap-1.5 shrink-0">
-            {/* Format pills: All, Movies, TV Shows */}
+        {/* Row 2: Fixed, Non-scrolling Row: [ All | Movies | TV ] on left, [ (✓) Streaming ] [ ⊸ Filters ] on right */}
+        <div className="flex items-center justify-between gap-2 w-full">
+          {/* A: Integrated 3-way iOS-style segmented switch */}
+          <div className="bg-[#14161B] p-1 rounded-xl border border-white/[0.08] flex items-center shrink-0">
             <button
               type="button"
               onClick={() => setFormatFilter('all')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              className={`px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 ${
                 formatFilter === 'all'
-                  ? 'bg-white text-black font-semibold border-white shadow-sm'
-                  : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  ? 'bg-white text-black font-bold shadow-sm'
+                  : 'text-[#8E93A0] hover:text-white font-medium'
               }`}
             >
               <span>All</span>
-              <span
-                className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
-                  formatFilter === 'all' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
-                }`}
-              >
+              <span className={`text-[10px] font-mono ${formatFilter === 'all' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
                 {totalCount}
               </span>
             </button>
@@ -393,18 +432,14 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             <button
               type="button"
               onClick={() => setFormatFilter(formatFilter === 'movies' ? 'all' : 'movies')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              className={`px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 ${
                 formatFilter === 'movies'
-                  ? 'bg-white text-black font-semibold border-white shadow-sm'
-                  : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  ? 'bg-white text-black font-bold shadow-sm'
+                  : 'text-[#8E93A0] hover:text-white font-medium'
               }`}
             >
               <span>Movies</span>
-              <span
-                className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
-                  formatFilter === 'movies' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
-                }`}
-              >
+              <span className={`text-[10px] font-mono ${formatFilter === 'movies' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
                 {movieCount}
               </span>
             </button>
@@ -412,97 +447,62 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             <button
               type="button"
               onClick={() => setFormatFilter(formatFilter === 'tv' ? 'all' : 'tv')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              className={`px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 ${
                 formatFilter === 'tv'
-                  ? 'bg-white text-black font-semibold border-white shadow-sm'
-                  : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
+                  ? 'bg-white text-black font-bold shadow-sm'
+                  : 'text-[#8E93A0] hover:text-white font-medium'
               }`}
             >
-              <span>TV Shows</span>
-              <span
-                className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
-                  formatFilter === 'tv' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
-                }`}
-              >
+              <span>TV</span>
+              <span className={`text-[10px] font-mono ${formatFilter === 'tv' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
                 {tvCount}
               </span>
             </button>
+          </div>
 
-            {/* Streaming Now Toggle */}
+          {/* Right side: Quick Streaming toggle + Unified Filter Sheet Button (Fixed, no scroll!) */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Quick Streaming Toggle */}
             <button
               type="button"
               onClick={() => setOnlyStreamingNow(!onlyStreamingNow)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap shrink-0 ${
+              className={`px-2.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm ${
                 onlyStreamingNow
                   ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold'
-                  : 'bg-[#14161B] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.04] hover:text-emerald-400'
+                  : 'bg-[#14161B] text-[#8E93A0] border-white/[0.08] hover:bg-white/[0.04] hover:text-emerald-400'
               }`}
+              title="Filter by your active subscriptions"
             >
               <Check className={`w-3.5 h-3.5 stroke-[2.5] ${onlyStreamingNow ? 'text-emerald-400' : 'text-[#8E93A0]'}`} />
-              <span>Streaming Now</span>
+              <span className="hidden xs:inline">Streaming</span>
+              <span className="xs:hidden">Stream</span>
             </button>
 
-            {/* Genre Filter */}
-            <div className="flex items-center gap-1 shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsGenreModalOpen(true)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap shrink-0 ${
-                  selectedGenres.length > 0
-                    ? 'bg-white text-black border-white font-semibold'
-                    : 'bg-[#14161B] text-[#F3F4F6] border-white/[0.06] hover:bg-white/[0.04]'
-                }`}
-              >
-                <Filter className={`w-3.5 h-3.5 shrink-0 ${selectedGenres.length > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
-                <span className="whitespace-nowrap">
-                  {selectedGenres.length === 0 ? 'Genre' : `Genres (${selectedGenres.length})`}
+            {/* B: Unified Filter Sheet Button */}
+            <button
+              type="button"
+              onClick={() => setIsFilterSheetOpen(true)}
+              className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm ${
+                activeFilterCount > 0
+                  ? 'bg-white text-black border-white font-bold'
+                  : 'bg-[#14161B] text-[#D1D5DB] border-white/[0.08] hover:bg-white/[0.04] hover:text-white font-medium'
+              }`}
+              title="Open deep filters (Genres & Decades)"
+            >
+              <SlidersHorizontal className={`w-3.5 h-3.5 ${activeFilterCount > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
+              <span>Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="bg-black text-white px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold leading-none">
+                  {activeFilterCount}
                 </span>
-                <ChevronDown className={`w-3 h-3 shrink-0 ${selectedGenres.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
-              </button>
-            </div>
-
-            {/* Decades Filter */}
-            <div className="flex items-center gap-1 shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsDecadeModalOpen(true)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap shrink-0 ${
-                  selectedDecades.length > 0
-                    ? 'bg-white text-black border-white font-semibold'
-                    : 'bg-[#14161B] text-[#F3F4F6] border-white/[0.06] hover:bg-white/[0.04]'
-                }`}
-              >
-                <Calendar className={`w-3.5 h-3.5 shrink-0 ${selectedDecades.length > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
-                <span className="whitespace-nowrap">
-                  {selectedDecades.length === 0 ? 'Decades' : `Decades (${selectedDecades.length})`}
-                </span>
-                <ChevronDown className={`w-3 h-3 shrink-0 ${selectedDecades.length > 0 ? 'text-black/60' : 'text-[#8E93A0]'}`} />
-              </button>
-            </div>
-
-            {/* Reset button if any filter is active */}
-            {(selectedGenres.length > 0 || selectedDecades.length > 0 || onlyStreamingNow || formatFilter !== 'all') && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedGenres([]);
-                  setSelectedDecades([]);
-                  setOnlyStreamingNow(false);
-                  setFormatFilter('all');
-                }}
-                className="px-2.5 py-1.5 rounded-lg text-[11px] text-[#8E93A0] hover:text-white bg-white/[0.04] hover:bg-white/[0.08] transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap shrink-0"
-                title="Reset filters"
-              >
-                <X className="w-3 h-3" />
-                <span>Reset</span>
-              </button>
-            )}
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Row 3: Active Filter Chips */}
-        {(selectedGenres.length > 0 || selectedDecades.length > 0) && (
-          <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1 scrollbar-none">
+        {/* Row 3: Active Filter Chips (Only shown when active) */}
+        {activeFilterCount > 0 && (
+          <div className="flex items-center gap-1.5 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#636875] mr-0.5 shrink-0">
               Filters:
             </span>
@@ -966,10 +966,12 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
         </>
       )}
 
-      {/* Genre Filter Modal */}
-      <GenreFilterModal
-        isOpen={isGenreModalOpen}
-        onClose={() => setIsGenreModalOpen(false)}
+      {/* Unified Filter Modal Sheet */}
+      <UnifiedFilterModal
+        isOpen={isFilterSheetOpen}
+        onClose={() => setIsFilterSheetOpen(false)}
+        onlyStreamingNow={onlyStreamingNow}
+        onToggleStreamingNow={() => setOnlyStreamingNow(!onlyStreamingNow)}
         selectedGenres={selectedGenres}
         onToggleGenre={(genre) => {
           setSelectedGenres((prev) =>
@@ -978,13 +980,6 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               : [...prev, genre]
           );
         }}
-        onClearGenres={() => setSelectedGenres([])}
-      />
-
-      {/* Decade Filter Modal */}
-      <DecadeFilterModal
-        isOpen={isDecadeModalOpen}
-        onClose={() => setIsDecadeModalOpen(false)}
         selectedDecades={selectedDecades}
         onToggleDecade={(decId) => {
           setSelectedDecades((prev) =>
@@ -993,7 +988,12 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               : [...prev, decId]
           );
         }}
-        onClearDecades={() => setSelectedDecades([])}
+        onClearAll={() => {
+          setSelectedGenres([]);
+          setSelectedDecades([]);
+          setOnlyStreamingNow(false);
+        }}
+        matchingCount={filteredItems.length}
       />
     </section>
   );
