@@ -42,6 +42,7 @@ const VIBE_OPTIONS: VibeOption[] = [
 export function TonightsPickView() {
   const {
     watchlistTitles,
+    userTitles,
     catalog,
     isItemOnMyServices,
     openDetailModal,
@@ -51,10 +52,11 @@ export function TonightsPickView() {
   const [poolSource, setPoolSource] = useState<PoolSource>(
     watchlistTitles.length > 0 ? 'watchlist' : 'catalog'
   );
-  const [selectedFormat, setSelectedFormat] = useState<FormatType>('any');
+  const [selectedFormat, setSelectedFormat] = useState<FormatType>('movie');
   const [selectedLength, setSelectedLength] = useState<string>('any');
   const [selectedVibe, setSelectedVibe] = useState<VibeType>('any');
   const [onlySubscribed, setOnlySubscribed] = useState(true);
+  const [actionedIds, setActionedIds] = useState<Set<number>>(new Set());
 
   // Dynamic discovery pool for "Curated by Mirar"
   const [curatedPool, setCuratedPool] = useState<MediaItem[]>([]);
@@ -65,7 +67,7 @@ export function TonightsPickView() {
     let isCancelled = false;
     setIsPoolLoading(true);
 
-    fetchTonightsPickPool(selectedFormat, selectedVibe)
+    fetchTonightsPickPool(selectedFormat, selectedVibe, selectedLength)
       .then((items) => {
         if (!isCancelled && items && items.length > 0) {
           setCuratedPool(items);
@@ -81,7 +83,7 @@ export function TonightsPickView() {
     return () => {
       isCancelled = true;
     };
-  }, [poolSource, selectedFormat, selectedVibe]);
+  }, [poolSource, selectedFormat, selectedVibe, selectedLength]);
 
   // Shuffling / Result State
   const [isSpinning, setIsSpinning] = useState(false);
@@ -106,7 +108,22 @@ export function TonightsPickView() {
         ? curatedPool
         : catalog;
 
+    // Track watched/actioned items to exclude from recommendation
+    const excludedIds = new Set<number>(actionedIds);
+    for (const ut of userTitles) {
+      if (ut.status === 'watched') {
+        excludedIds.add(ut.tmdb_id);
+      } else if (poolSource === 'catalog' && (ut.status === 'want_to_watch' || ut.status === 'watching')) {
+        excludedIds.add(ut.tmdb_id);
+      }
+    }
+
     return rawList.filter((item) => {
+      // Exclude already actioned or watched items
+      if (excludedIds.has(item.tmdb_id)) {
+        return false;
+      }
+
       // 1. Streaming subscription check
       if (onlySubscribed && !isItemOnMyServices(item)) {
         return false;
@@ -121,13 +138,13 @@ export function TonightsPickView() {
         const runtime = item.runtime;
 
         if (selectedFormat === 'movie' || item.media_type === 'movie') {
-          if (runtime && runtime > 0) {
+          if (typeof runtime === 'number' && runtime > 0) {
             if (selectedLength === 'short' && runtime >= 100) return false;
             if (selectedLength === 'standard' && (runtime < 100 || runtime > 140)) return false;
             if (selectedLength === 'epic' && runtime <= 140) return false;
           }
         } else if (selectedFormat === 'tv' || item.media_type === 'tv') {
-          if (runtime && runtime > 0) {
+          if (typeof runtime === 'number' && runtime > 0) {
             if (selectedLength === 'tv_short' && runtime >= 35) return false;
             if (selectedLength === 'tv_standard' && (runtime < 30 || runtime > 55)) return false;
             if (selectedLength === 'tv_long' && runtime <= 45) return false;
@@ -139,7 +156,7 @@ export function TonightsPickView() {
             if (selectedLength === 'tv_long' && isComedyOrAnim) return false;
           }
         } else {
-          if (runtime && runtime > 0) {
+          if (typeof runtime === 'number' && runtime > 0) {
             if (selectedLength === 'any_short' && runtime >= 45) return false;
             if (selectedLength === 'any_med' && (runtime < 40 || runtime > 90)) return false;
             if (selectedLength === 'any_long' && (runtime < 90 || runtime > 130)) return false;
@@ -187,7 +204,57 @@ export function TonightsPickView() {
 
       return true;
     });
-  }, [poolSource, watchlistTitles, catalog, curatedPool, onlySubscribed, selectedFormat, selectedLength, selectedVibe, isItemOnMyServices]);
+  }, [poolSource, watchlistTitles, catalog, curatedPool, actionedIds, userTitles, onlySubscribed, selectedFormat, selectedLength, selectedVibe, isItemOnMyServices]);
+
+  // Synchronize picks if any displayed title gets tracked (e.g. from Details modal)
+  useEffect(() => {
+    if (showThreePicks && threePicks.length > 0) {
+      const trackedTmdbIds = new Set(
+        userTitles
+          .filter(
+            (ut) =>
+              ut.status === 'watched' ||
+              (poolSource === 'catalog' && (ut.status === 'want_to_watch' || ut.status === 'watching'))
+          )
+          .map((ut) => ut.tmdb_id)
+      );
+
+      const needsReplacement = threePicks.some((p) => trackedTmdbIds.has(p.tmdb_id));
+      if (needsReplacement) {
+        setThreePicks((prev) => {
+          const visibleIds = new Set(prev.map((p) => p.tmdb_id));
+          return prev
+            .map((item) => {
+              if (!trackedTmdbIds.has(item.tmdb_id)) return item;
+              const candidates = eligibleItems.filter(
+                (cand) => !visibleIds.has(cand.tmdb_id) && !trackedTmdbIds.has(cand.tmdb_id)
+              );
+              if (candidates.length > 0) {
+                const replacement = candidates[Math.floor(Math.random() * candidates.length)];
+                visibleIds.add(replacement.tmdb_id);
+                return replacement;
+              }
+              return item;
+            })
+            .filter((item) => !trackedTmdbIds.has(item.tmdb_id));
+        });
+      }
+    } else if (pickedItem) {
+      const isTracked = userTitles.some(
+        (ut) =>
+          ut.tmdb_id === pickedItem.tmdb_id &&
+          (ut.status === 'watched' || (poolSource === 'catalog' && ut.status === 'want_to_watch'))
+      );
+      if (isTracked) {
+        const candidates = eligibleItems.filter((i) => i.tmdb_id !== pickedItem.tmdb_id);
+        if (candidates.length > 0) {
+          setPickedItem(candidates[Math.floor(Math.random() * candidates.length)]);
+        } else {
+          setPickedItem(null);
+        }
+      }
+    }
+  }, [userTitles, poolSource, eligibleItems, showThreePicks, threePicks, pickedItem]);
 
   const handleRoll = () => {
     if (eligibleItems.length === 0) return;
@@ -215,32 +282,39 @@ export function TonightsPickView() {
     }, 380);
   };
 
-  const handleMarkWatchedAndReroll = (watchedItem: MediaItem) => {
-    updateStatus(watchedItem.tmdb_id, watchedItem.media_type, 'watched', watchedItem);
-    toast.success('Logged as watched', { description: watchedItem.title });
+  const handleActionAndReroll = (targetItem: MediaItem, status: 'watched' | 'want_to_watch') => {
+    updateStatus(targetItem.tmdb_id, targetItem.media_type, status, targetItem, { silent: true });
+
+    setActionedIds((prev) => {
+      const next = new Set(prev);
+      next.add(targetItem.tmdb_id);
+      return next;
+    });
 
     if (showThreePicks) {
       const currentIds = new Set(threePicks.map((p) => p.tmdb_id));
-      currentIds.add(watchedItem.tmdb_id);
+      currentIds.add(targetItem.tmdb_id);
 
       const remainingCandidates = eligibleItems.filter((i) => !currentIds.has(i.tmdb_id));
       const replacement =
         remainingCandidates.length > 0
           ? remainingCandidates[Math.floor(Math.random() * remainingCandidates.length)]
-          : eligibleItems.find((i) => i.tmdb_id !== watchedItem.tmdb_id);
+          : null;
 
       if (replacement) {
         setThreePicks((prev) =>
-          prev.map((item) => (item.tmdb_id === watchedItem.tmdb_id ? replacement : item))
+          prev.map((item) => (item.tmdb_id === targetItem.tmdb_id ? replacement : item))
         );
       } else {
-        setThreePicks((prev) => prev.filter((item) => item.tmdb_id !== watchedItem.tmdb_id));
+        setThreePicks((prev) => prev.filter((item) => item.tmdb_id !== targetItem.tmdb_id));
       }
     } else {
-      const remaining = eligibleItems.filter((i) => i.tmdb_id !== watchedItem.tmdb_id);
+      const remaining = eligibleItems.filter((i) => i.tmdb_id !== targetItem.tmdb_id);
       if (remaining.length > 0) {
         const next = remaining[Math.floor(Math.random() * remaining.length)];
         setPickedItem(next);
+      } else {
+        setPickedItem(null);
       }
     }
   };
@@ -278,7 +352,7 @@ export function TonightsPickView() {
         {/* Card Content */}
         <div className="p-4 sm:p-5 pt-3">
           {/* Metadata Row */}
-          <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
             <span className="px-1.5 py-0.2 rounded text-[10px] font-black bg-[#F5C518] text-black">
               IMDb
             </span>
@@ -291,6 +365,16 @@ export function TonightsPickView() {
             <span className="text-[10px] uppercase font-semibold text-white/60">
               {item.media_type === 'tv' ? 'Series' : 'Movie'}
             </span>
+            {typeof item.runtime === 'number' && item.runtime > 0 && (
+              <>
+                <span className="text-xs text-[#8E93A0]">•</span>
+                <span className="text-xs text-[#8E93A0] tabular-nums">
+                  {item.runtime >= 60
+                    ? `${Math.floor(item.runtime / 60)}h ${item.runtime % 60}m`
+                    : `${item.runtime}m`}
+                </span>
+              </>
+            )}
           </div>
 
           {/* Clickable Title */}
@@ -309,17 +393,17 @@ export function TonightsPickView() {
           )}
 
           {/* Action Row - Strict Single Line (No Wrapping) */}
-          <div className="mt-3.5 pt-2.5 border-t border-white/[0.08] flex items-center gap-1.5 sm:gap-2 w-full">
+          <div className="mt-3.5 pt-2.5 border-t border-white/[0.08] flex items-center gap-1.5 w-full">
             {item.primary_source ? (
               <a
                 href={getServiceUrl(item.primary_source, item.title)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg bg-emerald-500 text-black font-bold text-xs shadow-md hover:bg-emerald-400 transition-colors whitespace-nowrap"
+                className="flex-1 min-w-0 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-emerald-500 text-black font-bold text-xs shadow-md hover:bg-emerald-400 transition-colors whitespace-nowrap"
               >
-                <Play className="w-3.5 h-3.5 fill-black shrink-0" />
+                <Play className="w-3 h-3 fill-black shrink-0" />
                 <span className="truncate">{item.primary_source}</span>
-                <ExternalLink className="w-3 h-3 stroke-[2.5] shrink-0" />
+                <ExternalLink className="w-2.5 h-2.5 stroke-[2.5] shrink-0" />
               </a>
             ) : (
               <div className="flex-1" />
@@ -327,9 +411,19 @@ export function TonightsPickView() {
 
             <button
               type="button"
-              onClick={() => handleMarkWatchedAndReroll(item)}
+              onClick={() => handleActionAndReroll(item, 'want_to_watch')}
+              className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/[0.08] text-xs text-white/90 font-medium transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+              title="Add to Watchlist and roll replacement"
+            >
+              <Bookmark className="w-3.5 h-3.5 text-white/80 shrink-0" />
+              <span>Watchlist</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleActionAndReroll(item, 'watched')}
               className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/30 border border-white/[0.08] text-xs text-white/90 font-medium transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-              title="Mark as watched and roll new title"
+              title="Mark as watched and roll replacement"
             >
               <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5] shrink-0" />
               <span>Watched</span>
@@ -338,7 +432,7 @@ export function TonightsPickView() {
             <button
               type="button"
               onClick={() => openDetailModal(item)}
-              className="shrink-0 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer whitespace-nowrap"
+              className="shrink-0 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white font-medium transition-colors cursor-pointer whitespace-nowrap"
             >
               Details
             </button>

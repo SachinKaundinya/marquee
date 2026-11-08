@@ -80,7 +80,7 @@ function persistWatchProvider(key: string, val: { flatrate: string[]; rent: stri
 export async function fetchWatchProviders(
   mediaType: MediaType,
   id: number
-): Promise<{ flatrate: string[]; rent: string[] }> {
+): Promise<{ flatrate: string[]; rent: string[]; runtime?: number }> {
   const cacheKey = `${mediaType}-${id}`;
   if (watchProvidersCache.has(cacheKey)) {
     return watchProvidersCache.get(cacheKey)!;
@@ -88,15 +88,15 @@ export async function fetchWatchProviders(
 
   const { token, key } = getTmdbCredentials();
   try {
-    const url = `${TMDB_BASE_URL}/${mediaType}/${id}/watch/providers`;
+    const url = `${TMDB_BASE_URL}/${mediaType}/${id}?append_to_response=watch/providers`;
     const headers: Record<string, string> = token
       ? { Authorization: `Bearer ${token}` }
       : {};
-    const finalUrl = token ? url : `${url}?api_key=${key}`;
+    const finalUrl = token ? url : `${url}&api_key=${key}`;
     const res = await fetch(finalUrl, { headers });
     if (res.ok) {
       const data = await res.json();
-      const us = data.results?.US;
+      const us = data['watch/providers']?.results?.US || data.results?.US;
       const flatrate: string[] = [];
       const rent: string[] = [];
 
@@ -116,7 +116,14 @@ export async function fetchWatchProviders(
         rent.push('Prime (Rent)');
       }
 
-      const result = { flatrate, rent };
+      const runtime =
+        typeof data.runtime === 'number' && data.runtime > 0
+          ? data.runtime
+          : Array.isArray(data.episode_run_time) && data.episode_run_time.length > 0
+          ? data.episode_run_time[0]
+          : undefined;
+
+      const result = { flatrate, rent, runtime };
       persistWatchProvider(cacheKey, result);
       return result;
     }
@@ -131,7 +138,10 @@ export async function fetchWatchProviders(
 
 export async function enrichMediaItemWithProviders(item: MediaItem): Promise<MediaItem> {
   try {
-    const { flatrate, rent } = await fetchWatchProviders(item.media_type, item.tmdb_id);
+    const { flatrate, rent, runtime } = await fetchWatchProviders(item.media_type, item.tmdb_id);
+    if (!item.runtime && typeof runtime === 'number' && runtime > 0) {
+      item.runtime = runtime;
+    }
     if (flatrate.length > 0) {
       item.streaming_sources = [...flatrate, ...(rent.length > 0 ? ['Prime (Rent)'] : [])];
       item.primary_source = flatrate[0];
@@ -1374,6 +1384,12 @@ function formatTmdbItem(item: any): MediaItem {
     origin_country: Array.isArray(item.origin_country) ? item.origin_country : undefined,
     genre_ids: Array.isArray(item.genre_ids) ? item.genre_ids : undefined,
     is_international: isNonEnglishItem(item),
+    runtime:
+      typeof item.runtime === 'number' && item.runtime > 0
+        ? item.runtime
+        : Array.isArray(item.episode_run_time) && item.episode_run_time.length > 0
+        ? item.episode_run_time[0]
+        : undefined,
   };
 }
 
@@ -1562,9 +1578,10 @@ const tonightsPickCache = new Map<string, MediaItem[]>();
 
 export async function fetchTonightsPickPool(
   format: 'any' | 'movie' | 'tv',
-  vibe: string
+  vibe: string,
+  length: string = 'any'
 ): Promise<MediaItem[]> {
-  const cacheKey = `${format}_${vibe}`;
+  const cacheKey = `${format}_${vibe}_${length}`;
   if (tonightsPickCache.has(cacheKey)) {
     return tonightsPickCache.get(cacheKey)!;
   }
@@ -1579,6 +1596,36 @@ export async function fetchTonightsPickPool(
     const u = `${TMDB_BASE_URL}${ep}${sep}page=${p}`;
     return token ? u : `${u}&api_key=${key}`;
   };
+
+  // Determine runtime query params
+  let movieRuntime = '';
+  let tvRuntime = '';
+
+  if (length === 'short') {
+    movieRuntime = '&with_runtime.lte=99';
+  } else if (length === 'standard') {
+    movieRuntime = '&with_runtime.gte=100&with_runtime.lte=140';
+  } else if (length === 'epic') {
+    movieRuntime = '&with_runtime.gte=141';
+  } else if (length === 'tv_short') {
+    tvRuntime = '&with_runtime.lte=35';
+  } else if (length === 'tv_standard') {
+    tvRuntime = '&with_runtime.gte=30&with_runtime.lte=55';
+  } else if (length === 'tv_long') {
+    tvRuntime = '&with_runtime.gte=45';
+  } else if (length === 'any_short') {
+    movieRuntime = '&with_runtime.lte=45';
+    tvRuntime = '&with_runtime.lte=45';
+  } else if (length === 'any_med') {
+    movieRuntime = '&with_runtime.gte=45&with_runtime.lte=90';
+    tvRuntime = '&with_runtime.gte=45&with_runtime.lte=90';
+  } else if (length === 'any_long') {
+    movieRuntime = '&with_runtime.gte=90&with_runtime.lte=130';
+    tvRuntime = '&with_runtime.gte=50';
+  } else if (length === 'any_epic') {
+    movieRuntime = '&with_runtime.gte=131';
+    tvRuntime = '&with_runtime.gte=60';
+  }
 
   if (vibe === 'true_crime') {
     try {
@@ -1650,7 +1697,7 @@ export async function fetchTonightsPickPool(
   const requests: Promise<any[]>[] = [];
 
   if (fetchMovies) {
-    const movieEp = `/discover/movie?sort_by=${sortBy}&vote_count.gte=${minMovieVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en${movieGenres}`;
+    const movieEp = `/discover/movie?sort_by=${sortBy}&vote_count.gte=${minMovieVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en${movieGenres}${movieRuntime}`;
     requests.push(
       fetch(buildUrl(movieEp, 1), { headers })
         .then((r) =>
@@ -1661,7 +1708,7 @@ export async function fetchTonightsPickPool(
   }
 
   if (fetchTv) {
-    const tvEp = `/discover/tv?sort_by=${sortBy}&vote_count.gte=${minTvVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en&without_genres=10763,10764,10767,10766,16${tvGenres}`;
+    const tvEp = `/discover/tv?sort_by=${sortBy}&vote_count.gte=${minTvVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en&without_genres=10763,10764,10767,10766,16${tvGenres}${tvRuntime}`;
     requests.push(
       fetch(buildUrl(tvEp, 1), { headers })
         .then((r) =>

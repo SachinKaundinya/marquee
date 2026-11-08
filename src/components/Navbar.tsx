@@ -173,9 +173,9 @@ export function Navbar({
                 onBlur={() => setIsSearchFocused(false)}
                 placeholder={
                   searchFocusContext === 'watchlist'
-                    ? 'Search to add to Watchlist...'
+                    ? 'Search Watchlist...'
                     : searchFocusContext === 'diary'
-                    ? 'Search to add to Diary...'
+                    ? 'Search Diary...'
                     : 'Search Titles'
                 }
                 className="w-full bg-[#14161B] text-base sm:text-xs text-[#F3F4F6] pl-8 pr-7 py-1.5 rounded-lg focus:outline-none focus:border-white/25 placeholder-[#636875] transition-colors"
