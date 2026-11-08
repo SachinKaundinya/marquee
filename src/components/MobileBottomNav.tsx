@@ -67,7 +67,7 @@ export function MobileBottomNav({ activeTab, setActiveTab }: MobileBottomNavProp
                 )}
               </div>
               <span
-                className={`text-[11px] leading-tight mt-1 tracking-tight transition-colors ${
+                className={`text-[11px] leading-tight mt-1 tracking-tight transition-colors whitespace-nowrap truncate max-w-full px-1 ${
                   isActive ? 'font-semibold text-white' : 'font-medium text-[#8E93A0]'
                 }`}
               >

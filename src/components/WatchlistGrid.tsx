@@ -417,14 +417,14 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             <button
               type="button"
               onClick={() => setFormatFilter('all')}
-              className={`px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 ${
+              className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap shrink-0 ${
                 formatFilter === 'all'
                   ? 'bg-white text-black font-bold shadow-sm'
                   : 'text-[#8E93A0] hover:text-white font-medium'
               }`}
             >
-              <span>All</span>
-              <span className={`text-[10px] font-mono ${formatFilter === 'all' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
+              <span className="whitespace-nowrap">All</span>
+              <span className={`text-[10px] font-mono tabular-nums ${formatFilter === 'all' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
                 {totalCount}
               </span>
             </button>
@@ -432,14 +432,14 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             <button
               type="button"
               onClick={() => setFormatFilter(formatFilter === 'movies' ? 'all' : 'movies')}
-              className={`px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 ${
+              className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap shrink-0 ${
                 formatFilter === 'movies'
                   ? 'bg-white text-black font-bold shadow-sm'
                   : 'text-[#8E93A0] hover:text-white font-medium'
               }`}
             >
-              <span>Movies</span>
-              <span className={`text-[10px] font-mono ${formatFilter === 'movies' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
+              <span className="whitespace-nowrap">Movies</span>
+              <span className={`text-[10px] font-mono tabular-nums ${formatFilter === 'movies' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
                 {movieCount}
               </span>
             </button>
@@ -447,14 +447,14 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             <button
               type="button"
               onClick={() => setFormatFilter(formatFilter === 'tv' ? 'all' : 'tv')}
-              className={`px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 ${
+              className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap shrink-0 ${
                 formatFilter === 'tv'
                   ? 'bg-white text-black font-bold shadow-sm'
                   : 'text-[#8E93A0] hover:text-white font-medium'
               }`}
             >
-              <span>TV</span>
-              <span className={`text-[10px] font-mono ${formatFilter === 'tv' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
+              <span className="whitespace-nowrap">TV</span>
+              <span className={`text-[10px] font-mono tabular-nums ${formatFilter === 'tv' ? 'text-black/70' : 'text-[#8E93A0]/70'}`}>
                 {tvCount}
               </span>
             </button>
@@ -466,33 +466,33 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
             <button
               type="button"
               onClick={() => setOnlyStreamingNow(!onlyStreamingNow)}
-              className={`px-2.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm ${
+              className={`px-2.5 py-1.5 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm whitespace-nowrap shrink-0 ${
                 onlyStreamingNow
                   ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold'
                   : 'bg-[#14161B] text-[#8E93A0] border-white/[0.08] hover:bg-white/[0.04] hover:text-emerald-400'
               }`}
               title="Filter by your active subscriptions"
             >
-              <Check className={`w-3.5 h-3.5 stroke-[2.5] ${onlyStreamingNow ? 'text-emerald-400' : 'text-[#8E93A0]'}`} />
-              <span className="hidden xs:inline">Streaming</span>
-              <span className="xs:hidden">Stream</span>
+              <Check className={`w-3.5 h-3.5 stroke-[2.5] shrink-0 ${onlyStreamingNow ? 'text-emerald-400' : 'text-[#8E93A0]'}`} />
+              <span className="hidden xs:inline whitespace-nowrap">Streaming</span>
+              <span className="xs:hidden whitespace-nowrap">Stream</span>
             </button>
 
             {/* B: Unified Filter Sheet Button */}
             <button
               type="button"
               onClick={() => setIsFilterSheetOpen(true)}
-              className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm whitespace-nowrap shrink-0 ${
                 activeFilterCount > 0
                   ? 'bg-white text-black border-white font-bold'
                   : 'bg-[#14161B] text-[#D1D5DB] border-white/[0.08] hover:bg-white/[0.04] hover:text-white font-medium'
               }`}
               title="Open deep filters (Genres & Decades)"
             >
-              <SlidersHorizontal className={`w-3.5 h-3.5 ${activeFilterCount > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
-              <span>Filters</span>
+              <SlidersHorizontal className={`w-3.5 h-3.5 shrink-0 ${activeFilterCount > 0 ? 'text-black' : 'text-[#8E93A0]'}`} />
+              <span className="whitespace-nowrap">Filters</span>
               {activeFilterCount > 0 && (
-                <span className="bg-black text-white px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold leading-none">
+                <span className="bg-black text-white px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold leading-none shrink-0">
                   {activeFilterCount}
                 </span>
               )}
@@ -503,7 +503,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
         {/* Row 3: Active Filter Chips (Only shown when active) */}
         {activeFilterCount > 0 && (
           <div className="flex items-center gap-1.5 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-[#636875] mr-0.5 shrink-0">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-[#636875] mr-0.5 shrink-0 whitespace-nowrap">
               Filters:
             </span>
             <button
@@ -512,7 +512,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                 setSelectedGenres([]);
                 setSelectedDecades([]);
               }}
-              className="text-xs text-[#8E93A0] hover:text-white transition-colors mr-1 cursor-pointer shrink-0"
+              className="text-xs text-[#8E93A0] hover:text-white transition-colors mr-1 cursor-pointer shrink-0 whitespace-nowrap"
             >
               Clear all
             </button>
@@ -588,16 +588,16 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               <button
                 type="button"
                 onClick={() => setOnlyStreamingNow(false)}
-                className="px-3.5 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm"
+                className="px-3.5 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm whitespace-nowrap shrink-0"
               >
-                Show All Titles
+                <span className="whitespace-nowrap">Show All Titles</span>
               </button>
               <button
                 type="button"
                 onClick={openServicesModal}
-                className="px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer border border-white/10"
+                className="px-3.5 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer border border-white/10 whitespace-nowrap shrink-0"
               >
-                Manage Services
+                <span className="whitespace-nowrap">Manage Services</span>
               </button>
             </div>
           ) : isWatchlistMode ? (
@@ -605,18 +605,18 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
               <button
                 type="button"
                 onClick={() => triggerSearchFocus('watchlist')}
-                className="px-4 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm flex items-center gap-1.5"
+                className="px-4 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm flex items-center gap-1.5 whitespace-nowrap shrink-0"
               >
-                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>Add to List</span>
+                <Plus className="w-3.5 h-3.5 stroke-[2.5] shrink-0" />
+                <span className="whitespace-nowrap">Add to List</span>
               </button>
               {onSwitchToPopular && (
                 <button
                   type="button"
                   onClick={onSwitchToPopular}
-                  className="px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-xs font-medium text-white transition-colors cursor-pointer whitespace-nowrap shrink-0"
                 >
-                  Explore Recs
+                  <span className="whitespace-nowrap">Explore Recs</span>
                 </button>
               )}
             </div>
@@ -706,17 +706,17 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                   )}
 
                   {/* Action Buttons */}
-                  <div className="flex items-center gap-2.5 mt-3 sm:mt-4 pt-1">
+                  <div className="flex items-center gap-2 sm:gap-2.5 mt-3 sm:mt-4 pt-1 flex-nowrap overflow-x-auto scrollbar-none">
                     {spotlightWatchUrl ? (
                       <a
                         href={spotlightWatchUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5 shadow-md active:scale-95"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5 shadow-md active:scale-95 whitespace-nowrap shrink-0"
                       >
-                        <span>Watch on {spotlightSource}</span>
-                        <Share2 className="w-3.5 h-3.5 rotate-45 stroke-[2.5]" />
+                        <span className="whitespace-nowrap">Watch on {spotlightSource}</span>
+                        <Share2 className="w-3.5 h-3.5 rotate-45 stroke-[2.5] shrink-0" />
                       </a>
                     ) : null}
 
@@ -754,7 +754,7 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                           }, 1200);
                         }
                       }}
-                      className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-1.5 backdrop-blur-md active:scale-95 cursor-pointer ${
+                      className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-1.5 backdrop-blur-md active:scale-95 cursor-pointer whitespace-nowrap shrink-0 ${
                         spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`)
                           ? 'bg-emerald-400 text-black shadow-[0_0_20px_rgba(52,211,153,1)] ring-2 ring-emerald-300 scale-105'
                           : isSpotlightInWatchlist || (spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`))
@@ -763,11 +763,11 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                       }`}
                     >
                       {spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`) ? (
-                        <Check className="w-3.5 h-3.5 stroke-[3] text-black" />
+                        <Check className="w-3.5 h-3.5 stroke-[3] text-black shrink-0" />
                       ) : (
-                        <Bookmark className={`w-3.5 h-3.5 ${isSpotlightInWatchlist ? 'fill-black' : ''}`} />
+                        <Bookmark className={`w-3.5 h-3.5 shrink-0 ${isSpotlightInWatchlist ? 'fill-black' : ''}`} />
                       )}
-                      <span>{isSpotlightInWatchlist || (spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`)) ? 'In Watchlist' : 'Watchlist'}</span>
+                      <span className="whitespace-nowrap">{isSpotlightInWatchlist || (spotlightItem && glowingKeys.has(`${spotlightItem.media_type}-${spotlightItem.tmdb_id}`)) ? 'In Watchlist' : 'Watchlist'}</span>
                     </button>
 
                     <button
@@ -776,9 +776,9 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                         e.stopPropagation();
                         openDetailModal(spotlightItem);
                       }}
-                      className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium bg-black/40 hover:bg-black/60 text-[#D1D5DB] hover:text-white border border-white/10 transition-all backdrop-blur-md"
+                      className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium bg-black/40 hover:bg-black/60 text-[#D1D5DB] hover:text-white border border-white/10 transition-all backdrop-blur-md whitespace-nowrap shrink-0"
                     >
-                      Details
+                      <span className="whitespace-nowrap">Details</span>
                     </button>
                   </div>
                 </div>

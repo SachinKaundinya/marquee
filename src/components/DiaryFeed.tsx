@@ -43,10 +43,10 @@ export function DiaryFeed() {
         <button
           type="button"
           onClick={() => triggerSearchFocus('diary')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-xs font-medium text-white border border-white/[0.1] transition-all cursor-pointer shadow-sm active:scale-95"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-xs font-medium text-white border border-white/[0.1] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap shrink-0"
         >
-          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>Add to List</span>
+          <Plus className="w-3.5 h-3.5 stroke-[2.5] shrink-0" />
+          <span className="whitespace-nowrap">Add to List</span>
         </button>
       </div>
 
@@ -55,15 +55,15 @@ export function DiaryFeed() {
         <button
           type="button"
           onClick={() => setCategory('all')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
             category === 'all'
               ? 'bg-white text-black font-semibold border-white shadow-sm'
               : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
           }`}
         >
-          <span>All</span>
+          <span className="whitespace-nowrap">All</span>
           <span
-            className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+            className={`text-[11px] font-mono px-1.5 py-0.2 rounded shrink-0 tabular-nums ${
               category === 'all' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
             }`}
           >
@@ -74,15 +74,15 @@ export function DiaryFeed() {
         <button
           type="button"
           onClick={() => setCategory('movies')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
             category === 'movies'
               ? 'bg-white text-black font-semibold border-white shadow-sm'
               : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
           }`}
         >
-          <span>Movies</span>
+          <span className="whitespace-nowrap">Movies</span>
           <span
-            className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+            className={`text-[11px] font-mono px-1.5 py-0.2 rounded shrink-0 tabular-nums ${
               category === 'movies' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
             }`}
           >
@@ -93,15 +93,15 @@ export function DiaryFeed() {
         <button
           type="button"
           onClick={() => setCategory('tv')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
             category === 'tv'
               ? 'bg-white text-black font-semibold border-white shadow-sm'
               : 'bg-[#14161B] text-[#8E93A0] hover:text-white border-white/[0.06] hover:bg-white/[0.04]'
           }`}
         >
-          <span>TV Shows</span>
+          <span className="whitespace-nowrap">TV Shows</span>
           <span
-            className={`text-[11px] font-mono px-1.5 py-0.2 rounded ${
+            className={`text-[11px] font-mono px-1.5 py-0.2 rounded shrink-0 tabular-nums ${
               category === 'tv' ? 'bg-black/10 text-black' : 'bg-white/[0.06] text-[#8E93A0]'
             }`}
           >
@@ -157,25 +157,25 @@ export function DiaryFeed() {
 
                   {/* Top Left Status Badge */}
                   <div className="absolute top-1.5 left-1.5 z-10">
-                    <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/90 text-white shadow-md backdrop-blur-sm">
-                      <Check className="w-2.5 h-2.5 stroke-[2.5]" />
-                      <span>Watched</span>
+                    <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/90 text-white shadow-md backdrop-blur-sm whitespace-nowrap">
+                      <Check className="w-2.5 h-2.5 stroke-[2.5] shrink-0" />
+                      <span className="whitespace-nowrap">Watched</span>
                     </span>
                   </div>
 
                   {/* Top Right Rating Badge */}
                   {title.rating ? (
                     <div className="absolute top-1.5 right-1.5 z-10">
-                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-[#E5A93C] border border-white/10 shadow-md backdrop-blur-sm">
-                        <Star className="w-2.5 h-2.5 fill-[#E5A93C] text-[#E5A93C]" />
-                        <span>{title.rating.toFixed(1)}</span>
+                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-[#E5A93C] border border-white/10 shadow-md backdrop-blur-sm whitespace-nowrap">
+                        <Star className="w-2.5 h-2.5 fill-[#E5A93C] text-[#E5A93C] shrink-0" />
+                        <span className="whitespace-nowrap">{title.rating.toFixed(1)}</span>
                       </span>
                     </div>
                   ) : media.vote_average ? (
                     <div className="absolute top-1.5 right-1.5 z-10">
-                      <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-white/90 border border-white/10 shadow-md backdrop-blur-sm">
-                        <span className="px-1 py-0.2 rounded text-[8px] font-black bg-[#F5C518] text-black leading-none">IMDb</span>
-                        <span>{media.vote_average.toFixed(1)}</span>
+                      <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/75 text-white/90 border border-white/10 shadow-md backdrop-blur-sm whitespace-nowrap">
+                        <span className="px-1 py-0.2 rounded text-[8px] font-black bg-[#F5C518] text-black leading-none shrink-0">IMDb</span>
+                        <span className="whitespace-nowrap">{(typeof media.vote_average === 'number' ? media.vote_average : 0).toFixed(1)}</span>
                       </span>
                     </div>
                   ) : null}
@@ -183,9 +183,9 @@ export function DiaryFeed() {
                   {/* Rewatch tag if applicable */}
                   {title.is_rewatch && (
                     <div className="absolute bottom-1.5 left-1.5 z-10">
-                      <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium bg-black/75 text-white/80 border border-white/10 backdrop-blur-sm">
-                        <Repeat className="w-2.5 h-2.5 text-[#8E93A0]" />
-                        <span>Rewatch</span>
+                      <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium bg-black/75 text-white/80 border border-white/10 backdrop-blur-sm whitespace-nowrap">
+                        <Repeat className="w-2.5 h-2.5 text-[#8E93A0] shrink-0" />
+                        <span className="whitespace-nowrap">Rewatch</span>
                       </span>
                     </div>
                   )}

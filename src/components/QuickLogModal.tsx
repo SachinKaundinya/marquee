@@ -247,56 +247,56 @@ export function QuickLogModal() {
                 <button
                   type="button"
                   onClick={() => setStatus(status === 'want_to_watch' ? null : 'want_to_watch')}
-                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer whitespace-nowrap ${
                     status === 'want_to_watch'
                       ? 'bg-white/10 text-white border-white/30 shadow-sm font-semibold'
                       : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                   }`}
                 >
-                  <Bookmark className="w-3.5 h-3.5" />
-                  Watchlist
+                  <Bookmark className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">Watchlist</span>
                 </button>
 
                 {item.media_type === 'tv' ? (
                   <button
                     type="button"
                     onClick={() => setStatus(status === 'watching' ? null : 'watching')}
-                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer whitespace-nowrap ${
                       status === 'watching'
                         ? 'bg-blue-500/20 text-blue-300 border-blue-500/40 shadow-sm font-semibold'
                         : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                     }`}
                   >
-                    <Play className="w-3.5 h-3.5" />
-                    Watching
+                    <Play className="w-3.5 h-3.5 shrink-0" />
+                    <span className="whitespace-nowrap">Watching</span>
                   </button>
                 ) : null}
 
                 <button
                   type="button"
                   onClick={() => setStatus(status === 'watched' ? null : 'watched')}
-                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer whitespace-nowrap ${
                     status === 'watched'
                       ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm font-semibold'
                       : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                   }`}
                 >
-                  <Check className="w-3.5 h-3.5" />
-                  Watched
+                  <Check className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">Watched</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setStatus(status === 'not_interested' ? null : 'not_interested')}
                   title="Remove this title from Feed"
-                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                  className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium border transition-all cursor-pointer whitespace-nowrap ${
                     status === 'not_interested'
                       ? 'bg-rose-500/20 text-rose-400 border-rose-500/40 shadow-sm font-semibold'
                       : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-rose-400 hover:border-rose-500/20'
                   }`}
                 >
-                  <EyeOff className="w-3.5 h-3.5" />
-                  Not Interested
+                  <EyeOff className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap truncate">Not Interested</span>
                 </button>
               </div>
             </div>
@@ -367,10 +367,10 @@ export function QuickLogModal() {
                 <motion.button
                   whileTap={tapScale}
                   onClick={handleSave}
-                  className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
+                  className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer whitespace-nowrap"
                 >
-                  <Bookmark className="w-4 h-4 stroke-[2.5]" />
-                  Save to Watchlist
+                  <Bookmark className="w-4 h-4 stroke-[2.5] shrink-0" />
+                  <span className="whitespace-nowrap truncate">Save to Watchlist</span>
                 </motion.button>
               )
             ) : status === 'watching' ? (
@@ -378,29 +378,29 @@ export function QuickLogModal() {
                 <motion.button
                   whileTap={tapScale}
                   onClick={handleRemove}
-                  className="w-full py-3 px-4 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-rose-500/25 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+                  className="w-full py-3 px-4 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-rose-500/25 active:scale-[0.98] transition-all shadow-sm cursor-pointer whitespace-nowrap"
                 >
-                  <Trash2 className="w-4 h-4 stroke-[2.5]" />
-                  Remove from Now Watching
+                  <Trash2 className="w-4 h-4 stroke-[2.5] shrink-0" />
+                  <span className="whitespace-nowrap truncate">Remove from Now Watching</span>
                 </motion.button>
               ) : (
                 <motion.button
                   whileTap={tapScale}
                   onClick={handleSave}
-                  className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer"
+                  className="w-full py-3 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(255,255,255,0.12)] cursor-pointer whitespace-nowrap"
                 >
-                  <Play className="w-4 h-4 stroke-[2.5]" />
-                  Move to Now Watching
+                  <Play className="w-4 h-4 stroke-[2.5] shrink-0" />
+                  <span className="whitespace-nowrap truncate">Move to Now Watching</span>
                 </motion.button>
               )
             ) : (
               <motion.button
                 whileTap={tapScale}
                 onClick={handleSave}
-                className="w-full py-3 px-4 rounded-lg bg-rose-500 text-white font-medium text-sm flex items-center justify-center gap-2 hover:bg-rose-600 active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(244,63,94,0.3)] cursor-pointer"
+                className="w-full py-3 px-4 rounded-lg bg-rose-500 text-white font-medium text-sm flex items-center justify-center gap-2 hover:bg-rose-600 active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(244,63,94,0.3)] cursor-pointer whitespace-nowrap"
               >
-                <EyeOff className="w-4 h-4 stroke-[2.5]" />
-                Remove Title from Feed
+                <EyeOff className="w-4 h-4 stroke-[2.5] shrink-0" />
+                <span className="whitespace-nowrap truncate">Remove Title from Feed</span>
               </motion.button>
             )}
           </div>

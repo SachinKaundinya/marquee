@@ -399,7 +399,7 @@ export function CinematicDetailModal() {
                           <span className="text-xs font-semibold truncate group-hover:text-white">
                             {source}
                           </span>
-                          <span className="text-[10px] text-[#8E93A0]">
+                          <span className="text-[10px] text-[#8E93A0] truncate whitespace-nowrap">
                             {isSubscribed ? 'Subscribed' : 'Stream or Rent'}
                           </span>
                         </div>

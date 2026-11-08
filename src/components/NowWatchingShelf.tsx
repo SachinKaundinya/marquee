@@ -141,18 +141,18 @@ export function NowWatchingShelf() {
                               <button
                                 type="button"
                                 onClick={() => handleMoveToWatchlist(title)}
-                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer"
+                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer whitespace-nowrap"
                               >
-                                <ArrowDownToLine className="w-3.5 h-3.5" />
-                                Move to Watchlist
+                                <ArrowDownToLine className="w-3.5 h-3.5 shrink-0" />
+                                <span className="whitespace-nowrap">Move to Watchlist</span>
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleMoveToDropped(title)}
-                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer"
+                                className="w-full px-3 py-1.5 text-left text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] flex items-center gap-2 cursor-pointer whitespace-nowrap"
                               >
-                                <Archive className="w-3.5 h-3.5" />
-                                Shelve / Drop
+                                <Archive className="w-3.5 h-3.5 shrink-0" />
+                                <span className="whitespace-nowrap">Shelve / Drop</span>
                               </button>
                             </div>
                           )}
@@ -192,19 +192,19 @@ export function NowWatchingShelf() {
                       <button
                         type="button"
                         onClick={() => openQuickLog(media)}
-                        className="py-1.5 px-3 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-medium text-[#F3F4F6] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                        className="py-1.5 px-3 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-medium text-[#F3F4F6] flex items-center justify-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap shrink-0"
                       >
-                        <Edit3 className="w-3.5 h-3.5 text-[#8E93A0]" />
-                        Log / Note
+                        <Edit3 className="w-3.5 h-3.5 text-[#8E93A0] shrink-0" />
+                        <span className="whitespace-nowrap">Log / Note</span>
                       </button>
 
                       <motion.button
                         whileTap={tapScale}
                         onClick={() => handleMarkFinished(title)}
-                        className="flex-1 py-1.5 px-3 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                        className="flex-1 min-w-0 py-1.5 px-3 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
                       >
-                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                        Mark Finished
+                        <Check className="w-3.5 h-3.5 stroke-[2.5] shrink-0" />
+                        <span className="whitespace-nowrap truncate">Mark Finished</span>
                       </motion.button>
                     </div>
                   </div>

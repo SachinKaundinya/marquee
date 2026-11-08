@@ -65,9 +65,9 @@ export function ApiSettingsModal({ isOpen, onClose }: ApiSettingsModalProps) {
 
         <button
           onClick={onClose}
-          className="w-full py-2.5 px-4 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium transition-colors cursor-pointer shadow-sm"
+          className="w-full py-2.5 px-4 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium transition-colors cursor-pointer shadow-sm whitespace-nowrap"
         >
-          Close
+          <span className="whitespace-nowrap">Close</span>
         </button>
       </div>
     </div>

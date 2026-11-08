@@ -95,7 +95,7 @@ export function StarRating({
       </div>
 
       {showLabel && (
-        <span className="text-xs text-[#8E93A0] tabular-nums font-medium tracking-tight">
+        <span className="text-xs text-[#8E93A0] tabular-nums font-medium tracking-tight whitespace-nowrap shrink-0">
           {displayValue > 0 ? `(${displayValue.toFixed(1)} / ${maxStars}.0)` : '(Unrated)'}
         </span>
       )}

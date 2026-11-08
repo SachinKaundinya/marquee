@@ -198,10 +198,10 @@ export function CsvImportModal({ isOpen, onClose }: CsvImportModalProps) {
         <button
           onClick={handleImport}
           disabled={!file || isProcessing}
-          className="w-full py-2.5 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-xs flex items-center justify-center gap-2 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-md"
+          className="w-full py-2.5 px-4 rounded-lg bg-[#F4F4F6] text-[#0A0B0D] font-medium text-xs flex items-center justify-center gap-2 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer shadow-md whitespace-nowrap"
         >
-          {isProcessing ? 'Importing Batch...' : 'Begin Ingestion'}
-          {!isProcessing && <ArrowRight className="w-4 h-4" />}
+          <span className="whitespace-nowrap">{isProcessing ? 'Importing Batch...' : 'Begin Ingestion'}</span>
+          {!isProcessing && <ArrowRight className="w-4 h-4 shrink-0" />}
         </button>
       </div>
     </div>

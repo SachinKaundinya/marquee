@@ -89,49 +89,49 @@ export function Navbar({
           <nav className="hidden sm:flex items-center gap-1">
             <button
               onClick={() => setActiveTab('tonight')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                 activeTab === 'tonight'
                   ? 'bg-white/10 text-white font-semibold'
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#E5A93C]" />
-              <span>Tonight</span>
+              <Sparkles className="w-3.5 h-3.5 text-[#E5A93C] shrink-0" />
+              <span className="whitespace-nowrap">Tonight</span>
             </button>
             <button
               onClick={() => setActiveTab('popular')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'popular'
                   ? 'bg-white/10 text-white font-semibold'
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
-              Recs
+              <span className="whitespace-nowrap">Recs</span>
             </button>
             <button
               onClick={() => setActiveTab('watchlist')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                 activeTab === 'watchlist'
                   ? 'bg-white/10 text-white font-semibold'
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
-              <span>My Watchlist</span>
+              <span className="whitespace-nowrap">My Watchlist</span>
               {watchlistTitles.length > 0 && (
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/10 text-white font-mono tabular-nums">
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/10 text-white font-mono tabular-nums shrink-0">
                   {watchlistTitles.length}
                 </span>
               )}
             </button>
             <button
               onClick={() => setActiveTab('diary')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'diary'
                   ? 'bg-white/10 text-white font-semibold'
                   : 'text-[#8E93A0] hover:text-[#F3F4F6] hover:bg-white/[0.04]'
               }`}
             >
-              Diary
+              <span className="whitespace-nowrap">Diary</span>
             </button>
           </nav>
         </div>
@@ -252,30 +252,30 @@ export function Navbar({
           <button
             onClick={openServicesModal}
             title="Configure My Streaming Subscriptions"
-            className="flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer shrink-0 whitespace-nowrap"
           >
-            <Tv className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">My Services</span>
+            <Tv className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden sm:inline whitespace-nowrap">My Services</span>
           </button>
 
           {/* Database API Connect */}
           <button
             onClick={onOpenApiSettings}
             title="Entertainment Database Engines"
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer shrink-0 whitespace-nowrap"
           >
-            <Database className="w-3.5 h-3.5" />
-            <span>Engines</span>
+            <Database className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">Engines</span>
           </button>
 
           {/* Import CSV Trigger */}
           <button
             onClick={onOpenImport}
             title="Import from Letterboxd or IMDb"
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-[#8E93A0] hover:text-white transition-colors cursor-pointer shrink-0 whitespace-nowrap"
           >
-            <Upload className="w-3.5 h-3.5" />
-            <span>Import</span>
+            <Upload className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">Import</span>
           </button>
 
           {/* Google Sign In / User Profile */}
@@ -293,15 +293,15 @@ export function Navbar({
               <button
                 onClick={signOut}
                 title="Sign out"
-                className="p-1.5 rounded-lg text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer shrink-0"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-3.5 h-3.5 shrink-0" />
               </button>
             </div>
           ) : (
             <button
               onClick={() => signInWithGoogle()}
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white hover:bg-[#F3F4F6] text-[#0A0B0D] text-xs font-medium transition-all shadow-sm cursor-pointer shrink-0"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white hover:bg-[#F3F4F6] text-[#0A0B0D] text-xs font-medium transition-all shadow-sm cursor-pointer shrink-0 whitespace-nowrap"
             >
               {/* Google SVG Logo */}
               <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
@@ -322,7 +322,7 @@ export function Navbar({
                   d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
                 />
               </svg>
-              <span className="hidden sm:inline">Sign in</span>
+              <span className="hidden sm:inline whitespace-nowrap">Sign in</span>
             </button>
           )}
         </div>

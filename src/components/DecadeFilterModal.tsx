@@ -95,17 +95,17 @@ export function DecadeFilterModal({
                 <button
                   type="button"
                   onClick={onClearDecades}
-                  className="px-2 py-1 rounded text-xs text-[#8E93A0] hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                  className="px-2 py-1 rounded text-xs text-[#8E93A0] hover:text-white transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap shrink-0"
                 >
-                  <RotateCcw className="w-3 h-3" />
-                  <span>Clear</span>
+                  <RotateCcw className="w-3 h-3 shrink-0" />
+                  <span className="whitespace-nowrap">Clear</span>
                 </button>
               )}
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer shrink-0"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 shrink-0" />
               </button>
             </div>
           </div>
@@ -124,17 +124,17 @@ export function DecadeFilterModal({
                     key={dec.id}
                     type="button"
                     onClick={() => onToggleDecade(dec.id)}
-                    className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                    className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer whitespace-nowrap ${
                       isSelected
                         ? 'bg-white text-black border-white shadow-sm scale-[1.01]'
                         : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.08] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                     }`}
                   >
-                    <div>
-                      <div className={`text-sm font-semibold ${isSelected ? 'text-black' : 'text-white'}`}>
+                    <div className="min-w-0 pr-1">
+                      <div className={`text-sm font-semibold whitespace-nowrap truncate ${isSelected ? 'text-black' : 'text-white'}`}>
                         {dec.label}
                       </div>
-                      <div className={`text-[11px] ${isSelected ? 'text-black/70' : 'text-[#8E93A0]'}`}>
+                      <div className={`text-[11px] whitespace-nowrap truncate ${isSelected ? 'text-black/70' : 'text-[#8E93A0]'}`}>
                         {dec.description}
                       </div>
                     </div>
@@ -155,8 +155,8 @@ export function DecadeFilterModal({
           </div>
 
           {/* Footer Done Action */}
-          <div className="p-4 border-t border-white/[0.08] bg-[#101216] flex items-center justify-between gap-3">
-            <span className="text-xs text-[#8E93A0] tabular-nums">
+          <div className="p-4 border-t border-white/[0.08] bg-[#101216] flex items-center justify-between gap-3 shrink-0">
+            <span className="text-xs text-[#8E93A0] tabular-nums whitespace-nowrap">
               {selectedDecades.length === 0
                 ? 'Showing all decades'
                 : `${selectedDecades.length} active decade${selectedDecades.length > 1 ? 's' : ''}`}
@@ -164,9 +164,9 @@ export function DecadeFilterModal({
             <motion.button
               whileTap={tapScale}
               onClick={onClose}
-              className="py-2 px-5 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm"
+              className="py-2 px-5 rounded-lg bg-white text-black text-xs font-semibold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm whitespace-nowrap"
             >
-              Done
+              <span className="whitespace-nowrap">Done</span>
             </motion.button>
           </div>
         </motion.div>

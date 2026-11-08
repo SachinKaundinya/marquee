@@ -526,13 +526,13 @@ export function TonightsPickView() {
                 setShowThreePicks(false);
                 setThreePicks([]);
               }}
-              className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
+              className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer whitespace-nowrap ${
                 poolSource === 'watchlist'
                   ? 'bg-white/10 border-white/30 text-white shadow-sm'
                   : 'bg-[#16181F] border-white/[0.06] text-[#8E93A0] hover:text-white hover:bg-white/[0.04]'
               }`}
             >
-              <span className="text-xs font-semibold">From My Watchlist</span>
+              <span className="text-xs font-semibold whitespace-nowrap">From My Watchlist</span>
               <Bookmark className="w-3.5 h-3.5 opacity-70 shrink-0" />
             </button>
 
@@ -545,13 +545,13 @@ export function TonightsPickView() {
                 setShowThreePicks(false);
                 setThreePicks([]);
               }}
-              className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
+              className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer whitespace-nowrap ${
                 poolSource === 'catalog'
                   ? 'bg-white/10 border-white/30 text-white shadow-sm'
                   : 'bg-[#16181F] border-white/[0.06] text-[#8E93A0] hover:text-white hover:bg-white/[0.04]'
               }`}
             >
-              <span className="text-xs font-semibold">Curated by Mirar</span>
+              <span className="text-xs font-semibold whitespace-nowrap">Curated by Mirar</span>
               <Film className="w-3.5 h-3.5 opacity-70 shrink-0" />
             </button>
           </div>
@@ -579,13 +579,13 @@ export function TonightsPickView() {
                   setShowThreePicks(false);
                   setThreePicks([]);
                 }}
-                className={`px-3 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   selectedFormat === fmt.id
                     ? 'bg-white text-black font-semibold border-white shadow-sm'
                     : 'bg-[#16181F] text-[#8E93A0] border-white/[0.06] hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
-                {fmt.label}
+                <span className="whitespace-nowrap">{fmt.label}</span>
               </button>
             ))}
           </div>
@@ -762,24 +762,24 @@ export function TonightsPickView() {
             type="button"
             disabled={eligibleItems.length === 0 || isSpinning || (isPoolLoading && eligibleItems.length === 0)}
             onClick={handleRoll}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 rounded-xl bg-white text-black font-bold text-xs sm:text-sm hover:bg-neutral-200 transition-all active:scale-98 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="flex-1 min-w-0 flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 rounded-xl bg-white text-black font-bold text-xs sm:text-sm hover:bg-neutral-200 transition-all active:scale-98 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
           >
-            <Dice5 className={`w-4 h-4 ${isRollingSingle ? 'animate-spin' : ''}`} />
-            <span>{isRollingSingle ? 'Rolling...' : "Roll Tonight's Pick"}</span>
+            <Dice5 className={`w-4 h-4 shrink-0 ${isRollingSingle ? 'animate-spin' : ''}`} />
+            <span className="whitespace-nowrap truncate">{isRollingSingle ? 'Rolling...' : "Roll Tonight's Pick"}</span>
           </button>
 
           <button
             type="button"
             disabled={eligibleItems.length === 0 || isSpinning || (isPoolLoading && eligibleItems.length === 0)}
             onClick={handlePickThree}
-            className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl flex items-center justify-center gap-1.5 font-semibold text-xs border transition-all cursor-pointer whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl flex items-center justify-center gap-1.5 font-semibold text-xs border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               isRollingThree
                 ? 'bg-white/20 text-white border-white/30'
                 : 'bg-white/[0.06] hover:bg-white/[0.12] text-white border-white/[0.1]'
             }`}
           >
-            {isRollingThree && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
-            <span>{isRollingThree ? 'Picking 3...' : 'Give Me 3 Choices'}</span>
+            {isRollingThree && <RefreshCw className="w-3.5 h-3.5 animate-spin shrink-0" />}
+            <span className="whitespace-nowrap">{isRollingThree ? 'Picking 3...' : 'Give Me 3 Choices'}</span>
           </button>
         </div>
 

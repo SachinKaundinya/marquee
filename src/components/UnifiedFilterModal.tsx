@@ -80,10 +80,10 @@ export function UnifiedFilterModal({
                 <button
                   type="button"
                   onClick={onClearAll}
-                  className="px-2.5 py-1 rounded-lg text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-lg text-xs text-[#8E93A0] hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap shrink-0"
                 >
-                  <RotateCcw className="w-3 h-3" />
-                  <span>Reset all</span>
+                  <RotateCcw className="w-3 h-3 shrink-0" />
+                  <span className="whitespace-nowrap">Reset all</span>
                 </button>
               )}
               <button
@@ -162,14 +162,14 @@ export function UnifiedFilterModal({
                       type="button"
                       whileTap={tapScale}
                       onClick={() => onToggleGenre(genre)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                         isSelected
                           ? 'bg-white text-black font-semibold border-white shadow-sm'
                           : 'bg-[#181A20] text-[#D1D5DB] border-white/[0.06] hover:bg-white/[0.04] hover:text-white'
                       }`}
                     >
-                      {isSelected && <Check className="w-3 h-3 stroke-[2.5]" />}
-                      <span>{genre}</span>
+                      {isSelected && <Check className="w-3 h-3 stroke-[2.5] shrink-0" />}
+                      <span className="whitespace-nowrap">{genre}</span>
                     </motion.button>
                   );
                 })}
@@ -227,11 +227,13 @@ export function UnifiedFilterModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm text-center"
+              className="flex-1 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-[#F3F4F6] transition-colors cursor-pointer shadow-sm text-center whitespace-nowrap"
             >
-              {typeof matchingCount === 'number'
-                ? `Show ${matchingCount} Title${matchingCount === 1 ? '' : 's'}`
-                : 'Apply Filters'}
+              <span className="whitespace-nowrap">
+                {typeof matchingCount === 'number'
+                  ? `Show ${matchingCount} Title${matchingCount === 1 ? '' : 's'}`
+                  : 'Apply Filters'}
+              </span>
             </button>
           </div>
         </motion.div>

@@ -78,21 +78,21 @@ export function ServicesModal() {
             <span className="text-[11px] uppercase tracking-wider font-semibold text-[#8E93A0]">
               Select Subscriptions
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
                 onClick={handleSelectAll}
-                className="text-xs text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
+                className="text-xs text-[#8E93A0] hover:text-white transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
-                Select All
+                <span className="whitespace-nowrap">Select All</span>
               </button>
-              <span className="text-[#636875]">•</span>
+              <span className="text-[#636875] shrink-0">•</span>
               <button
                 type="button"
                 onClick={handleClearAll}
-                className="text-xs text-[#8E93A0] hover:text-white transition-colors cursor-pointer"
+                className="text-xs text-[#8E93A0] hover:text-white transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
-                Clear
+                <span className="whitespace-nowrap">Clear</span>
               </button>
             </div>
           </div>
@@ -107,13 +107,13 @@ export function ServicesModal() {
                   key={service}
                   type="button"
                   onClick={() => toggleSubscribedService(service)}
-                  className={`flex items-center justify-between p-3 rounded-xl border text-left text-xs font-medium transition-all cursor-pointer ${
+                  className={`flex items-center justify-between p-3 rounded-xl border text-left text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
                     isSelected
                       ? 'bg-white/10 text-white border-white/30 shadow-sm'
                       : 'bg-white/[0.02] text-[#8E93A0] border-white/[0.06] hover:bg-white/[0.05] hover:text-[#F3F4F6]'
                   }`}
                 >
-                  <span className="font-medium text-sm truncate mr-2">{service}</span>
+                  <span className="font-medium text-sm truncate mr-2 whitespace-nowrap">{service}</span>
                   <div
                     className={`w-4 h-4 rounded flex items-center justify-center shrink-0 transition-colors ${
                       isSelected
@@ -133,10 +133,10 @@ export function ServicesModal() {
             <motion.button
               whileTap={tapScale}
               onClick={closeServicesModal}
-              className="w-full py-2.5 px-4 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+              className="w-full py-2.5 px-4 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#0A0B0D] text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md whitespace-nowrap"
             >
-              <Check className="w-4 h-4 stroke-[2.5]" />
-              Done
+              <Check className="w-4 h-4 stroke-[2.5] shrink-0" />
+              <span className="whitespace-nowrap">Done</span>
             </motion.button>
           </div>
         </motion.div>
