@@ -93,6 +93,8 @@ export function TonightsPickView() {
   const [pickedItem, setPickedItem] = useState<MediaItem | null>(null);
   const [showThreePicks, setShowThreePicks] = useState(false);
   const [threePicks, setThreePicks] = useState<MediaItem[]>([]);
+  // Anti-repeat session memory so re-rolling always delivers fresh, unseen titles
+  const [seenIds, setSeenIds] = useState<number[]>([]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -111,12 +113,10 @@ export function TonightsPickView() {
         ? curatedPool
         : catalog;
 
-    // Track watched/actioned items to exclude from recommendation
+    // Exclude titles already watched or actioned in this session
     const excludedIds = new Set<number>(actionedIds);
     for (const ut of userTitles) {
       if (ut.status === 'watched') {
-        excludedIds.add(ut.tmdb_id);
-      } else if (poolSource === 'catalog' && (ut.status === 'want_to_watch' || ut.status === 'watching')) {
         excludedIds.add(ut.tmdb_id);
       }
     }
@@ -168,41 +168,43 @@ export function TonightsPickView() {
         }
       }
 
-      // 4. Vibe check
-      const genres = (item.genres || []).map((g) => g.toLowerCase());
-      const overview = (item.overview || '').toLowerCase();
+      // 4. Vibe check (Only needed for watchlist titles, because curatedPool is already targeted to selectedVibe by TMDb discover)
+      if (poolSource === 'watchlist' && selectedVibe !== 'any') {
+        const genres = (item.genres || []).map((g) => g.toLowerCase());
+        const overview = (item.overview || '').toLowerCase();
 
-      if (selectedVibe === 'mind_bender') {
-        const matches =
-          genres.some((g) => g.includes('sci') || g.includes('mystery') || g.includes('thriller')) ||
-          overview.includes('reality') || overview.includes('memory') || overview.includes('time');
-        if (!matches) return false;
-      } else if (selectedVibe === 'adrenaline') {
-        const matches = genres.some((g) => g.includes('action') || g.includes('crime') || g.includes('adventure'));
-        if (!matches) return false;
-      } else if (selectedVibe === 'comedy') {
-        const matches = genres.some((g) => g.includes('comedy') || g.includes('animation'));
-        if (!matches) return false;
-      } else if (selectedVibe === 'dark') {
-        const matches = genres.some((g) => g.includes('drama') || g.includes('crime') || g.includes('noir'));
-        if (!matches) return false;
-      } else if (selectedVibe === 'chills') {
-        const matches = genres.some((g) => g.includes('horror') || g.includes('supernatural'));
-        if (!matches) return false;
-      } else if (selectedVibe === 'true_crime') {
-        const matches =
-          genres.some((g) => g.includes('crime') || g.includes('doc') || g.includes('biography') || g.includes('history')) ||
-          overview.includes('murder') ||
-          overview.includes('serial killer') ||
-          overview.includes('investigation') ||
-          overview.includes('true story') ||
-          overview.includes('real-life') ||
-          overview.includes('fbi') ||
-          overview.includes('police') ||
-          overview.includes('detective');
-        if (!matches) return false;
-      } else if (selectedVibe === 'acclaimed') {
-        if (item.vote_average < 7.9) return false;
+        if (selectedVibe === 'mind_bender') {
+          const matches =
+            genres.some((g) => g.includes('sci') || g.includes('mystery') || g.includes('thriller')) ||
+            overview.includes('reality') || overview.includes('memory') || overview.includes('time');
+          if (!matches) return false;
+        } else if (selectedVibe === 'adrenaline') {
+          const matches = genres.some((g) => g.includes('action') || g.includes('crime') || g.includes('adventure'));
+          if (!matches) return false;
+        } else if (selectedVibe === 'comedy') {
+          const matches = genres.some((g) => g.includes('comedy') || g.includes('animation'));
+          if (!matches) return false;
+        } else if (selectedVibe === 'dark') {
+          const matches = genres.some((g) => g.includes('drama') || g.includes('crime') || g.includes('noir'));
+          if (!matches) return false;
+        } else if (selectedVibe === 'chills') {
+          const matches = genres.some((g) => g.includes('horror') || g.includes('supernatural'));
+          if (!matches) return false;
+        } else if (selectedVibe === 'true_crime') {
+          const matches =
+            genres.some((g) => g.includes('crime') || g.includes('doc') || g.includes('biography') || g.includes('history')) ||
+            overview.includes('murder') ||
+            overview.includes('serial killer') ||
+            overview.includes('investigation') ||
+            overview.includes('true story') ||
+            overview.includes('real-life') ||
+            overview.includes('fbi') ||
+            overview.includes('police') ||
+            overview.includes('detective');
+          if (!matches) return false;
+        } else if (selectedVibe === 'acclaimed') {
+          if (item.vote_average < 7.5) return false;
+        }
       }
 
       return true;
@@ -214,11 +216,7 @@ export function TonightsPickView() {
     if (showThreePicks && threePicks.length > 0) {
       const trackedTmdbIds = new Set(
         userTitles
-          .filter(
-            (ut) =>
-              ut.status === 'watched' ||
-              (poolSource === 'catalog' && (ut.status === 'want_to_watch' || ut.status === 'watching'))
-          )
+          .filter((ut) => ut.status === 'watched')
           .map((ut) => ut.tmdb_id)
       );
 
@@ -244,9 +242,7 @@ export function TonightsPickView() {
       }
     } else if (pickedItem) {
       const isTracked = userTitles.some(
-        (ut) =>
-          ut.tmdb_id === pickedItem.tmdb_id &&
-          (ut.status === 'watched' || (poolSource === 'catalog' && ut.status === 'want_to_watch'))
+        (ut) => ut.tmdb_id === pickedItem.tmdb_id && ut.status === 'watched'
       );
       if (isTracked) {
         const candidates = eligibleItems.filter((i) => i.tmdb_id !== pickedItem.tmdb_id);
@@ -264,9 +260,28 @@ export function TonightsPickView() {
     setRollingType('single');
 
     setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * eligibleItems.length);
+      // 1. Exclude currently displayed title from candidates so it NEVER re-rolls the same title
+      const notCurrent = eligibleItems.filter((i) => i.tmdb_id !== pickedItem?.tmdb_id);
+      const candidates = notCurrent.length > 0 ? notCurrent : eligibleItems;
+
+      // 2. Anti-repeat: Prioritize items that haven't been seen in this session
+      const unseen = candidates.filter((i) => !seenIds.includes(i.tmdb_id));
+      const poolToRoll = unseen.length > 0 ? unseen : candidates;
+
+      const randomIndex = Math.floor(Math.random() * poolToRoll.length);
+      const chosen = poolToRoll[randomIndex];
+
       setShowThreePicks(false);
-      setPickedItem(eligibleItems[randomIndex]);
+      setPickedItem(chosen);
+
+      // Track in seen list; if all candidates have been seen, start fresh cycle starting with this one
+      setSeenIds((prev) => {
+        if (unseen.length <= 1) {
+          return [chosen.tmdb_id];
+        }
+        return [...prev, chosen.tmdb_id];
+      });
+
       setRollingType(null);
       scrollToResults();
     }, 380);
@@ -277,9 +292,22 @@ export function TonightsPickView() {
     setRollingType('three');
 
     setTimeout(() => {
-      const shuffled = [...eligibleItems].sort(() => 0.5 - Math.random());
+      // 1. Exclude titles currently visible on screen
+      const currentlyShownIds = new Set(threePicks.map((p) => p.tmdb_id));
+      if (pickedItem) currentlyShownIds.add(pickedItem.tmdb_id);
+
+      const notCurrentlyShown = eligibleItems.filter((i) => !currentlyShownIds.has(i.tmdb_id));
+      const basePool = notCurrentlyShown.length >= 3 ? notCurrentlyShown : eligibleItems;
+
+      // 2. Prioritize unseen items for fresh diversity
+      const unseen = basePool.filter((i) => !seenIds.includes(i.tmdb_id));
+      const poolToPickFrom = unseen.length >= 3 ? unseen : basePool;
+
+      const shuffled = [...poolToPickFrom].sort(() => 0.5 - Math.random());
       let picks = shuffled.slice(0, 3);
-      if (picks.length < 3 && poolSource === 'watchlist') {
+
+      // 3. Guarantee ALWAYS exactly 3 choices
+      if (picks.length < 3) {
         const pickedIds = new Set(picks.map((p) => p.tmdb_id));
         const backfills = (curatedPool.length > 0 ? curatedPool : catalog).filter(
           (c) => !pickedIds.has(c.tmdb_id) && (selectedFormat === 'any' || c.media_type === selectedFormat)
@@ -293,6 +321,10 @@ export function TonightsPickView() {
       setPickedItem(null);
       setThreePicks(picks);
       setShowThreePicks(true);
+
+      // Track all 3 picks in seen history
+      setSeenIds((prev) => [...prev, ...picks.map((p) => p.tmdb_id)]);
+
       setRollingType(null);
       scrollToResults();
     }, 380);
@@ -489,8 +521,10 @@ export function TonightsPickView() {
               type="button"
               onClick={() => {
                 setPoolSource('watchlist');
+                setSeenIds([]);
                 setPickedItem(null);
                 setShowThreePicks(false);
+                setThreePicks([]);
               }}
               className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                 poolSource === 'watchlist'
@@ -506,8 +540,10 @@ export function TonightsPickView() {
               type="button"
               onClick={() => {
                 setPoolSource('catalog');
+                setSeenIds([]);
                 setPickedItem(null);
                 setShowThreePicks(false);
+                setThreePicks([]);
               }}
               className={`py-2 px-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                 poolSource === 'catalog'
@@ -538,8 +574,10 @@ export function TonightsPickView() {
                 onClick={() => {
                   setSelectedFormat(fmt.id);
                   setSelectedLength('any');
+                  setSeenIds([]);
                   setPickedItem(null);
                   setShowThreePicks(false);
+                  setThreePicks([]);
                 }}
                 className={`px-3 py-1 rounded-lg text-[11px] sm:text-xs font-medium border transition-all cursor-pointer ${
                   selectedFormat === fmt.id
@@ -572,8 +610,10 @@ export function TonightsPickView() {
                     type="button"
                     onClick={() => {
                       setSelectedLength(len.id);
+                      setSeenIds([]);
                       setPickedItem(null);
                       setShowThreePicks(false);
+                      setThreePicks([]);
                     }}
                     className={`flex-1 py-1 px-1 sm:px-2 rounded-lg text-[10px] sm:text-xs font-medium border transition-all text-center whitespace-nowrap cursor-pointer ${
                       selectedLength === len.id
@@ -600,8 +640,10 @@ export function TonightsPickView() {
                     type="button"
                     onClick={() => {
                       setSelectedLength(len.id);
+                      setSeenIds([]);
                       setPickedItem(null);
                       setShowThreePicks(false);
+                      setThreePicks([]);
                     }}
                     className={`flex-1 py-1 px-1 sm:px-2 rounded-lg text-[10px] sm:text-xs font-medium border transition-all text-center whitespace-nowrap cursor-pointer ${
                       selectedLength === len.id
@@ -629,8 +671,10 @@ export function TonightsPickView() {
                     type="button"
                     onClick={() => {
                       setSelectedLength(len.id);
+                      setSeenIds([]);
                       setPickedItem(null);
                       setShowThreePicks(false);
+                      setThreePicks([]);
                     }}
                     className={`flex-1 py-1 px-0.5 sm:px-1.5 rounded-lg text-[10px] sm:text-xs font-medium border transition-all text-center whitespace-nowrap cursor-pointer ${
                       selectedLength === len.id
@@ -658,8 +702,10 @@ export function TonightsPickView() {
                 type="button"
                 onClick={() => {
                   setSelectedVibe(vibe.id);
+                  setSeenIds([]);
                   setPickedItem(null);
                   setShowThreePicks(false);
+                  setThreePicks([]);
                 }}
                 className={`py-1.5 px-2.5 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-1.5 ${
                   selectedVibe === vibe.id
@@ -679,7 +725,13 @@ export function TonightsPickView() {
           <div className="text-xs font-semibold text-white">Streaming Now</div>
           <button
             type="button"
-            onClick={() => setOnlySubscribed(!onlySubscribed)}
+            onClick={() => {
+              setOnlySubscribed(!onlySubscribed);
+              setSeenIds([]);
+              setPickedItem(null);
+              setShowThreePicks(false);
+              setThreePicks([]);
+            }}
             className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${
               onlySubscribed ? 'bg-emerald-500' : 'bg-white/20'
             }`}

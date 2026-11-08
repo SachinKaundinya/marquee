@@ -58,6 +58,7 @@ export function CinematicDetailModal() {
     closeDetailModal,
     getUserTitle,
     updateStatus,
+    removeTitle,
     openQuickLog,
     markNotInterested,
     isServiceSubscribed,
@@ -138,8 +139,8 @@ export function CinematicDetailModal() {
 
   const handleStatusToggle = (newStatus: TrackingStatus) => {
     if (currentStatus === newStatus) {
-      // Toggle off / remove
-      openQuickLog(item, newStatus);
+      // Toggle off / remove silently
+      removeTitle(item.tmdb_id, item.media_type, { silent: true });
       return;
     }
 
@@ -150,7 +151,7 @@ export function CinematicDetailModal() {
       return;
     }
 
-    updateStatus(item.tmdb_id, item.media_type, newStatus);
+    updateStatus(item.tmdb_id, item.media_type, newStatus, item, { silent: true });
   };
 
   const handleShare = async () => {

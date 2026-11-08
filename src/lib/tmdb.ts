@@ -1629,15 +1629,24 @@ export async function fetchTonightsPickPool(
 
   if (vibe === 'true_crime') {
     try {
-      const items = await fetchTrueCrimeTitles(1);
-      const filtered = items.filter((it) => {
+      const [tc1, tc2, tc3] = await Promise.all([
+        fetchTrueCrimeTitles(1),
+        fetchTrueCrimeTitles(2),
+        fetchTrueCrimeTitles(3),
+      ]);
+      const combinedTc = [...tc1, ...tc2, ...tc3];
+      const seen = new Set<number>();
+      const filtered = combinedTc.filter((it) => {
+        if (seen.has(it.tmdb_id)) return false;
+        seen.add(it.tmdb_id);
         if (format === 'movie' && it.media_type !== 'movie') return false;
         if (format === 'tv' && it.media_type !== 'tv') return false;
         return true;
       });
-      await enrichMediaItemsBatch(filtered, 8);
-      if (filtered.length > 0) tonightsPickCache.set(cacheKey, filtered);
-      return filtered;
+      const candidates = filtered.slice(0, 60);
+      await enrichMediaItemsBatch(candidates, 10);
+      if (candidates.length > 0) tonightsPickCache.set(cacheKey, candidates);
+      return candidates;
     } catch {
       // Fallback
     }
@@ -1695,27 +1704,32 @@ export async function fetchTonightsPickPool(
   const fetchTv = format === 'any' || format === 'tv';
 
   const requests: Promise<any[]>[] = [];
+  const pagesToFetch = [1, 2, 3, 4];
 
   if (fetchMovies) {
-    const movieEp = `/discover/movie?sort_by=${sortBy}&vote_count.gte=${minMovieVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en${movieGenres}${movieRuntime}`;
-    requests.push(
-      fetch(buildUrl(movieEp, 1), { headers })
-        .then((r) =>
-          r.ok ? r.json().then((d) => (d.results || []).map((m: any) => ({ ...m, media_type: 'movie' }))) : []
-        )
-        .catch(() => [])
-    );
+    for (const p of pagesToFetch) {
+      const movieEp = `/discover/movie?sort_by=${sortBy}&vote_count.gte=${minMovieVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en${movieGenres}${movieRuntime}`;
+      requests.push(
+        fetch(buildUrl(movieEp, p), { headers })
+          .then((r) =>
+            r.ok ? r.json().then((d) => (d.results || []).map((m: any) => ({ ...m, media_type: 'movie' }))) : []
+          )
+          .catch(() => [])
+      );
+    }
   }
 
   if (fetchTv) {
-    const tvEp = `/discover/tv?sort_by=${sortBy}&vote_count.gte=${minTvVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en&without_genres=10763,10764,10767,10766,16${tvGenres}${tvRuntime}`;
-    requests.push(
-      fetch(buildUrl(tvEp, 1), { headers })
-        .then((r) =>
-          r.ok ? r.json().then((d) => (d.results || []).map((t: any) => ({ ...t, media_type: 'tv' }))) : []
-        )
-        .catch(() => [])
-    );
+    for (const p of pagesToFetch) {
+      const tvEp = `/discover/tv?sort_by=${sortBy}&vote_count.gte=${minTvVoteCount}&vote_average.gte=${minVoteAvg}&with_original_language=en&without_genres=10763,10764,10767,10766,16${tvGenres}${tvRuntime}`;
+      requests.push(
+        fetch(buildUrl(tvEp, p), { headers })
+          .then((r) =>
+            r.ok ? r.json().then((d) => (d.results || []).map((t: any) => ({ ...t, media_type: 'tv' }))) : []
+          )
+          .catch(() => [])
+      );
+    }
   }
 
   try {
@@ -1732,9 +1746,9 @@ export async function fetchTonightsPickPool(
       formattedList.push(formatTmdbItem(item));
     }
 
-    // Limit candidate enrichment to top 24 to preserve fast mobile networking
-    const candidates = formattedList.slice(0, 24);
-    await enrichMediaItemsBatch(candidates, 6);
+    // Retain deep pool of top 60 titles for rich variety and robust anti-repeat rolling
+    const candidates = formattedList.slice(0, 60);
+    await enrichMediaItemsBatch(candidates, 10);
 
     if (candidates.length > 0) {
       tonightsPickCache.set(cacheKey, candidates);
