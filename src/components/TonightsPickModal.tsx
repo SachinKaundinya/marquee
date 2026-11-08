@@ -10,7 +10,8 @@ import {
   Film,
   ExternalLink,
   Bookmark,
-  Check
+  Check,
+  RefreshCw,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useMedia } from '@/context/MediaContext';
@@ -54,7 +55,7 @@ export function TonightsPickModal() {
   } = useMedia();
 
   const [poolSource, setPoolSource] = useState<PoolSource>(
-    watchlistTitles.length > 0 ? 'watchlist' : 'catalog'
+    watchlistTitles.length >= 3 ? 'watchlist' : 'catalog'
   );
   const [selectedFormat, setSelectedFormat] = useState<FormatType>('movie');
   const [selectedLength, setSelectedLength] = useState<string>('any');
@@ -67,7 +68,7 @@ export function TonightsPickModal() {
   const [isPoolLoading, setIsPoolLoading] = useState(false);
 
   useEffect(() => {
-    if (!isTonightsPickOpen || poolSource !== 'catalog') return;
+    if (!isTonightsPickOpen) return;
     let isCancelled = false;
     setIsPoolLoading(true);
 
@@ -87,10 +88,13 @@ export function TonightsPickModal() {
     return () => {
       isCancelled = true;
     };
-  }, [isTonightsPickOpen, poolSource, selectedFormat, selectedVibe, selectedLength]);
+  }, [isTonightsPickOpen, selectedFormat, selectedVibe, selectedLength]);
 
   // Shuffling / Result State
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [rollingType, setRollingType] = useState<'single' | 'three' | null>(null);
+  const isSpinning = rollingType !== null;
+  const isRollingSingle = rollingType === 'single';
+  const isRollingThree = rollingType === 'three';
   const [pickedItem, setPickedItem] = useState<MediaItem | null>(null);
   const [showThreePicks, setShowThreePicks] = useState(false);
   const [threePicks, setThreePicks] = useState<MediaItem[]>([]);
@@ -262,26 +266,39 @@ export function TonightsPickModal() {
 
   const handleRoll = () => {
     if (eligibleItems.length === 0) return;
-    setIsSpinning(true);
-    setShowThreePicks(false);
+    setRollingType('single');
 
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * eligibleItems.length);
+      setShowThreePicks(false);
       setPickedItem(eligibleItems[randomIndex]);
-      setIsSpinning(false);
+      setRollingType(null);
       scrollToResults();
     }, 380);
   };
 
   const handlePickThree = () => {
     if (eligibleItems.length === 0) return;
-    setIsSpinning(true);
+    setRollingType('three');
+
     setTimeout(() => {
       const shuffled = [...eligibleItems].sort(() => 0.5 - Math.random());
-      setThreePicks(shuffled.slice(0, 3));
-      setShowThreePicks(true);
+      let picks = shuffled.slice(0, 3);
+      if (picks.length < 3 && poolSource === 'watchlist') {
+        const pickedIds = new Set(picks.map((p) => p.tmdb_id));
+        const backfills = (curatedPool.length > 0 ? curatedPool : catalog).filter(
+          (c) => !pickedIds.has(c.tmdb_id) && (selectedFormat === 'any' || c.media_type === selectedFormat)
+        );
+        for (const bf of backfills) {
+          if (picks.length >= 3) break;
+          picks.push(bf);
+        }
+      }
+
       setPickedItem(null);
-      setIsSpinning(false);
+      setThreePicks(picks);
+      setShowThreePicks(true);
+      setRollingType(null);
       scrollToResults();
     }, 380);
   };
@@ -323,12 +340,12 @@ export function TonightsPickModal() {
     }
   };
 
-  const renderMovieCard = (item: MediaItem, index?: number) => {
+  const renderMovieCard = (item: MediaItem, cardKey?: string, index?: number) => {
     const coverImage = item.backdrop_path || item.poster_path;
 
     return (
       <motion.div
-        key={item.id || `${item.media_type}-${item.tmdb_id}-${index}`}
+        key={cardKey || `${item.media_type}-${item.tmdb_id}-${index ?? 'pick'}`}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -16 }}
@@ -727,39 +744,60 @@ export function TonightsPickModal() {
                 onClick={handleRoll}
                 className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 px-3 rounded-xl bg-white text-black font-bold text-xs sm:text-sm hover:bg-neutral-200 transition-all active:scale-98 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
-                <Dice5 className={`w-4 h-4 ${isSpinning ? 'animate-spin' : ''}`} />
-                <span>{isSpinning ? 'Rolling...' : "Roll Tonight's Pick"}</span>
+                <Dice5 className={`w-4 h-4 ${isRollingSingle ? 'animate-spin' : ''}`} />
+                <span>{isRollingSingle ? 'Rolling...' : "Roll Tonight's Pick"}</span>
               </button>
 
               <button
                 type="button"
                 disabled={eligibleItems.length === 0 || isSpinning || (isPoolLoading && eligibleItems.length === 0)}
                 onClick={handlePickThree}
-                className="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white font-semibold text-xs border border-white/[0.1] transition-all cursor-pointer whitespace-nowrap"
+                className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl flex items-center justify-center gap-1.5 font-semibold text-xs border transition-all cursor-pointer whitespace-nowrap ${
+                  isRollingThree
+                    ? 'bg-white/20 text-white border-white/30'
+                    : 'bg-white/[0.06] hover:bg-white/[0.12] text-white border-white/[0.1]'
+                }`}
               >
-                Give Me 3 Choices
+                {isRollingThree && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                <span>{isRollingThree ? 'Picking 3...' : 'Give Me 3 Choices'}</span>
               </button>
             </div>
 
             {/* RESULTS CONTAINER - Auto centered via scrollIntoView */}
             <div ref={resultsRef} className="pt-2">
-              {/* RESULT: SINGLE PICK */}
               <AnimatePresence mode="wait">
-                {pickedItem && !showThreePicks && renderMovieCard(pickedItem)}
-              </AnimatePresence>
-
-              {/* RESULT: 3 CHOICES COMPARISON */}
-              <AnimatePresence mode="wait">
-                {showThreePicks && threePicks.length > 0 && (
-                  <div className="space-y-4 pt-1">
-                    <div className="text-xs font-semibold text-white/80">
-                      Pick from your top 3 curated matches:
+                {showThreePicks && threePicks.length > 0 ? (
+                  <motion.div
+                    key="three-picks-panel"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-4 pt-1"
+                  >
+                    <div className="flex items-center justify-between text-xs font-semibold text-white/80 px-0.5">
+                      <span>Pick from your top 3 curated matches:</span>
+                      <span className="text-[11px] text-[#8E93A0]">
+                        {threePicks.length} of {eligibleItems.length}
+                      </span>
                     </div>
                     <div className="flex flex-col gap-4">
-                      {threePicks.map((pick, i) => renderMovieCard(pick, i))}
+                      {threePicks.map((pick, i) =>
+                        renderMovieCard(pick, `three-${pick.media_type}-${pick.tmdb_id}-${i}`, i)
+                      )}
                     </div>
-                  </div>
-                )}
+                  </motion.div>
+                ) : pickedItem && !showThreePicks ? (
+                  <motion.div
+                    key={`single-pick-panel-${pickedItem.media_type}-${pickedItem.tmdb_id}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    {renderMovieCard(pickedItem, `single-${pickedItem.media_type}-${pickedItem.tmdb_id}`)}
+                  </motion.div>
+                ) : null}
               </AnimatePresence>
             </div>
           </div>
