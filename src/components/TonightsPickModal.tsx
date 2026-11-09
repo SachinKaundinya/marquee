@@ -19,6 +19,7 @@ import { MediaItem } from '@/types/media';
 import { getServiceUrl } from '@/components/CinematicDetailModal';
 import { drawerTransition } from '@/tokens/motion';
 import { fetchTonightsPickPool } from '@/lib/tmdb';
+import { getImdbRating, fetchLiveImdbRating } from '@/lib/imdbRatings';
 
 type PoolSource = 'watchlist' | 'catalog';
 type FormatType = 'any' | 'movie' | 'tv';
@@ -100,6 +101,32 @@ export function TonightsPickModal() {
   const [threePicks, setThreePicks] = useState<MediaItem[]>([]);
   // Anti-repeat session memory so re-rolling always delivers fresh, unseen titles
   const [seenIds, setSeenIds] = useState<number[]>([]);
+  // Live verified IMDb ratings map for dynamically rolled titles
+  const [liveRatings, setLiveRatings] = useState<Record<number, { rating: number; source: 'imdb' | 'tmdb' }>>({});
+
+  // Asynchronously resolve true IMDb scores for rolled candidate titles
+  useEffect(() => {
+    const itemsToCheck = showThreePicks ? threePicks : pickedItem ? [pickedItem] : [];
+    for (const it of itemsToCheck) {
+      if (!it) continue;
+      const syncRating = getImdbRating(it.title, it.tmdb_id);
+      if (syncRating !== undefined) {
+        setLiveRatings((prev) => ({
+          ...prev,
+          [it.tmdb_id]: { rating: syncRating, source: 'imdb' },
+        }));
+      } else {
+        fetchLiveImdbRating(it.title, it.release_year, it.tmdb_id).then((res) => {
+          if (res?.rating) {
+            setLiveRatings((prev) => ({
+              ...prev,
+              [it.tmdb_id]: { rating: res.rating, source: 'imdb' },
+            }));
+          }
+        });
+      }
+    }
+  }, [pickedItem, threePicks, showThreePicks]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -374,6 +401,10 @@ export function TonightsPickModal() {
 
   const renderMovieCard = (item: MediaItem, cardKey?: string, index?: number) => {
     const coverImage = item.backdrop_path || item.poster_path;
+    const resolvedRatingObj = liveRatings[item.tmdb_id];
+    const syncRating = getImdbRating(item.title, item.tmdb_id);
+    const displayRating = resolvedRatingObj?.rating ?? syncRating ?? item.vote_average ?? 0;
+    const displaySource = resolvedRatingObj?.source ?? (syncRating !== undefined ? 'imdb' : item.rating_source || 'tmdb');
 
     return (
       <motion.div
@@ -405,11 +436,17 @@ export function TonightsPickModal() {
         <div className="p-4 sm:p-5 pt-3">
           {/* Metadata Row */}
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="px-1.5 py-0.2 rounded text-[10px] font-black bg-[#F5C518] text-black">
-              IMDb
+            <span
+              className={`px-1.5 py-0.2 rounded text-[10px] font-black uppercase tracking-tight leading-none font-sans shadow-sm whitespace-nowrap shrink-0 ${
+                displaySource === 'tmdb'
+                  ? 'bg-sky-950/80 text-sky-300 border border-sky-500/30'
+                  : 'bg-[#F5C518] text-black'
+              }`}
+            >
+              {displaySource === 'tmdb' ? 'TMDb' : 'IMDb'}
             </span>
-            <span className="text-xs font-bold text-white tabular-nums">
-              {(typeof item.vote_average === 'number' ? item.vote_average : 0).toFixed(1)}
+            <span className="text-xs font-bold text-white tabular-nums whitespace-nowrap">
+              {displayRating.toFixed(1)}
             </span>
             <span className="text-xs text-[#8E93A0]">•</span>
             <span className="text-xs text-[#8E93A0]">{item.release_year || ''}</span>

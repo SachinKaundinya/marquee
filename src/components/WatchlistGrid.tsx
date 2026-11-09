@@ -11,6 +11,7 @@ import { MediaPoster } from '@/components/MediaPoster';
 import { UnifiedFilterModal } from '@/components/UnifiedFilterModal';
 import { DECADE_OPTIONS, matchesDecades } from '@/components/DecadeFilterModal';
 import { getServiceUrl } from '@/components/CinematicDetailModal';
+import { getImdbRating } from '@/lib/imdbRatings';
 import { toast } from 'sonner';
 
 type FormatFilterType = 'all' | 'movies' | 'tv';
@@ -673,14 +674,28 @@ export function WatchlistGrid({ mode = 'popular', onSwitchToPopular }: Watchlist
                 <div className="absolute bottom-0 inset-x-0 p-4 sm:p-6 md:p-8 flex flex-col justify-end z-10">
                   {/* Metadata Row */}
                   <div className="flex items-center gap-2 text-xs text-[#8E93A0] mb-1.5 flex-wrap">
-                    <div className="flex items-center gap-1 font-semibold tabular-nums">
-                      <span className="px-1 py-0.2 rounded text-[9px] font-black uppercase tracking-tight bg-[#F5C518] text-black leading-none font-sans shadow-sm">
-                        IMDb
-                      </span>
-                      <span className="text-white font-bold text-xs sm:text-sm">
-                        {(typeof spotlightItem.vote_average === 'number' ? spotlightItem.vote_average : 0).toFixed(1)}
-                      </span>
-                    </div>
+                    {(() => {
+                      const syncRating = getImdbRating(spotlightItem.title, spotlightItem.tmdb_id);
+                      const displayRating = syncRating ?? spotlightItem.vote_average ?? 0;
+                      const isTmdb = syncRating === undefined && spotlightItem.rating_source === 'tmdb';
+
+                      return (
+                        <div className="flex items-center gap-1 font-semibold tabular-nums">
+                          <span
+                            className={`px-1 py-0.2 rounded text-[9px] font-black uppercase tracking-tight leading-none font-sans shadow-sm ${
+                              isTmdb
+                                ? 'bg-sky-950/80 text-sky-300 border border-sky-500/30'
+                                : 'bg-[#F5C518] text-black'
+                            }`}
+                          >
+                            {isTmdb ? 'TMDb' : 'IMDb'}
+                          </span>
+                          <span className="text-white font-bold text-xs sm:text-sm">
+                            {displayRating.toFixed(1)}
+                          </span>
+                        </div>
+                      );
+                    })()}
                     <span>•</span>
                     <span>{spotlightItem.genres?.[0] || (spotlightItem.media_type === 'movie' ? 'Movie' : 'TV Series')}</span>
                     <span>•</span>

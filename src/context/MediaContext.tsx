@@ -39,9 +39,9 @@ interface MediaContextType {
     mediaType: MediaType,
     status: TrackingStatus,
     fallbackMedia?: MediaItem,
-    options?: { silent?: boolean }
+    options?: { silent?: boolean; notify?: boolean }
   ) => void;
-  removeTitle: (tmdbId: number, mediaType: MediaType, options?: { silent?: boolean }) => void;
+  removeTitle: (tmdbId: number, mediaType: MediaType, options?: { silent?: boolean; notify?: boolean }) => void;
   nowWatchingTitles: UserTitle[];
   watchlistTitles: UserTitle[];
   diaryTitles: UserTitle[];
@@ -558,7 +558,7 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
     mediaType: MediaType,
     status: TrackingStatus,
     fallbackMedia?: MediaItem,
-    options?: { silent?: boolean }
+    options?: { silent?: boolean; notify?: boolean }
   ) => {
     const existingIndex = userTitles.findIndex(
       (t) => t.tmdb_id === tmdbId && t.media_type === mediaType
@@ -592,7 +592,8 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
       persistTitles([newEntry, ...userTitles]);
     }
 
-    if (!options?.silent) {
+    // Status updates are silent by default for seamless UX; UI components provide instant visual feedback (e.g. green glow, card state)
+    if (options?.notify) {
       const readableStatus =
         status === 'want_to_watch'
           ? 'Added to Watchlist'
@@ -667,13 +668,13 @@ export function MediaProvider({ children }: { children: React.ReactNode }) {
   const removeTitle = (
     tmdbId: number,
     mediaType: MediaType,
-    options?: { silent?: boolean }
+    options?: { silent?: boolean; notify?: boolean }
   ) => {
     const filtered = userTitles.filter(
       (t) => !(t.tmdb_id === tmdbId && t.media_type === mediaType)
     );
     persistTitles(filtered);
-    if (!options?.silent) {
+    if (options?.notify) {
       toast.info('Title removed from tracker');
     }
   };

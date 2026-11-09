@@ -241,6 +241,7 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
   'the accountant 2': 7.0,
   'the machinist': 7.6,
   'in time': 6.7,
+  'fall': 6.4,
 
   // TV Shows
   'breaking bad': 9.5,
@@ -397,6 +398,7 @@ export const IMDB_RATINGS_MAP: Record<string, number> = {
 };
 
 export const IMDB_RATINGS_BY_ID: Record<number, number> = {
+  985939: 6.4,  // Fall (2022) (TMDb 7.1 -> verified IMDb 6.4)
   1765072: 9.3, // You Can See Everything (TMDb 7.4/7.6 -> IMDb 9.3)
   213562: 7.6,  // Crystal Lake
   95557: 8.7,   // Severance
